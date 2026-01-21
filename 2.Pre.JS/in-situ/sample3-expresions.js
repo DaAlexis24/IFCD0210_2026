@@ -88,7 +88,7 @@ console.log(Boolean(null))
 console.log(Boolean(''))
 console.log(Boolean(NaN))
 
-// Trueties -> coerción a true
+// Truthies -> coerción a true
 console.log('------------------------')
 console.log(Boolean(true))
 console.log(Boolean(22))
