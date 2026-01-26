@@ -3,7 +3,7 @@
 ELABORACIÓN DE DOCUMENTOS WEB MEDIANTE LENGUAJES DE MARCAS
 Código: UF1841
 Duración: 60 horas (12 días)
-Centro de Formación Digital San Blas
+Centro de Formación Digital Alcobendas
 
 ## Aplicaciones instaladas
 

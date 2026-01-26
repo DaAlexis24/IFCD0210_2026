@@ -1,0 +1,16 @@
+<libro>
+  <titulo>Yo robot</titulo>
+  <autor>Isaac Asimov</autor>
+</libro>
+<libro>
+  <titulo>Neuromante</titulo>
+  <autor>William Gibson</autor>
+</libro>
+<libro>
+  <titulo>Fundación</titulo>
+  <autor>Isaac Asimov</autor>
+</libro>
+<libro>
+  <titulo>Snow Crash</titulo>
+  <autor>Neal Stephenson</autor>
+</libro>
