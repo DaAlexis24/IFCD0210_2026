@@ -1,0 +1,199 @@
+/* 
+Comentarios en CSS 
+Multiples líneas
+*/
+
+* {
+    box-sizing: border-box;
+    /* margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline; */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    border: 1px solid #a18b8b;
+    margin: 1rem;
+    background-color: #f4f4f4;
+}
+
+
+
+/* Selectores */
+
+/* Etiquetas HTML (tags) */
+
+* {
+    box-sizing: border-box;
+}
+
+h1 {
+    color: blue;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+section {
+    margin: 10px;
+}
+/* p {
+    font-size: 18px;
+    text-align: center;
+} */
+
+/* Clases */
+
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+}
+
+.sub-title {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 0;
+    &::before {
+        content: "👌";
+        font-size: 14px;
+        color: gray;
+    }
+}
+/* IDs */
+
+/* Generalmente es mala práctica usar IDs en CSS */
+
+/* #sub-title {
+    font-size: 18px;
+    text-align: center;
+} */
+
+/* Multiples selectores */
+h1,
+.sub-title {
+    color: rgb(2, 55, 2);
+}
+
+/* Selectores de atributo */
+[target] {
+    color: rgb(41, 4, 105);
+    text-decoration: none;
+}
+
+[type="email"] {
+    border: 2px solid green;
+}
+
+/* Anidamiento*/
+header {
+    nav {
+        ul {
+            list-style: none;
+        }
+        li {
+            display: inline;
+            margin-right: 15px;
+        }
+        /* Descendiente directo (hijo) */
+        & > li {
+            background-color: lightgray;
+        }
+
+        a {
+            text-decoration: none;
+            color: darkblue;
+            padding: 5px;
+        }
+
+        /* Pseudo-clases */
+        a:hover {
+            background-color: lightblue;
+        }
+    }
+}
+
+/*Sibling (hermano) */
+
+header ~ section {
+    border: 2px solid black;
+}
+
+/* Adjacent sibling (hermano adyacente) */
+
+header + section {
+    padding: 10px;
+    background-color: #b68f8f;
+}
+
+/*Pseudo-elementos */
+
+p::first-letter {
+    font-size: 200%;
+    color: red;
+}
+
+li::marker {
+    color: green;
+    font-size: 150%;
+}
+
+p:nth-child(2) {
+    color: orange;
+}
+
+footer {
+    & > div {
+    }
+}
+
+p.out {
+    font-weight: bold;
+}
+
+p {
+    span.out {
+        background-color: yellow;
+    }
+}
+
+h2 ~ p {
+    color: purple;
+}
+
+footer {
+    p:nth-child(2n + 1) {
+        font-size: 14px;
+        color: gray;
+    }
+}
+
+footer .impar {
+    font-size: 14px;
+    color: gray;
+}
+
+#p1 {
+    color: #ff00ff;
+}
+
+p.impar.impar {
+    color: #000;
+}
+
+p[title] {
+    color: #c72727 !important;
+}
+
+/* Especificidad 
+
+a -> importants
+b -> estilos inline
+1 -> Ids
+2 -> atributos, clases, pseudo-clases)
+3 -> elemnntos Y pseudo-elementos
+
+*/
+
+
