@@ -343,7 +343,7 @@ html body p.p1 {}
   - `vw` -> viewport width 1vw = 1% del ancho del navegador
   - `vh` -> viewport height 1vh = 1% del alto del navegador
   - `vmin` -> viewport minimum 1vmin = 1% del alto o ancho (el mínimo)
-  - ´ -> viewport maximum 1vmax = 1% del alto o ancho (el máximo)
+  - `vmax` -> viewport maximum 1vmax = 1% del alto o ancho (el máximo)
 
 - Unidades para propiedades lógicas
 

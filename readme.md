@@ -251,11 +251,37 @@ Ejercicios de introducción a JS: bloque 2
 ### Día 2 (03/02/2026) - M1.01 07
 
 - Cascada: especificidad y herencia: Ejercicios
-- Variables (custom properties)
-- Funciones: calc(), min(), max()
 - Pseudo-clases y pseudo-elementos
   - e.g. ::mark() -> details (summary) / dialog
-- Propiedades lógicas
+- Variables (custom properties)
+- Funciones: var(), calc(), min(), max()
 
-- Ejemplo practica: añadir CSS a las recetas
-- CSS
+- Ejemplos prácticos
+  - añadir CSS a las recetas CSS
+  - web "realista": porfolio
+    - reset
+    - variables: paleta colores, escala, tipografías
+    - css base
+
+<!-- ### Día 3 (04/02/2026) - M1.01 08
+
+- Unidades
+  - Valores sin unidad
+  - Absolutas
+  - Relativas
+- Propiedades lógicas
+- Box Model
+- Layouts: Displays tradicionales / Float -->
+
+<!-- ### Día 4 (05/02/2026) - M1.01 09
+
+- CSS: Lenguaje y funcionalidades
+  - Colores
+    - Notaciones: funciones de notación
+    - Herramientas
+
+- Layouts
+  - Revisión del Box-Model
+    - object-fit
+  - Flex: Ejercicios
+  - Grid -->
