@@ -263,7 +263,9 @@ Ejercicios de introducción a JS: bloque 2
     - variables: paleta colores, escala, tipografías
     - css base
 
-<!-- ### Día 3 (04/02/2026) - M1.01 08
+
+
+### Día 3 (04/02/2026) - M1.01 08
 
 - Unidades
   - Valores sin unidad
@@ -271,17 +273,19 @@ Ejercicios de introducción a JS: bloque 2
   - Relativas
 - Propiedades lógicas
 - Box Model
-- Layouts: Displays tradicionales / Float -->
+  - object-fit
+- Layouts: Displays tradicionales / Float
 
 <!-- ### Día 4 (05/02/2026) - M1.01 09
+
+- Layouts
+  - Revisión del Box-Model
+  - Flex: Ejercicios
+  - Grid 
 
 - CSS: Lenguaje y funcionalidades
   - Colores
     - Notaciones: funciones de notación
     - Herramientas
 
-- Layouts
-  - Revisión del Box-Model
-    - object-fit
-  - Flex: Ejercicios
-  - Grid -->
+  - -->
