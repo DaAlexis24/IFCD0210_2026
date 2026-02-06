@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    section {
+     
+      background-color: bisque;
+      display: grid;
+      height: 100vh;
+      grid-template-columns: 20% 20% repeat(2, 15%);
+      grid-template-rows: 20% 30%;
+      /* justify-items: center;
+      align-items: center; */
+      place-items: center;
+      /* Alineación del grid*/
+      justify-content: space-between;
+      align-content: space-between;
+
+      div {
+         border: 1px solid;
+         padding: 1rem;
+      }
+      
+      div:nth-child(4) {
+        background-color: blueviolet;
+        grid-column-start: 1;
+        grid-column-end: 3;
+        grid-row: 2;
+      }
+
+      div:nth-child(2) {
+        color: blue;
+        justify-self: start;
+        align-self: flex-end;
+        display: flex; 
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <section>
+    <div>1</div>
+    <div><p>1</p><p>2</p></div>
+    <div>z</div>
+    <div>W</div>
+    <div>Ops 1</div>
+    <div>Ops esto es grande</div>
+  </section>
+
+</body>
+</html>
