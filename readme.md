@@ -22,7 +22,7 @@ Formador / Desarrollador Web FullStack
 2. [Eduardo Yeves Estévez](https://github.com/Yevestevez)
 3. [Beatriz López León](https://github.com/BeatrizLL83)
 4. [Daniel Alexis Soledad LLatas](https://github.com/DaAlexis24)
-5. [Johandri Garcia Peréz](https://github.com/jnebrijabasededatos-hub)
+5. ***
 
 6. ***
 7. ***
@@ -297,19 +297,22 @@ Ejercicios de introducción a JS: bloque 2
 
 [Descanso]
 
-<!--
 - Layouts
   - Grid: Ejercicios
--->
-<!-- 
+
 ## Semana 5 (Febrero)
 
 ### Día 1 (09/02/2026) - M1.01 11
 
+- Layouts
+  - Grid: web "realista": porfolio
+
 - Position
   - Relative
   - Absolute
+  - Fixed & Sticky
   - Anchor
+
 - RWD
   - Conceptos: Desktop first v. Mobile First
   - Media types
@@ -318,32 +321,28 @@ Ejercicios de introducción a JS: bloque 2
   - Ejemplo
     - Head & Nav
 
-### Día 2 (10/02/2026) - M1.01 12
-
-- Position
-  - Anchor
-  - Fixed & Sticky
-- RWD Ejemplo
-  - Responsive Nav
-  - Contenido
-  - Imágenes
-
-### Día 3 (11/02/2026) - M1.01 13
-
-- RWD Ejemplo (final)
-  - Subgrid
-  - repeat(auto-fit, mimmax(px, fr))
-- Vistazo a otros elementos de CSS
+- Vistazo a otros elementos de CSS (comentado)
   - Textos & Tipografías
     - Listas
     - Modos de escritura
   - Formas y gráficos
-    - Bordes, figuras y máscaras
-    - Sombras
-    - Backgrounds
-    - Gradientes
-    - Filtros
-    - Mezclas (Blends)
+  - Bordes, figuras y máscaras
+  - Sombras
+  - Backgrounds
+  - Gradientes
+  - Filtros -
+  - Mezclas (Blends)
+
+<!-- ### Día 2 (10/02/2026) - M1.01 12
+
+- RWD Ejemplo
+  - Responsive Nav
+  - Contenido
+  - Imágenes
+  - repeat(auto-fit, mimmax(px, fr))
+
 - CSS Dinámico
   - Transformaciones
-  - Transiciones y animaciones -->
+  - Transiciones y animaciones --> -->
+
+<!-- ### Día 3 (11/02/2026) - M1.02 ?? -->
