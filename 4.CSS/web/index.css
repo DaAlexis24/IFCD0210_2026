@@ -33,21 +33,20 @@ main {
     align-items: center;
 }
 
+menu.full-menu {
+    display: none;
+}
+
+menu.mobile-menu {
+    width: 2.5rem;
+}
+
 menu {
     color: var(--color-primary);
     list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
     a {
-        text-decoration: none;
         color: inherit;
-        border: 1px solid ghostwhite;
-        display: block;
-        padding: 0.5rem 1rem;
-    }
-    a:hover {
-        border: 1px solid rgb(144, 144, 152);
+        text-decoration: none;
     }
 }
 
@@ -56,7 +55,6 @@ menu {
 }
 
 .personal-info {
-
     .mas-info {
         display: none;
     }
@@ -81,9 +79,36 @@ menu {
     }
 }
 
+.articles-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+}
+
 @media (width > 430px) {
-    menu {
+    menu.full-menu {
+        display: flex;
         flex-direction: row;
+        gap: 0.5rem;
+        a {
+            border: 1px solid ghostwhite;
+            display: block;
+            padding: 0.5rem 1rem;
+            /* transition-property: all;
+            transition-duration: 1s;
+            transition-delay: 1s;
+            transition-timing-function: linear */
+            transition: all 0.3s ease-in-out;
+        }
+        a:hover {
+            /* font-size: var(--size-large);
+            padding: 0.2rem 0.5rem; */
+            border: 1px solid rgb(144, 144, 152);
+            transform: scale(1.2);
+        }
+    }
+
+    menu.mobile-menu {
+        display: none;
     }
 }
 
@@ -92,8 +117,8 @@ menu {
         display: grid;
         grid-template-columns: 1fr 1fr;
 
-        &>p {
-         padding-inline-end: 1rem;   
+        & > p {
+            padding-inline-end: 1rem;
         }
         hgroup {
             grid-column: span 2;
@@ -108,15 +133,21 @@ menu {
     }
 }
 
+/* 
+Al usar repeat(auto-fit, minmax(17rem, 1fr)) 
+no necesitamos media queries para el grid
+
 @media (width > 550px) {
     .articles-wrapper {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
     }
-}
+} */
 
+/* 
+Una media query puede cambiar los valores de una variable root
 @media (width > 700px) {
-     .articles-wrapper {
-         grid-template-columns: 1fr 1fr 1fr;
-     }
-}
+    :root{
+        --base: 1.2rem
+    }
+} */
