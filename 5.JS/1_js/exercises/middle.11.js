@@ -42,7 +42,7 @@ function gameRPS(userOption = "") {
     result.winner = allResults[i][user];
     return result;
 }
-
+ 
 // Tests
 
 console.log(gameRPS("patata"));
