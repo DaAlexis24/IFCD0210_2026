@@ -31,6 +31,8 @@ for (const item of userContacts) {
 
 // Propiedades de Arrays
 
+userContacts.length
+
 // Mutables -> modifican el array original
 userContacts.push("Ernestina");
 userContacts.pop();
