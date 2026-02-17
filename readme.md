@@ -417,10 +417,22 @@ Ejercicios de introducción a JS: bloque 2
 ### Día 1 (L 16/02/2026) - M1.02 06
 
 - Revisión: Modelo Mental
-  - Variables y datos
-  - Objetos
+  - Variables y datos:
+    - Primitivos -> inmutabilidad
+    - Objetos -> mutabilidad
   - Asignación vía variables
   - Mutabilidad v. inmutabilidad
+
+- Ejercicio: implementar los métodos de arrays
+  
+[Descanso]
+
+- Enrutamiento (routing)
+  - MPA: Rutas absolutas / relativas a origen / a documento
+  - SPA
+    - enlaces internos -> scroll
+    - history.pushState()
+  - root en el servidor web
 
 <!-- ### Día 1 (L 16/02/2026) - M1.02 06
 
@@ -447,8 +459,6 @@ Ejercicios de introducción a JS: bloque 2
 ### Día 3 (X 18/02/2026) - M1.02 08
 
 <!-- - Enrutamiento (routing)
-  - Rutas relativas a origen / a documento
-  - root en el servidor web
   - carga de JS basada en location.path
 - Componentes
   - template strings de HTML
