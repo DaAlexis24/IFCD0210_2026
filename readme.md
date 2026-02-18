@@ -434,36 +434,47 @@ Ejercicios de introducción a JS: bloque 2
     - history.pushState()
   - root en el servidor web
 
-<!-- ### Día 1 (L 16/02/2026) - M1.02 06
-
+<!-- 
 - Proyecto: Tres en raya
   - Cambios en el HTML
   - Atributos
   - Clases del HTML
   - Comprobar el ganador: uso de arrays
   - Formularios: input básico
-
 - Challenge: Quiz -->
 
-<!-- ### Día 2 (M 17/02/2026) - M1.02 07
+### Día 2 (M 17/02/2026) - M1.02 07
 
+- Enrutamiento
+  - SPA
+    - evento popstate
+    - acceso a la url al iniciar
+
+- Formularios
+  - elementos HTML / CSS
+  - Validaciones nativas de HTML
+  - Obtención de datos
+
+<!-- 
 - JSON: stringify / parse
 - Code review del challenge
-
 - Guía estilo
-- Formularios
-  - Obtención de datos
-  - Validaciones nativas de HTML
-  - Validaciones custom -->
+-->
 
 ### Día 3 (X 18/02/2026) - M1.02 08
 
-<!-- - Enrutamiento (routing)
-  - carga de JS basada en location.path
+- Formularios (continuación)
+  - Obtención de datos
+  - Validaciones custom
+
 - Componentes
   - template strings de HTML
   - element.insertAdjacentHTML
-  - componentes funcionales -->
+  - componentes funcionales
+
+<!-- - Enrutamiento (routing)
+  - carga de JS basada en location.path
+-->
 
 ### Día 4 (J 19/02/2026) - M1.02 09
 
