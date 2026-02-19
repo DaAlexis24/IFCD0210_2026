@@ -424,7 +424,7 @@ Ejercicios de introducción a JS: bloque 2
   - Mutabilidad v. inmutabilidad
 
 - Ejercicio: implementar los métodos de arrays
-  
+
 [Descanso]
 
 - Enrutamiento (routing)
@@ -434,7 +434,7 @@ Ejercicios de introducción a JS: bloque 2
     - history.pushState()
   - root en el servidor web
 
-<!-- 
+<!--
 - Proyecto: Tres en raya
   - Cambios en el HTML
   - Atributos
@@ -455,7 +455,7 @@ Ejercicios de introducción a JS: bloque 2
   - Validaciones nativas de HTML
   - Obtención de datos
 
-<!-- 
+<!--
 - JSON: stringify / parse
 - Code review del challenge
 - Guía estilo
@@ -478,17 +478,21 @@ Ejercicios de introducción a JS: bloque 2
 
 ### Día 4 (J 19/02/2026) - M1.02 09
 
-<!-- - CRUD basado en componentes: ToDo List
+- Review: componentes funcionales
+  - Importando datos: ProjectsPage
+
+- CRUD basado en componentes: ToDo List
   - Concepto de Entidad (Modelo)
   - Mock de datos: servicio para la importación desde JSON
   - Página tasks y su ruta
-  - Componente task-cards: array de datos
-  - Componente card: parámetros
-  - Delete: función como parámetro -->
+  - Componente todoPage: array de datos
+  - Componente card: atributos (props) y parámetros
 
 <!-- ### Día 5 (V 20/02/2026) - M1.02 10
 
-- Final del CRUD: add y update, funciones como parámetros
+- Final del CRUD:
+  - Delete: función como parámetro
+  - add y update, funciones como parámetros
 - Asincronía en JS
   - Conceptos
   - Callbacks. Timeouts
