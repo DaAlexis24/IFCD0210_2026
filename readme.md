@@ -643,9 +643,65 @@ Review Examen
 - Elementos de FP (Functional Programming) en JS
   - IIFE
   - Closures
+  - Factory
 - Módulos ES6 (review)
 - Patrones de ejecución. This
 
-<!-- - OOP: Creación de Objetos
+- OOP: Creación de Objetos
   - Constructor: "clases".
-  - Constructores y miembros estáticos -->
+  - Constructores y miembros estáticos
+
+### Día 4 (05/03/2026) - M2.01 05 - JS (OOP)
+
+- Review Funciones constructoras
+  - Herencia
+
+[Descanso]
+
+- Clases y herencia en ES6+
+  - static
+  - private (#)
+  - getters & setters
+  - extend - super
+- Relaciones entre clases: asociación v. herencia
+  - User & Pet
+- Ejercicios OOP: Facturas
+
+### Día 5 (06/03/2026) - M2.01 06 - TS
+
+<!-- - Code Review ejercicios OOP: Facturas
+
+- TS. Tipos
+
+  - Type checking
+  - Inferencia de tipos
+  - Tipos literales
+  - Aserción de tipos (as)
+  - Objetos. Propiedades
+  - Guardias de tipos
+  - Arrays y tuplas
+  - Uniones e intersecciones -->
+
+## Semana 9 (Marzo)
+
+### Día 1 (09/03/2026) - M2.01 07 - ?
+
+### Día 2 (10/03/2026) - M2.01 08 - ?
+
+### Día 3 (11/03/2026) - M2.01 09 - ?
+
+### Día 4 (12/03/2026) - M2.01 10 - ?
+
+### Día 1 (13/03/2026) - M2.01 11 - ?
+
+## Semana 10 (Marzo)
+
+### Día 1 (16/03/2026) - M2.01 12 - ?
+
+### Día 2 (17/03/2026) - M2.01 13 - ?
+
+### Día 3 (18/03/2026) - M2.01 14 - ?
+
+### Día 4 (19/03/2026) - M2.01 15 - ?
+
+### Día 1 (20/03/2026) - M2.01 16 - ?
