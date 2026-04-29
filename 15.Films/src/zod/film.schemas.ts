@@ -49,7 +49,7 @@ export const FilmModelSchema = z.object({
     duration: z.number(),
     poster: z.string().nullable(),
     rate: z.instanceof(Decimal),
-    genres: z.array(GenreModelSchema).optional(),
+    genres: z.array(GenreModelSchema.omit({ id: true })).optional(),
     reviews: z.array(ReviewModelSchema).optional(),
 });
 
@@ -74,7 +74,7 @@ export const FilmCreateDTOSchema = z.object({
         }),
 });
 
-export const FilmUpdateDTOSchema = FilmCreateDTOSchema.partial();
+export const FilmUpdateDTOSchema = FilmCreateDTOSchema.partial().strict();
 
 export const FilmParamsSchema = z.object({
     id: z.coerce.number().int().positive(),
@@ -122,7 +122,7 @@ export const ReviewParamsSchema = z.object({
 type GenreModelShape = GenreModel;
 
 type FilmModelShape = FilmModel & {
-    genres?: GenreModel[];
+    genres?: Omit<GenreModel, 'id'>[];
     reviews?: ReviewModel[];
 };
 

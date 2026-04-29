@@ -11,10 +11,11 @@ import type { AppPrismaClient } from './config/db-config.ts';
 import { UsersRepo } from './users/repos/users.repo.ts';
 import { UsersController } from './users/controllers/users.controller.ts';
 import { UsersRouter } from './users/router/users.routes.ts';
-
-
 import type { TokenPayload } from './types/login.ts';
 import { AuthInterceptor } from './middleware/auth.interceptor.ts';
+import { FilmsRepo } from './films/repos/films.repo.ts';
+import { FilmsController } from './films/controllers/films.controller.ts';
+import { FilmsRouter } from './films/router/films.router.ts';
 
 declare module 'express' {
     interface Request {
@@ -57,14 +58,17 @@ export const createApp = (prisma: AppPrismaClient) => {
         return res.send(HomeView.render());
     });
 
-
-    const appRepo = new UsersRepo(prisma);
     const authInterceptor = new AuthInterceptor();
-    const appController = new UsersController(appRepo);
-    const appRouter = new UsersRouter(appController, authInterceptor);
-    app.use('/api/users', appRouter.router);
 
-    // app.use('/api/animals', animalRouter(pool));
+    const usersRepo = new UsersRepo(prisma);
+    const usersController = new UsersController(usersRepo);
+    const usersRouter = new UsersRouter(usersController, authInterceptor);
+    app.use('/api/users', usersRouter.router);
+
+    const filmsRepo = new FilmsRepo(prisma);
+    const filmsController = new FilmsController(filmsRepo);
+    const filmsRouter = new FilmsRouter(filmsController, authInterceptor);
+    app.use('/api/films', filmsRouter.router);      
 
     app.use((_req, _res, next) => {
         log('Calling errorHandler for 404 error');

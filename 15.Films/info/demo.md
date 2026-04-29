@@ -7,7 +7,7 @@ description: Ejemplo de API REST para la gestión de una colección de película
 ---
 
 - [Proyecto inicial. Arquitectura](#proyecto-inicial-arquitectura)
-  - [Estructura de carpetas](#estructura-de-carpetas)
+  - [Estructura de carpetas inicial](#estructura-de-carpetas-inicial)
   - [Entorno de desarrollo: servidor web Node.js + TypeScript](#entorno-de-desarrollo-servidor-web-nodejs--typescript)
     - [Typescript](#typescript)
   - [Bibliotecas esenciales para Express + REST](#bibliotecas-esenciales-para-express--rest)
@@ -46,6 +46,7 @@ description: Ejemplo de API REST para la gestión de una colección de película
   - [JSON Web Tokens (JWT)](#json-web-tokens-jwt)
     - [Secret](#secret)
     - [Servicio auth y token JWT](#servicio-auth-y-token-jwt)
+  - [Estructura de carpetas: Users](#estructura-de-carpetas-users)
   - [Repositorio: UsersRepo](#repositorio-usersrepo)
     - [Register (UserRepo)](#register-userrepo)
     - [Login (UserRepo)](#login-userrepo)
@@ -75,12 +76,14 @@ description: Ejemplo de API REST para la gestión de una colección de película
   - [Autorización (Authorization)](#autorización-authorization)
     - [Método en el interceptor](#método-en-el-interceptor)
     - [Uso del interceptor en las rutas](#uso-del-interceptor-en-las-rutas)
+  - [Autorización a propietarios (owners)](#autorización-a-propietarios-owners)
+  - [Películas y géneros](#películas-y-géneros)
 
 ## Proyecto inicial. Arquitectura
 
 El objetivo es disponer de un servidor web con Node y Express para posteriormente exponer una API REST que permita gestionar una colección de películas, sus categorías y sus reviews, realizados por los usuarios. El proyecto se desarrollará con TypeScript y se organizará siguiendo una arquitectura modular orientada a objetos, con separación de responsabilidades entre configuración, rutas, controladores, servicios y acceso a datos.
 
-### Estructura de carpetas
+### Estructura de carpetas inicial
 
 La estructura de carpetas reflejo de esa arquitectura será la siguiente:
 
@@ -93,36 +96,37 @@ La estructura de carpetas reflejo de esa arquitectura será la siguiente:
     - `error-handler.ts` (middleware para manejar errores)
   - `app.ts` (configuración de Express)
   - `index.ts` (punto de entrada del servidor)
-  - users/
-    - entities/
-      - `user.entity.ts` (definición de la entidad User y sus DTOs)
-      - `db-seed.ts` (función para preparar la base de datos con la tabla de usuarios)
-    - repositories/
-      - `user.repository.ts` (clase con la lógica de acceso a datos para la entidad User)
-      - `auth.repository.ts` (clase con la lógica de acceso a datos para la autenticación de usuarios, e.g. login)
-    - controllers/
-      - `user.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con usuarios)
-      - `user.controller.test.ts` (tests unitarios para el controlador de usuarios)
-    - routers/
-      - `user.router.ts` (clase con la definición de las rutas relacionadas con usuarios, utilizando el servicio)
-      - `user.router.test.ts` (tests de integración para las rutas de usuarios)
-  - films/
-    - entities/
-      - `film.entity.ts` (definición de la entidad Film y sus DTOs)
-      - `db-seed.ts` (función para preparar la base de datos con la tabla de películas)
-    - repositories/
-      - `film.repository.ts` (clase con la lógica de acceso a datos para la entidad Film)
-    - controllers/
-      - `film.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con películas)
-    - routers/
-      - `film.router.ts` (clase con la definición de las rutas relacionadas con películas, utilizando el servicio)
-      - `film.router.test.ts` (tests de integración para las rutas de películas)
-      - `film.controller.test.ts` (tests unitarios para el controlador de películas)
-  - reviews/
-  - categories/
-  - ...
 
-[TODO]: Revisar al final
+Más adelante se añadirán las carpetas necesarias para acomodar nuevos elementos
+
+- generated/
+  - prisma/
+    - `client.ts` (cliente de Prisma generado a partir del schema)
+- prisma
+- src/
+  - config/
+    (configuración de la conexión y seed de la base de datos con Prisma)
+  - services/
+    (servicios de negocio, e.g. AuthService para la autenticación de usuarios)
+  - types/
+    (definición de tipos globales, e.g. tipos relacionados con el token JWT...)
+  - zod/
+    (schemas de validación con Zod para las entidades del dominio y los DTOs de la API)
+
+Para cada elemento del dominio, se seguirá una estructura modular con carpetas específicas para cada entidad, siguiendo el patrón de repositorios, controladores y routers:
+
+- films/
+  - repositories/
+    - `film.repository.ts` (clase con la lógica de acceso a datos para la entidad Film)
+  - controllers/
+    - `film.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con películas)
+  - routers/
+    - `film.router.ts` (clase con la definición de las rutas relacionadas con películas, utilizando el servicio)
+    - `film.router.test.ts` (tests de integración para las rutas de películas)
+    - `film.controller.test.ts` (tests unitarios para el controlador de películas)
+- reviews/ (mismo patrón que films)
+- categories/ (mismo patrón que films)
+- users/ (mismo patrón que films, pero con un servicio adicional para la autenticación de usuarios)
 
 ### Entorno de desarrollo: servidor web Node.js + TypeScript
 
@@ -1652,6 +1656,11 @@ El contrato del servicio incluye:
 [PATCH] /api/films/:id [Admin/Editor] - 200 OK / 404 Not Found
 [DELETE] /api/films/:id [Admin/Editor] - 204 No Content / 404 Not Found
 
+[GET] /api/genres - 200 OK
+[POST] /api/genres [Admin/Editor] - 201 Created
+[PUT] /api/genres/:id [Admin/Editor] - 200 OK / 404 Not Found
+[DELETE] /api/genres:id [Admin/Editor] - 200 OK / 404 Not Found
+
 [POST] /api/users/registro - 201 Created
 [POST] /api/users/login - 200 OK / 401 Unauthorized
 [GET] /api/users [User...] - 200 OK
@@ -1723,9 +1732,6 @@ La estructura de carpetas para una feature (entidad o conjunto de entidades), e.
 
 - src/
   - films/
-    - entities/
-      - `film.entity.ts` (definición de la entidad Film y sus DTOs)
-      - `db-seed.ts` (función para preparar la base de datos con la tabla de films)
     - repositories/
       - `film.repository.ts` (clase con la lógica de acceso a datos para la entidad Film)
     - controllers/
@@ -1773,7 +1779,7 @@ Proceso de hashing con bcrypt
 1. Definir un factor de costo: habitualmente 12 se considera un buen equilibrio entre seguridad y rendimiento.
 2. Generar un "salt" aleatorio, junto con los datos de configuración (algoritmo y factor de costo) para incluirlo en el hash resultante. El salt es un valor único que se combina con la contraseña para evitar ataques de rainbow tables.
 
-   ```
+   ```shell
    salt =  "$2b$12$N9qo8uLOickgx2ZMRZoMye" $[algoritmo]2<a/b/x/y>$[cost]$[22 character salt]
    ```
 
@@ -1985,9 +1991,7 @@ jwt.verify tiene tres posibles comportamientos:
 
 Los errores se capturan en el catch, se loguea el error y se devuelve null. Esto permite que el método `verifyToken` devuelva un payload válido si el token es correcto, o null si el token es inválido o ha expirado, sin lanzar errores que puedan interrumpir el flujo de la aplicación.
 
-### Repositorio: UsersRepo
-
-La clase `UsersRepository` se encargará de la lógica de acceso a datos para la entidad User. Tendrá métodos para crear, leer, actualizar y eliminar usuarios en la base de datos, así como métodos específicos para manejar la autenticación y autorización de usuarios. Utilizará el cliente de prisma que recibe como DI para ejecutar consultas SQL y manejará cualquier error que pueda ocurrir durante el acceso a los datos.
+### Estructura de carpetas: Users
 
 - estructura de carpetas
   - src/
@@ -1995,11 +1999,26 @@ La clase `UsersRepository` se encargará de la lógica de acceso a datos para la
       - `auth.service.ts` (clase con la lógica de autenticación, incluyendo hashing de contraseñas y generación/verificación de JWTs)
     - types/
       - `login.ts` (tipos para el payload del login y su resultado)
+    - middleware/
+      - `validations.ts` (definición de los schemas de zod para validación de los datos)
     - users/
       - repositories/
         - `users.repository.ts` (clase con la lógica de acceso a datos para la entidad User)
         - `users.repository.test.ts` (tests unitarios para el repositorio de usuarios)
-- DI: el repositorio de usuarios recibirá el cliente de prisma como dependencia inyectada, lo que permitirá una mayor flexibilidad y facilidad para realizar pruebas unitarias utilizando mocks del cliente de prisma.
+        - - `auth.repository.ts` (clase con la lógica de acceso a datos para la autenticación de usuarios, e.g. login)
+      - controllers/
+        - `user.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con usuarios)
+        - `user.controller.test.ts` (tests unitarios para el controlador de usuarios)
+      - routers/
+        - `user.router.ts` (clase con la definición de las rutas relacionadas con usuarios, utilizando el servicio)
+        - `user.router.test.ts` (tests de integración para las rutas de usuarios)
+
+DI: el repositorio de usuarios recibirá el cliente de prisma como dependencia inyectada, lo que permitirá una mayor flexibilidad y facilidad para realizar pruebas unitarias utilizando mocks del cliente de prisma.
+
+### Repositorio: UsersRepo
+
+La clase `UsersRepository` se encargará de la lógica de acceso a datos para la entidad User. Tendrá métodos para crear, leer, actualizar y eliminar usuarios en la base de datos, así como métodos específicos para manejar la autenticación y autorización de usuarios. Utilizará el cliente de prisma que recibe como DI para ejecutar consultas SQL y manejará cualquier error que pueda ocurrir durante el acceso a los datos.
+
 - definición de la clase `UsersRepository` con métodos para crear (register), leer, actualizar y eliminar usuarios en la base de datos, ademáss de gestionar el login.
 - escribimos y ejecutamos tests de integración para el repositorio de usuarios, utilizando una base de datos de test preparada con la función `seedUsersTestDB` para asegurar que la tabla de usuarios esté creada y limpia antes de cada test.
 
@@ -3011,3 +3030,67 @@ this.#router.delete(
 ```
 
 Igual que elnel interceptor anterior, podemos probar las rutas protegidas utilizando Postman para enviar solicitudes a las rutas protegidas y verificar que solo los usuarios con el rol adecuado pueden acceder a ellas. Para probar las rutas protegidas, se puede seguir el mismo proceso que para probar las rutas protegidas por autenticación, pero asegurándose de utilizar un usuario con el rol adecuado para acceder a la ruta protegida por autorización.
+
+### Autorización a propietarios (owners)
+
+En algunos casos, además de verificar el rol del usuario, es necesario verificar que el usuario autenticado es el propietario del recurso al que está intentando acceder o modificar. Esto se puede implementar en el middleware de autorización verificando si el ID del usuario autenticado coincide con el ID del propietario del recurso. Por ejemplo, si tenemos una ruta para actualizar un recurso que solo el propietario del recurso o un usuario con rol `ADMIN` puede acceder, el middleware de autorización podría verificar lo siguiente:
+
+```ts
+export class AuthInterceptor {
+  // ... método authenticate y authorize ...
+
+  isOwnerOrAdmin(req: Request, res: Response, next: NextFunction) {
+    log('Checking if user is owner or admin...');
+    if (!req.user) {
+      log('No user information found in request');
+      return next(unauthorizedError);
+    }
+
+    const resourceOwnerId = Number(req.params.id);
+    // Validado por Zod
+
+    console.log('User info:', req.user);
+    console.log('Resource owner ID:', resourceOwnerId);
+
+    if (req.user.role !== Role.ADMIN && req.user.id !== resourceOwnerId) {
+      log('User is not owner or admin', {
+        userId: req.user.id,
+        resourceOwnerId,
+      });
+      return next(forbiddenError);
+    }
+
+    return next();
+  }
+}
+```
+
+### Películas y géneros
+
+[GET] /api/films - 200 OK
+[GET] /api/films/:id - 200 OK / 404 Not Found
+[POST] /api/films [Admin/Editor] - 201 Created
+[PATCH] /api/films/:id [Admin/Editor] - 200 OK / 404 Not Found
+[DELETE] /api/films/:id [Admin/Editor] - 204 No Content / 404 Not Found
+
+[GET] /api/genres - 200 OK
+[POST] /api/genres [Admin/Editor] - 201 Created
+[PUT] /api/genres/:id [Admin/Editor] - 200 OK / 404 Not Found
+[DELETE] /api/genres:id [Admin/Editor] - 200 OK / 404 Not Found
+
+- estructura de carpetas
+  - src/
+    - films/
+      - repositories/
+        - `films.repository.ts` (definición del repositorio para manejar la persistencia de las películas y géneros utilizando Prisma)
+        - `films.repository.test.ts` (tests unitarios para el repositorio de películas)
+        - `genres.repository.ts` (definición del repositorio para manejar la persistencia de los géneros utilizando Prisma)
+        - `genres.repository.test.ts` (tests unitarios para el repositorio de géneros)
+      - controllers/
+        - `films.controller.ts` (clase para manejar la lógica de negocio relacionada con las películas y géneros)
+        - `film.controller.test.ts` (tests unitarios para el controlador de películas)
+        - `genres.controller.ts` (clase para manejar la lógica de negocio relacionada con los géneros)
+        - `genres.controller.test.ts` (tests unitarios para el controlador de géneros)
+      - routers/
+        - `films.router.ts` (clase para manejar las rutas relacionadas con las películas y géneros, conectando el controlador con las rutas HTTP correspondientes)
+        - `genres.router.ts` (clase para manejar las rutas relacionadas con los géneros, conectando el controlador con las rutas HTTP correspondientes)

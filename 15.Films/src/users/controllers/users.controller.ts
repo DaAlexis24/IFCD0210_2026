@@ -16,6 +16,18 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
 const log = debug(`${env.PROJECT_NAME}:controller:users`);
 log('Loading users controller...');
 
+const internalError = new HttpError(
+    500,
+    'Internal Server Error',
+    'An unexpected error occurred while processing the request',
+);
+
+const notFoundError = new HttpError(
+    404,
+    'Not Found',
+    'The requested user was not found',
+);
+
 export class UsersController {
     #repo: UsersRepo;
     constructor(repo: UsersRepo) {
@@ -31,15 +43,9 @@ export class UsersController {
             return res.status(201).json(user);
         } catch (error) {
             log('Error registering user: %O', error);
-            const finalError = new HttpError(
-                500,
-                'Internal Server Error',
-                'Failed to register user',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
+            internalError.cause = error;
+            internalError.message = 'Failed to register user';
+            return next(internalError);
         }
     }
     async login(req: Request, res: Response, next: NextFunction) {
@@ -62,15 +68,9 @@ export class UsersController {
                 );
                 return next(finalError);
             }
-            const finalError = new HttpError(
-                500,
-                'Internal Server Error',
-                'Failed to login user',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
+            internalError.cause = error;
+            internalError.message = 'Failed to login user';
+            return next(internalError);
         }
     }
 
@@ -81,15 +81,8 @@ export class UsersController {
             return res.json(users);
         } catch (error) {
             log('Error getting all users: %O', error);
-            const finalError = new HttpError(
-                500,
-                'Internal Server Error',
-                'Failed to get users',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
+            internalError.cause = error;
+            return next(internalError);
         }
     }
 
@@ -106,26 +99,12 @@ export class UsersController {
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
-                const finalError = new HttpError(
-                    404,
-                    'Not Found',
-                    'User not found',
-                    {
-                        cause: error,
-                    },
-                );
-                return next(finalError);
+                notFoundError.cause = error;
+                return next(notFoundError);
             }
 
-            const finalError = new HttpError(
-                500,
-                'Internal Server Error',
-                'Failed to get user',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
+            internalError.cause = error;
+            return next(internalError);
         }
     }
 
@@ -144,26 +123,13 @@ export class UsersController {
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
-                const finalError = new HttpError(
-                    404,
-                    'Not Found',
-                    'User not found',
-                    {
-                        cause: error,
-                    },
-                );
-                return next(finalError);
+                notFoundError.cause = error;
+                return next(notFoundError);
             }
 
-            const finalError = new HttpError(
-                500,
-                'Internal Server Error',
-                'Failed to update user',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
+            internalError.cause = error;
+            internalError.message = 'Failed to update user';
+            return next(internalError);
         }
     }
 
@@ -179,31 +145,18 @@ export class UsersController {
             );
             return res.json(user);
         } catch (error) {
-            log('Error updating user profile: %O', error);
+            log('Error updating user: %O', error);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
-                const finalError = new HttpError(
-                    404,
-                    'Not Found',
-                    'User not found',
-                    {
-                        cause: error,
-                    },
-                );
-                return next(finalError);
+                notFoundError.cause = error;
+                return next(notFoundError);
             }
 
-            const finalError = new HttpError(
-                500,
-                'Internal Server Error',
-                'Failed to update user profile',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
+            internalError.cause = error;
+            internalError.message = 'Failed to update profile user';
+            return next(internalError);
         }
     }
 
@@ -220,26 +173,13 @@ export class UsersController {
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
-                const finalError = new HttpError(
-                    404,
-                    'Not Found',
-                    'User not found',
-                    {
-                        cause: error,
-                    },
-                );
-                return next(finalError);
+                notFoundError.cause = error;
+                return next(notFoundError);
             }
 
-            const finalError = new HttpError(
-                500,
-                'Internal Server Error',
-                'Failed to delete user',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
+            internalError.cause = error;
+            internalError.message = 'Failed to delete user';
+            return next(internalError);
         }
     }
 }
