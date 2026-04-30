@@ -44,7 +44,8 @@ export class FilmsRouter {
             '/:id',
             validateId(),
             this.#authInterceptor.authenticate.bind(this.#authInterceptor),
-            this.#authInterceptor.isOwnerOrAdmin.bind(this.#authInterceptor),
+            //this.#authInterceptor.isOwnerOrAdmin.bind(this.#authInterceptor),
+            this.#authInterceptor.authorize(['EDITOR']).bind(this.#authInterceptor),
             this.#controller.deleteFilm.bind(this.#controller),
         );
     

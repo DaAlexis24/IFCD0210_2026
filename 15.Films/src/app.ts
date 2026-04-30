@@ -16,6 +16,12 @@ import { AuthInterceptor } from './middleware/auth.interceptor.ts';
 import { FilmsRepo } from './films/repos/films.repo.ts';
 import { FilmsController } from './films/controllers/films.controller.ts';
 import { FilmsRouter } from './films/router/films.router.ts';
+import { GenresRepo } from './genres/repo/genres.repo.ts';
+import { GenresController } from './genres/controller/genres.controller.ts';
+import { GenresRouter } from './genres/router/genres.router.ts';
+import { ReviewsController } from './reviews/controller/reviews.controller.ts';
+import { ReviewsRepo } from './reviews/repo/reviews.repo.ts';
+import { ReviewsRouter } from './reviews/router/reviews.router.ts';
 
 declare module 'express' {
     interface Request {
@@ -70,6 +76,16 @@ export const createApp = (prisma: AppPrismaClient) => {
     const filmsRouter = new FilmsRouter(filmsController, authInterceptor);
     app.use('/api/films', filmsRouter.router);      
 
+    const genresRepo = new GenresRepo(prisma);
+    const genresController = new GenresController(genresRepo);
+    const genresRouter = new GenresRouter(genresController, authInterceptor);
+    app.use('/api/genres', genresRouter.router);
+
+    const reviewsRepo = new ReviewsRepo(prisma);
+    const reviewsController = new ReviewsController(reviewsRepo);
+    const reviewsRouter = new ReviewsRouter(reviewsController, authInterceptor);
+    app.use('/api/reviews', reviewsRouter.router);
+
     app.use((_req, _res, next) => {
         log('Calling errorHandler for 404 error');
         const error = new HttpError(404, 'Not Found', 'Resource not found');
@@ -80,3 +96,4 @@ export const createApp = (prisma: AppPrismaClient) => {
 
     return app;
 };
+

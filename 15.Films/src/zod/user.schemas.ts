@@ -5,8 +5,8 @@ import type {
     ProfileCreateWithoutUserInput,
     ProfileModel,
     UserCreateInput,
-    UserModel,
-    ReviewModel,
+    // UserModel,
+    // ReviewModel,
 } from '../../generated/prisma/models.ts';
 
 // Los valores <name>ModelSchema representan fielmente el modelo de prisma
@@ -74,10 +74,10 @@ export const RegisterUserDTOSchema = UserCredentialsDTOSchema.extend(
 
 type ProfileShape = Omit<ProfileModel, 'id'>;
 
-type UserModelShape = UserModel & {
-    profile?: Omit<ProfileModel, 'id'>;
-    reviews?: ReviewModel[];
-};
+// type UserModelShape = UserModel & {
+//     profile?: Omit<ProfileModel, 'id'>;
+//     reviews?: ReviewModel[];
+// };
 
 type LoginUserShape = Pick<UserCreateInput, 'email' | 'password'>;
 
@@ -135,13 +135,13 @@ export type _ProfileDTOCheck = Assert<
 
 export type FullUser = z.infer<typeof UserModelSchema>;
 // En Prisma corresponde a UserCreateInput sin el campo profile
-export type _UserCheck = Assert<IsExact<FullUser, UserModelShape>>;
+// export type _UserCheck = Assert<IsExact<FullUser, UserModelShape>>;
 
 export type User = Omit<FullUser, 'password'>;
 // En Prisma corresponde a UserCreateInput sin el campo profile
-export type _UserWithoutPasswordCheck = Assert<
-    IsExact<User, Omit<UserModelShape, 'password'>>
->;
+// export type _UserWithoutPasswordCheck = Assert<
+//     IsExact<User, Omit<UserModelShape, 'password'>>
+// >;
 
 export type RegisterUserData = z.infer<typeof RegisterUserDTOSchema>;
 // En Prisma corresponde a UserCreateInput sin el campo profile

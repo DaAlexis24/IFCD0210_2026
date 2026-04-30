@@ -2,26 +2,18 @@ import { env } from '../../config/env.ts';
 import debug from 'debug';
 import type { FilmsRepo } from '../repos/films.repo.ts';
 import type { Request, Response, NextFunction } from 'express';
-import { HttpError } from '../../errors/http-error.ts';
+
 import type { Film, FilmUpdateDTO } from '../../zod/film.schemas.ts';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import { INTERNAL_ERROR, NOT_FOUND_ERROR } from '../../errors/basic-errors.ts';
 
 const log = debug(`${env.PROJECT_NAME}:controller:films`);
 log('Loading films controller...');
 
-const internalError = new HttpError(
-    500,
-    'Internal Server Error',
-    'An unexpected error occurred while processing the request',
-);
+const internalError = {...INTERNAL_ERROR};
+const notFoundError = {...NOT_FOUND_ERROR};
 
-const notFoundError = new HttpError(
-    404,
-    'Not Found',
-    'The requested film was not found',
-);
-
-export class FilmsController {
+export class FilmsController {  
     #repo: FilmsRepo;
     constructor(repo: FilmsRepo) {
         this.#repo = repo;

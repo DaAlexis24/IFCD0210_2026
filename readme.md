@@ -1412,6 +1412,7 @@ Ya consumidos
 ### Día 3 (X 29/04/2026) - M2.03 07 - Proyecto Films (Back)
 
 Ejercicio: Repo de Films
+
 - Films: Endpoints ya creados
   - GET /films
   - GET /films/:id
@@ -1429,7 +1430,23 @@ Ejercicio: Repo de Films
 
 ### Día 4 (J 30/04/2026) - M2.03 08 - Proyecto Films (Back)
 
+- Géneros
+  - Review of the model
+  - Repositories, Controllers, Routes
+  - Endpoints
+    - GET /genres
+    - GET /genres/:id (Generes con sus películas)
+    - POST /genres
+    - PUT /genres/:id
+    - DELETE /genres/:id
+
+[descanso]
+
+- Prueba con postman 
+
 <!-- 
+
+
  Nuevo modelo: Reviews
   - Repositorio, Controller, DTOs, Rutas
   - Endpoints
@@ -1440,12 +1457,6 @@ Ejercicio: Repo de Films
     - DELETE /reviews/:id
 Rutas review:/id -> Authorization: owner
 
-- Géneros
-  - Review of the model
-  - Repositories, Controllers, Routes
-  - Endpoints
-    - GET /genres
-    - POST /genres 
 -->
 
 <!-- Extras
