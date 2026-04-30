@@ -53,6 +53,15 @@ export const FilmModelSchema = z.object({
     reviews: z.array(ReviewModelSchema).optional(),
 });
 
+export const GenreDetailModelSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    films: z.array(FilmModelSchema.omit({ 
+        genres: true, 
+        reviews: true
+    })),
+});
+
 export const GenreCreateDTOSchema = z.object({
     name: z.string().trim().min(1).max(60),
 });
@@ -126,6 +135,10 @@ type FilmModelShape = FilmModel & {
     reviews?: ReviewModel[];
 };
 
+type GenreDetailModelShape = GenreModelShape & {
+    films: Omit<FilmModelShape, 'genres' | 'reviews'>[];
+};
+
 type ReviewModelShape = ReviewModel;
 
 type GenreCreateShape = Pick<GenreCreateInput, 'name'>;
@@ -193,6 +206,11 @@ export type _GenreCheck = Assert<IsExact<Genre, GenreModelShape>>;
 
 export type Film = z.infer<typeof FilmModelSchema>;
 export type _FilmCheck = Assert<IsExact<Film, FilmModelShape>>;
+
+export type GenreDetail = z.infer<typeof GenreDetailModelSchema>;
+export type _GenreDetailCheck = Assert<IsExact<GenreDetail, GenreDetailModelShape>>;
+
+
 
 export type Review = z.infer<typeof ReviewModelSchema>;
 export type _ReviewCheck = Assert<IsExact<Review, ReviewModelShape>>;

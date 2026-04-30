@@ -1373,7 +1373,16 @@ Ya consumidos
 
 ### Día 2 (M 28/04/2026) - M2.03 06  - Proyecto Films (Back)
 
-- Revisión de la feature usuarios
+- Revisión de la feature usuarios (echo fuera de clase)
+
+- Rutas users -> revisar auth y añadir las que faltan
+  - GET /users
+  - GET /users/:id
+  - PATCH /users/role/:id
+  - PATCH /users/:id
+  - DELETE /users/:id
+
+  
 - Completando el control de Errors
   - Errores de Prisma
   - eliminando SqlError
@@ -1393,21 +1402,34 @@ Ya consumidos
 - Autorización (Authorization): roles (admin, editor)
   - Auth interceptor with roles
   - Owner interceptor
+  - Route users protected for owners:
+    - PATCH /users/:id
+    - DELETE /users/:id
   - Uso de Postman como APIRest Client
 
 - Front básico
 
 ### Día 3 (X 29/04/2026) - M2.03 07 - Proyecto Films (Back)
 
-<!-- 
+Ejercicio: Repo de Films
 - Films: Endpoints ya creados
   - GET /films
   - GET /films/:id
   - POST /films
   - PATCH /films/:id
   - DELETE /films/:id
-- Rutas films -> comprobar y revisar Auth
 
+[descanso]
+
+- Revisión del ejercicios
+- Controllers de films. Gestión de errores
+- Rutas de films -> validación, interceptores de auth
+- montaje en app.  
+- revisar en postman; especialmente Auth
+
+### Día 4 (J 30/04/2026) - M2.03 08 - Proyecto Films (Back)
+
+<!-- 
  Nuevo modelo: Reviews
   - Repositorio, Controller, DTOs, Rutas
   - Endpoints
@@ -1417,35 +1439,23 @@ Ya consumidos
     - PATCH /reviews/:id 
     - DELETE /reviews/:id
 Rutas review:/id -> Authorization: owner
--->
 
-### Día 4 (J 30/04/2026) - M2.03 08 - Proyecto Films (Back)
-
-<!-- Review de la API REST Films - Users - Reviews
-
-Rutas users -> revisar auth y añadir las que faltan
-- GET /users
-- GET /users/:id
-- PATCH /users/role/:id
-
-- Route users protected for owners:
-  - PATCH /users/:id
-  - DELETE /users/:id
-
-- Categories
+- Géneros
   - Review of the model
   - Repositories, Controllers, Routes
   - Endpoints
-    - GET /categories
-    - POST /categories 
+    - GET /genres
+    - POST /genres 
 -->
 
 <!-- Extras
-- Films permite añadir categorías al crearlo
-- Films:permite añadir/eliminar categorías posteriormente
-  - POST /films/:id/categories/:id
-  - DELETE /films/:id/categories/:id
-  - PATCH /films/:id/categories/:id  
+
+- Films permite añadir géneros al crearlo
+- Films:permite añadir/eliminar géneros posteriormente
+  - POST /films/:id/genres/:id
+  - DELETE /films/:id/genres/:id
+  - PATCH /films/:id/genres/:id  
+
 -->
 
 ### Día 5 (V 01/05/2026) - Fiesta

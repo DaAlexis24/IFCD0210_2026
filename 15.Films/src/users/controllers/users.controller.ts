@@ -28,6 +28,12 @@ const notFoundError = new HttpError(
     'The requested user was not found',
 );
 
+const unauthorizedError = new HttpError(
+    401,
+    'Unauthorized',
+    'Invalid email or password',
+);
+
 export class UsersController {
     #repo: UsersRepo;
     constructor(repo: UsersRepo) {
@@ -42,7 +48,7 @@ export class UsersController {
             const user: User = await this.#repo.register(userData);
             return res.status(201).json(user);
         } catch (error) {
-            log('Error registering user: %O', error);
+            log('Error registering user: %s', internalError.message);
             internalError.cause = error;
             internalError.message = 'Failed to register user';
             return next(internalError);
@@ -56,18 +62,12 @@ export class UsersController {
             const loginResult: LoginResult = await this.#repo.login(loginData);
             return res.json(loginResult);
         } catch (error) {
-            log('Error logging in user: %O', error);
             if (error instanceof PrismaClientKnownRequestError) {
-                const finalError = new HttpError(
-                    401,
-                    'Unauthorized',
-                    'Invalid email or password',
-                    {
-                        cause: error,
-                    },
-                );
-                return next(finalError);
+                log('Error logging in user: %s', unauthorizedError.message);
+                unauthorizedError.cause = error;
+                return next(unauthorizedError);
             }
+            log('Error logging in user: %s', internalError.message);
             internalError.cause = error;
             internalError.message = 'Failed to login user';
             return next(internalError);
@@ -80,8 +80,8 @@ export class UsersController {
             const users: User[] = await this.#repo.getAllUsers();
             return res.json(users);
         } catch (error) {
-            log('Error getting all users: %O', error);
             internalError.cause = error;
+            log('Error getting all users: %s', internalError.message);
             return next(internalError);
         }
     }
@@ -90,11 +90,11 @@ export class UsersController {
         try {
             const id = Number(req.params.id);
             // Validated previously with zod middleware
-            log('Get User: %O', id);
+            log('Get User %s', id);
             const user: User = await this.#repo.getUserById(id);
             return res.json(user);
         } catch (error) {
-            log('Error getting user by id: %O', error);
+            log('Error getting user by id: %s', internalError.message);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
@@ -112,21 +112,22 @@ export class UsersController {
         try {
             const id = Number(req.params.id);
             // Validated previously with zod middleware
-            log('Updating user with ID: %O', id);
+            log('Updating user with ID: %s', id);
             const userData: UserUpdateDTO = req.body;
             // Validated previously with zod middleware
             const user: User = await this.#repo.updateUser(id, userData);
             return res.json(user);
         } catch (error) {
-            log('Error updating user: %O', error);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
+                log('Error updating user: %s', notFoundError.message);
                 notFoundError.cause = error;
                 return next(notFoundError);
             }
 
+            log('Error updating user: %s', internalError.message);
             internalError.cause = error;
             internalError.message = 'Failed to update user';
             return next(internalError);
@@ -135,8 +136,8 @@ export class UsersController {
 
     async updateProfileUser(req: Request, res: Response, next: NextFunction) {
         try {
-            log('Updating user profile...');
             const id = Number(req.params.id);
+            log('Updating user profile %s', id);
             // Validate previously with zod middleware
             const profileData: Partial<ProfileDTO> = req.body; // Validate this data in a real application
             const user: User = await this.#repo.updateUserProfile(
@@ -145,15 +146,16 @@ export class UsersController {
             );
             return res.json(user);
         } catch (error) {
-            log('Error updating user: %O', error);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
+                log('Error updating user profile: %s', notFoundError.message);
                 notFoundError.cause = error;
                 return next(notFoundError);
             }
 
+            log('Error updating user profile: %s', internalError.message);
             internalError.cause = error;
             internalError.message = 'Failed to update profile user';
             return next(internalError);
@@ -168,15 +170,16 @@ export class UsersController {
             await this.#repo.deleteUser(id);
             return res.status(204).end();
         } catch (error) {
-            log('Error deleting user: %O', error);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
+                log('Error deleting user: %s', notFoundError.message);
                 notFoundError.cause = error;
                 return next(notFoundError);
             }
 
+            log('Error deleting user: %s', internalError.message);
             internalError.cause = error;
             internalError.message = 'Failed to delete user';
             return next(internalError);

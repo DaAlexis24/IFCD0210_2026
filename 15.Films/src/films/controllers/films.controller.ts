@@ -33,8 +33,9 @@ export class FilmsController {
             const films: Film[] = await this.#repo.getAllFilms();
             return res.json(films);
         } catch (error) {
-            log('Error getting all films: %O', error);
             internalError.cause = error;
+            internalError.message = 'Failed to get all films';
+            log('Error getting all films: %s', internalError.message);
             return next(internalError);
         }
     }
@@ -43,20 +44,22 @@ export class FilmsController {
         try {
             const id = Number(req.params.id);
             // Validated previously with zod middleware
-            log('Get Film: %O', id);
+            log('Get Film: %s', id);
             const film: Film = await this.#repo.getFilmByID(id);
             return res.json(film);
         } catch (error) {
-            log('Error getting film by id: %O', error);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
+                log('Error getting film by id: %s', notFoundError.message);
                 notFoundError.cause = error;
                 return next(notFoundError);
             }
 
             internalError.cause = error;
+            internalError.message = 'Failed to get film by id';
+            log('Error getting film by id: %s', internalError.message);
             return next(internalError);
         }
     }
@@ -68,7 +71,7 @@ export class FilmsController {
             const newFilm: Film = await this.#repo.createFilm(filmData);
             return res.status(201).json(newFilm);
         } catch (error) {
-            log('Error creating film: %O', error);
+            log('Error creating film: %s', internalError.message);
             internalError.cause = error;
             return next(internalError);
         }
@@ -82,16 +85,17 @@ export class FilmsController {
             const film: Film = await this.#repo.updateFilm(id, filmData);
             return res.json(film);
         } catch (error) {
-            log('Error updating film: %O', error);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
+                log('Error updating film: %s', notFoundError.message);
                 notFoundError.cause = error;
                 return next(notFoundError);
             }
             internalError.cause = error;
             internalError.message = 'Failed to update film';
+            log('Error updating film: %s', internalError.message);
             return next(internalError);
         }
     }
@@ -103,16 +107,17 @@ export class FilmsController {
             await this.#repo.deleteFilm(id);
             return res.status(204).send();
         } catch (error) {
-            log('Error deleting film: %O', error);
             if (
                 error instanceof PrismaClientKnownRequestError &&
                 error.code === 'P2025'
             ) {
+                log('Error deleting film: %s', notFoundError.message);
                 notFoundError.cause = error;
                 return next(notFoundError);
             }
             internalError.cause = error;
             internalError.message = 'Failed to delete film';
+            log('Error deleting film: %s', internalError.message);
             return next(internalError);
         }
     }

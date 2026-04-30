@@ -55,6 +55,7 @@ description: Ejemplo de API REST para la gestión de una colección de película
     - [Delete (UserRepo)](#delete-userrepo)
     - [Errores Not Found (UserRepo)](#errores-not-found-userrepo)
   - [Controller: UsersController](#controller-userscontroller)
+    - [Gestión de errores en UserController](#gestión-de-errores-en-usercontroller)
     - [Register (UserController)](#register-usercontroller)
     - [Login (UserController)](#login-usercontroller)
     - [Read (UserController)](#read-usercontroller)
@@ -77,7 +78,21 @@ description: Ejemplo de API REST para la gestión de una colección de película
     - [Método en el interceptor](#método-en-el-interceptor)
     - [Uso del interceptor en las rutas](#uso-del-interceptor-en-las-rutas)
   - [Autorización a propietarios (owners)](#autorización-a-propietarios-owners)
-  - [Películas y géneros](#películas-y-géneros)
+- [Películas y géneros](#películas-y-géneros)
+  - [Repositorio: FilmsRepo](#repositorio-filmsrepo)
+    - [Read (FilmsRepo)](#read-filmsrepo)
+    - [Create (FilmsRepo)](#create-filmsrepo)
+    - [Update (FilmsRepo)](#update-filmsrepo)
+    - [Delete (FilmsRepo)](#delete-filmsrepo)
+  - [Controlador: FilmsController](#controlador-filmscontroller)
+    - [Read (FilmsController)](#read-filmscontroller)
+    - [Create (FilmsController)](#create-filmscontroller)
+    - [Update (FilmsController)](#update-filmscontroller)
+    - [Delete (FilmsController)](#delete-filmscontroller)
+  - [Router: FilmsRouter](#router-filmsrouter)
+  - [Montaje en la aplicación: Films](#montaje-en-la-aplicación-films)
+- [Generos](#generos)
+- [Reviews](#reviews)
 
 ## Proyecto inicial. Arquitectura
 
@@ -1732,12 +1747,12 @@ La estructura de carpetas para una feature (entidad o conjunto de entidades), e.
 
 - src/
   - films/
-    - repositories/
-      - `film.repository.ts` (clase con la lógica de acceso a datos para la entidad Film)
+    - repos/
+      - `films.repo.ts` (clase con la lógica de acceso a datos para la entidad Film)
     - controllers/
-      - `film.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con films)
-    - routers/
-      - `film.router.ts` (clase con la definición de las rutas relacionadas con films, utilizando el servicio)
+      - `films.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con films)
+    - router/
+      - `films.router.ts` (clase con la definición de las rutas relacionadas con films, utilizando el servicio)
 
 La secuencia de implementación será la siguiente:
 
@@ -2238,6 +2253,32 @@ El controlador `UsersController` se encargará de manejar las solicitudes relaci
 - manejo de errores utilizando la clase `HttpError` para representar errores personalizados relacionados con las solicitudes HTTP
 - escribimos y ejecutamos tests unitarios para el controlador de users, utilizando mocks para el repositorio y para los objetos de request, response y next de Express, para asegurar que el controlador maneja correctamente las solicitudes y los errores relacionados con las operaciones de users. Solo se incluyen como ejemplo tests para el método de lectura de users.
 
+#### Gestión de errores en UserController
+
+Como práctica recomendada, el controlador no debe lanzar errores directamente, sino que debe capturar cualquier error que pueda ocurrir durante el procesamiento de las solicitudes y delegar en el middleware de errores utilizando `next()`, pasando un error de la clase `HttpError` con un mensaje personalizado y un código de estado adecuado. Esto permite mantener una gestión de errores consistente en toda la aplicación y evita que se expongan detalles internos del sistema a los clientes.
+
+Para facilitarlo se crean varios errores personalizados utilizando la clase `HttpError`, que extiende la clase base de Error y añade propiedades adicionales como el código de estado HTTP, un mensaje de error personalizado y un campo opcional para incluir información adicional sobre el error (como el error original que causó el problema).
+
+```ts
+const internalError = new HttpError(
+    500,
+    'Internal Server Error',
+    'An unexpected error occurred while processing the request',
+);
+
+const notFoundError = new HttpError(
+    404,
+    'Not Found',
+    'The requested user was not found',
+);
+
+const unauthorizedError = new HttpError(
+    401,
+    'Unauthorized',
+    'Invalid email or password',
+);
+```
+
 #### Register (UserController)
 
 El método `register` del `UsersController` se encargará de manejar las solicitudes de registro de nuevos usuarios.
@@ -2252,24 +2293,22 @@ Como resultado
 - Si ocurre algún error durante el proceso, como datos inválidos o problemas con la base de datos, capturará el error y llamará al middleware de errores pasándole un error de la clase `HttpError` para que genere y envía una respuesta HTTP adecuada utilizando lael error recibido.
 
 ```ts
-async register(req: Request, res: Response, next: NextFunction) {
+export class UsersController {
+  // ...
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
-      log('Registering new user...');
-      const userData: RegisterUserData = req.body; // Validate this data in a real application
-      const user: User = await this.#repo.register(userData);
-      return res.status(201).json(user);
+        log('Registering new user...');
+        const userData: RegisterUserData = req.body;
+        // Validated previously with zod middleware
+        const user: User = await this.#repo.register(userData);
+        return res.status(201).json(user);
     } catch (error) {
-      log('Error registering user: %O', error);
-      const finalError = new HttpError(
-          500,
-          'Internal Server Error',
-          'Failed to register user',
-          {
-              cause: error,
-          },
-      );
-      return next(finalError);
+        log('Error registering user: %s', internalError.message);
+        internalError.cause = error;
+        internalError.message = 'Failed to register user';
+        return next(internalError);
     }
+  }
 }
 ```
 
@@ -2292,32 +2331,21 @@ export class UsersController {
   // ...
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      log('Logging in user...');
-      const loginData = req.body; // Validar estos datos en una app real
-      const loginResult: LoginResult = await this.#repo.login(loginData);
-      return res.json(loginResult);
+        log('Logging in user...');
+        const loginData: LoginUserData = req.body;
+        // Validated previously with zod middleware
+        const loginResult: LoginResult = await this.#repo.login(loginData);
+        return res.json(loginResult);
     } catch (error) {
-      log('Error logging in user: %O', error);
-      if (error instanceof PrismaClientKnownRequestError) {
-        const finalError = new HttpError(
-          401,
-          'Unauthorized',
-          'Invalid email or password',
-          {
-            cause: error,
-          },
-        );
-        return next(finalError);
-      }
-      const finalError = new HttpError(
-        500,
-        'Internal Server Error',
-        'Failed to login user',
-        {
-          cause: error,
-        },
-      );
-      return next(finalError);
+        if (error instanceof PrismaClientKnownRequestError) {
+            log('Error logging in user: %s', unauthorizedError.message);
+            unauthorizedError.cause = error;
+            return next(unauthorizedError);
+        }
+        log('Error logging in user: %s', internalError.message);
+        internalError.cause = error;
+        internalError.message = 'Failed to login user';
+        return next(internalError);
     }
   }
 }
@@ -2338,58 +2366,41 @@ Como resultado:
 - Si ocurre cualquier otro problema, se delega en el middleware de errores con un `HttpError` de tipo `500`.
 
 ```ts
-async getAllUsers(req: Request, res: Response, next: NextFunction) {
+export class UsersController {
+  // ...
+  async getAllUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      log('Getting all users...');
-      const users: User[] = await this.#repo.getAllUsers();
-      return res.json(users);
+        log('Getting all users...');
+        const users: User[] = await this.#repo.getAllUsers();
+        return res.json(users);
     } catch (error) {
-      log('Error getting all users: %O', error);
-      const finalError = new HttpError(
-          500,
-          'Internal Server Error',
-          'Failed to get users',
-          {
-              cause: error,
-          },
-      );
-      return next(finalError);
+        internalError.cause = error;
+        log('Error getting all users: %s', internalError.message);
+        return next(internalError);
     }
-}
+  }
 
-async getUserById(req: Request, res: Response, next: NextFunction) {
+  async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = Number(req.params.id); // Validate this data in a real application
-      log('Get User: %O', id);
-      const user: User = await this.#repo.getUserById(id);
-      return res.json(user);
+        const id = Number(req.params.id);
+        // Validated previously with zod middleware
+        log('Get User %s', id);
+        const user: User = await this.#repo.getUserById(id);
+        return res.json(user);
     } catch (error) {
-      log('Error getting user by id: %O', error);
-      if (
-          error instanceof PrismaClientKnownRequestError &&
-          error.code === 'P2025'
-      ) {
-          const finalError = new HttpError(
-              404,
-              'Not Found',
-              'User not found',
-              {
-                  cause: error,
-              },
-          );
-          return next(finalError);
-      }
+        log('Error getting user by id: %s', internalError.message);
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            notFoundError.cause = error;
+            return next(notFoundError);
+        }
 
-      const finalError = new HttpError(
-          500,
-          'Internal Server Error',
-          'Failed to get user',
-          {
-              cause: error,
-          },
-      );
-      return next(finalError);
+        internalError.cause = error;
+        return next(internalError);
     }
+  }
 }
 ```
 
@@ -2408,79 +2419,61 @@ Como resultado:
 - Si ocurre cualquier otro problema, el controller genera un `HttpError` de tipo `500`.
 
 ```ts
-async updateUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const id = Number(req.params.id); // Validate this data in a real application
-      log('Updating user with ID: %O', id);
-      const userData: UserUpdateDTO = req.body; // Validate this data in a real application
-      const user: User = await this.#repo.updateUser(id, userData);
-      return res.json(user);
-    } catch (error) {
-      log('Error updating user: %O', error);
-      if (
-          error instanceof PrismaClientKnownRequestError &&
-          error.code === 'P2025'
-      ) {
-          const finalError = new HttpError(
-              404,
-              'Not Found',
-              'User not found',
-              {
-                  cause: error,
-              },
-          );
-          return next(finalError);
+export class UsersController {
+  // ...
+  async updateUser(req: Request, res: Response, next: NextFunction) {
+      try {
+          const id = Number(req.params.id);
+          // Validated previously with zod middleware
+          log('Updating user with ID: %s', id);
+          const userData: UserUpdateDTO = req.body;
+          // Validated previously with zod middleware
+          const user: User = await this.#repo.updateUser(id, userData);
+          return res.json(user);
+      } catch (error) {
+          if (
+              error instanceof PrismaClientKnownRequestError &&
+              error.code === 'P2025'
+          ) {
+              log('Error updating user: %s', notFoundError.message);
+              notFoundError.cause = error;
+              return next(notFoundError);
+          }
+
+          log('Error updating user: %s', internalError.message);
+          internalError.cause = error;
+          internalError.message = 'Failed to update user';
+          return next(internalError);
       }
+  }
 
-      const finalError = new HttpError(
-          500,
-          'Internal Server Error',
-          'Failed to update user',
-          {
-              cause: error,
-          },
-      );
-      return next(finalError);
-    }
-}
-
-async updateProfileUser(req: Request, res: Response, next: NextFunction) {
+  async updateProfileUser(req: Request, res: Response, next: NextFunction) {
     try {
-      log('Updating user profile...');
-      const id = Number(req.params.id); // Validate this data in a real application
-      const profileData: Partial<ProfileDTO> = req.body; // Validate this data in a real application
-      const user: User = await this.#repo.updateUserProfile(
-          id,
-          profileData,
-      );
-      return res.json(user);
-    } catch (error) {
-      log('Error updating user profile: %O', error);
-      if (
-          error instanceof PrismaClientKnownRequestError &&
-          error.code === 'P2025'
-      ) {
-          const finalError = new HttpError(
-              404,
-              'Not Found',
-              'User not found',
-              {
-                  cause: error,
-              },
-          );
-          return next(finalError);
-      }
+      const id = Number(req.params.id);
+              log('Updating user profile %s', id);
+              // Validate previously with zod middleware
+              const profileData: Partial<ProfileDTO> = req.body; // Validate this data in a real application
+              const user: User = await this.#repo.updateUserProfile(
+                id,
+                  profileData,
+              );
+              return res.json(user);
+          } catch (error) {
+              if (
+                  error instanceof PrismaClientKnownRequestError &&
+                  error.code === 'P2025'
+              ) {
+                log('Error updating user profile: %s', notFoundError.message);
+                  notFoundError.cause = error;
+                  return next(notFoundError);
+              }
 
-      const finalError = new HttpError(
-          500,
-          'Internal Server Error',
-          'Failed to update user profile',
-          {
-              cause: error,
-          },
-      );
-      return next(finalError);
-    }
+              log('Error updating user profile: %s', internalError.message);
+              internalError.cause = error;
+              internalError.message = 'Failed to update profile user';
+              return next(internalError);
+          }
+  }
 }
 ```
 
@@ -2499,39 +2492,31 @@ Como resultado:
 - Si ocurre cualquier otro problema, delega en el middleware de errores con un `HttpError` de tipo `500`.
 
 ```ts
-async deleteUser(req: Request, res: Response, next: NextFunction) {
+export class UsersController {
+  // ...
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-        const id = Number(req.params.id); // Validate this data in a real application
-        log('Deleting user with ID: %O', id);
-        await this.#repo.deleteUser(id);
-        return res.status(204).end();
-    } catch (error) {
-        log('Error deleting user: %O', error);
-        if (
-            error instanceof PrismaClientKnownRequestError &&
-            error.code === 'P2025'
-        ) {
-            const finalError = new HttpError(
-                404,
-                'Not Found',
-                'User not found',
-                {
-                    cause: error,
-                },
-            );
-            return next(finalError);
-        }
+          const id = Number(req.params.id);
+          // Validated previously with zod middleware
+          log('Deleting user with ID: %O', id);
+          await this.#repo.deleteUser(id);
+          return res.status(204).end();
+      } catch (error) {
+          if (
+              error instanceof PrismaClientKnownRequestError &&
+              error.code === 'P2025'
+          ) {
+              log('Error deleting user: %s', notFoundError.message);
+              notFoundError.cause = error;
+              return next(notFoundError);
+          }
 
-        const finalError = new HttpError(
-            500,
-            'Internal Server Error',
-            'Failed to delete user',
-            {
-                cause: error,
-            },
-        );
-        return next(finalError);
-    }
+          log('Error deleting user: %s', internalError.message);
+          internalError.cause = error;
+          internalError.message = 'Failed to delete user';
+          return next(internalError);
+      }
+  }
 }
 ```
 
@@ -3065,7 +3050,7 @@ export class AuthInterceptor {
 }
 ```
 
-### Películas y géneros
+## Películas y géneros
 
 [GET] /api/films - 200 OK
 [GET] /api/films/:id - 200 OK / 404 Not Found
@@ -3094,3 +3079,484 @@ export class AuthInterceptor {
       - routers/
         - `films.router.ts` (clase para manejar las rutas relacionadas con las películas y géneros, conectando el controlador con las rutas HTTP correspondientes)
         - `genres.router.ts` (clase para manejar las rutas relacionadas con los géneros, conectando el controlador con las rutas HTTP correspondientes)
+
+### Repositorio: FilmsRepo
+
+La clase `FilmsRepo` se encarga de la lógica de acceso a datos para la entidad `Film`. Su estructura es muy similar a la de `UsersRepo`, pero aquí desaparecen las preocupaciones de autenticación, hashing o perfiles y aparece otra necesidad propia del dominio: manejar correctamente la relación muchos a muchos entre películas y géneros.
+
+- recibe el cliente Prisma como DI;
+- utiliza los DTOs `FilmCreateDTO` y `FilmUpdateDTO` definidos con Zod;
+- compone las respuestas incluyendo `genres`, pero omitiendo el `id` de cada género para que la API devuelva una salida más limpia;
+- en creación y actualización trabaja con la relación implícita `Film`-`Genre` mediante `connect` y `set`.
+
+```ts
+import type { AppPrismaClient } from '../../config/db-config.ts';
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+import type {
+    Film,
+    FilmCreateDTO,
+    FilmUpdateDTO,
+} from '../../zod/film.schemas.ts';
+
+const log = debug(`${env.PROJECT_NAME}:repo:films`);
+log('Loading films repo...');
+
+export class FilmsRepo {
+    #prisma: AppPrismaClient;
+    constructor(prisma: AppPrismaClient) {
+        this.#prisma = prisma;
+    }
+}
+```
+
+#### Read (FilmsRepo)
+
+Los métodos de lectura de `FilmsRepo` siguen el mismo patrón general que en `UsersRepo`, pero con una diferencia importante: aquí el dato relacionado que interesa devolver no es un `profile`, sino la colección de `genres`.
+
+- `getAllFilms` recupera la colección completa de películas;
+- `getFilmByID` recupera una sola película y lanza error si no existe;
+- ambos métodos usan `include` para traer los géneros asociados;
+- dentro de `genres`, Prisma aplica `omit: { id: true }` para no exponer el identificador interno de cada género en la respuesta.
+
+```ts
+async getAllFilms(): Promise<Film[]> {
+    log('Getting all films');
+    return await this.#prisma.film.findMany({
+        include: {
+            genres: {
+                omit: {
+                    id: true,
+                },
+            },
+        },
+    });
+}
+
+async getFilmByID(id: number): Promise<Film> {
+    log('Getting film with id %d', id);
+    return await this.#prisma.film.findUniqueOrThrow({
+        where: {
+            id,
+        },
+        include: {
+            genres: {
+                omit: {
+                    id: true,
+                },
+            },
+        },
+    });
+}
+```
+
+La diferencia más visible con `UsersRepo` es que aquí no hay datos sensibles que ocultar como `password`, pero sí existe una preocupación de modelado de la respuesta: devolver el nombre de los géneros relacionados sin arrastrar su identificador técnico.
+
+#### Create (FilmsRepo)
+
+El método `createFilm` se encarga de crear una nueva película. A diferencia de `register`, aquí no hay que hashear contraseñas ni crear entidades hijas obligatorias, pero sí hay que enlazar la película con géneros ya existentes.
+
+Para ello se utiliza `connect`, que no crea géneros nuevos, sino que vincula la película con registros de `Genre` ya presentes en la base de datos. Este patrón funciona porque `Genre.name` es único y Prisma puede localizar cada género a partir de su nombre.
+
+```ts
+async createFilm(filmData: FilmCreateDTO): Promise<Film> {
+    log('Creating film with title %s', filmData.title);
+
+    const result = await this.#prisma.film.create({
+        data: {
+            title: filmData.title,
+            year: filmData.year,
+            director: filmData.director,
+            duration: filmData.duration,
+            poster: filmData.poster,
+            rate: filmData.rate,
+            genres: {
+                connect:
+                    filmData.genres?.map((genre) => ({ name: genre })) ??
+                    [],
+            },
+        },
+        include: {
+            genres: {
+                omit: {
+                    id: true,
+                },
+            },
+        },
+    });
+
+    return result;
+}
+```
+
+El resultado es la película recién creada junto con sus géneros conectados.
+
+#### Update (FilmsRepo)
+
+El método `updateFilm` permite modificar una película existente a partir de un `FilmUpdateDTO`. En este caso, Prisma actualiza los campos escalares de forma directa y, si llega un array de géneros, sustituye el conjunto anterior mediante `set`.
+
+La diferencia respecto a `updateUser` es que aquí no hay lógica adicional como hashear la contraseña. La parte realmente específica es la actualización de la relación con géneros:
+
+- si `filmData.genres` existe, se reconstruye la relación usando `set`;
+- cada género se vuelve a identificar por `name`;
+- el conjunto nuevo reemplaza al anterior.
+
+```ts
+async updateFilm(id: number, filmData: FilmUpdateDTO): Promise<Film> {
+    log('Updating film with id %d', id);
+    const result = await this.#prisma.film.update({
+        where: {
+            id,
+        },
+        data: {
+            title: filmData.title,
+            year: filmData.year,
+            director: filmData.director,
+            duration: filmData.duration,
+            poster: filmData.poster,
+            rate: filmData.rate,
+            genres: filmData.genres && {
+                set: filmData.genres.map((genre) => ({ name: genre })),
+            },
+        },
+    });
+    return result;
+}
+```
+
+Este uso de `set` es especialmente útil cuando la API quiere tratar la lista de géneros como el estado completo final de la película, en lugar de hacer altas y bajas parciales una a una.
+
+#### Delete (FilmsRepo)
+
+El método `deleteFilm` elimina una película por `id`. Igual que en otros repositorios, Prisma se apoya en la clave primaria de la entidad y devuelve el registro eliminado. En este caso, además, se vuelven a incluir los géneros relacionados.
+
+```ts
+async deleteFilm(id: number): Promise<Film> {
+    log('Deleting film with id %d', id);
+    return await this.#prisma.film.delete({
+        where: {
+            id,
+        },
+        include: {
+            genres: {
+                omit: {
+                    id: true,
+                },
+            },
+        },
+    });
+}
+```
+
+### Controlador: FilmsController
+
+El `FilmsController` sigue la misma idea general que `UsersController`: recibir la petición HTTP, delegar la operación en el repositorio y transformar los errores técnicos en respuestas HTTP. Sin embargo, aquí el módulo es más simple porque no necesita registrar usuarios ni generar tokens JWT.
+
+Una diferencia interesante respecto a `UsersController` es que `FilmsController` define dos errores reutilizables a nivel de módulo:
+
+- `internalError`, para fallos internos;
+- `notFoundError`, para la ausencia de una película concreta.
+
+```ts
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+import type { FilmsRepo } from '../repos/films.repo.ts';
+import type { Request, Response, NextFunction } from 'express';
+import { HttpError } from '../../errors/http-error.ts';
+import type { Film, FilmUpdateDTO } from '../../zod/film.schemas.ts';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+
+const log = debug(`${env.PROJECT_NAME}:controller:films`);
+log('Loading films controller...');
+
+const internalError = new HttpError(
+    500,
+    'Internal Server Error',
+    'An unexpected error occurred while processing the request',
+);
+
+const notFoundError = new HttpError(
+    404,
+    'Not Found',
+    'The requested film was not found',
+);
+
+export class FilmsController {
+    #repo: FilmsRepo;
+    constructor(repo: FilmsRepo) {
+        this.#repo = repo;
+    }
+}
+```
+
+#### Read (FilmsController)
+
+Los métodos de lectura son muy parecidos a los de `UsersController`, pero aquí no hay datos protegidos ni perfiles asociados: simplemente se devuelve una o varias películas con sus géneros.
+
+- `getAllFilms` devuelve la colección completa;
+- `getFilmById` recupera una película a partir de `req.params.id`;
+- en la lectura por `id`, el error `P2025` de Prisma se transforma en `404 Not Found`;
+- cualquier otro fallo se delega al middleware de errores como `500`.
+
+```ts
+async getAllFilms(req: Request, res: Response, next: NextFunction) {
+    try {
+        log('Getting all films...');
+        const films: Film[] = await this.#repo.getAllFilms();
+        return res.json(films);
+    } catch (error) {
+        internalError.cause = error;
+        internalError.message = 'Failed to get all films';
+        log('Error getting all films: %s', internalError.message);
+        return next(internalError);
+    }
+}
+
+async getFilmById(req: Request, res: Response, next: NextFunction) {
+    try {
+        const id = Number(req.params.id);
+        // Validated previously with zod middleware
+        log('Get Film: %s', id);
+        const film: Film = await this.#repo.getFilmByID(id);
+        return res.json(film);
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            log('Error getting film by id: %s', notFoundError.message);
+            notFoundError.cause = error;
+            return next(notFoundError);
+        }
+
+        internalError.cause = error;
+        internalError.message = 'Failed to get film by id';
+        log('Error getting film by id: %s', internalError.message);
+        return next(internalError);
+    }
+}
+```
+
+#### Create (FilmsController)
+
+El método `createFilm` se encarga de crear una película nueva. A diferencia de `register`, aquí el body ya llega validado por Zod desde el router y no necesita ninguna transformación especial dentro del controller.
+
+- delega la persistencia en `FilmsRepo`;
+- devuelve `201 Created` si todo va bien;
+- si falla algo durante la creación, transforma el problema en un `500 Internal Server Error`.
+
+```ts
+async createFilm(req: Request, res: Response, next: NextFunction) {
+    try {
+        const filmData = req.body;
+        log('Creating film: %O', filmData);
+        const newFilm: Film = await this.#repo.createFilm(filmData);
+        return res.status(201).json(newFilm);
+    } catch (error) {
+        log('Error creating film: %s', internalError.message);
+        internalError.cause = error;
+        return next(internalError);
+    }
+}
+```
+
+#### Update (FilmsController)
+
+La actualización sigue el mismo patrón que en `UsersController`: se lee el `id`, se toma el body validado, se llama al repositorio y se convierte `P2025` en `404`.
+
+La diferencia funcional está en el contenido del DTO: aquí se actualizan datos de la película y su conjunto de géneros, no datos de autenticación ni perfil.
+
+```ts
+async updateFilm(req: Request, res: Response, next: NextFunction) {
+    try {
+        const id = Number(req.params.id);
+        log('Updating film with ID: %O', id);
+        const filmData: FilmUpdateDTO = req.body;
+        const film: Film = await this.#repo.updateFilm(id, filmData);
+        return res.json(film);
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            log('Error updating film: %s', notFoundError.message);
+            notFoundError.cause = error;
+            return next(notFoundError);
+        }
+        internalError.cause = error;
+        internalError.message = 'Failed to update film';
+        log('Error updating film: %s', internalError.message);
+        return next(internalError);
+    }
+}
+```
+
+#### Delete (FilmsController)
+
+El método `deleteFilm` elimina una película y responde con `204 No Content` si la operación es correcta.
+
+- si la película no existe, Prisma devuelve `P2025` y el controller responde con `404`;
+- si ocurre cualquier otro problema, se delega como `500`.
+
+```ts
+async deleteFilm(req: Request, res: Response, next: NextFunction) {
+    try {
+        const id = Number(req.params.id);
+        log('Deleting film with ID: %O', id);
+        await this.#repo.deleteFilm(id);
+        return res.status(204).send();
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            log('Error deleting film: %s', notFoundError.message);
+            notFoundError.cause = error;
+            return next(notFoundError);
+        }
+        internalError.cause = error;
+        internalError.message = 'Failed to delete film';
+        log('Error deleting film: %s', internalError.message);
+        return next(internalError);
+    }
+}
+```
+
+### Router: FilmsRouter
+
+El `FilmsRouter` es el punto donde se conectan las rutas HTTP del módulo con el controller y con los middlewares de validación y seguridad.
+
+La diferencia más importante respecto al módulo de usuarios es esta:
+
+- `users` necesita dos rutas públicas especiales, `register` y `login`;
+- `films` no necesita autenticación propia, pero sí protege las operaciones de escritura;
+- por eso `GET /api/films` y `GET /api/films/:id` son públicas, mientras que `POST`, `PATCH` y `DELETE` se apoyan en `AuthInterceptor`.
+
+Además, en `films` la validación con Zod ya está completamente conectada en el router:
+
+- `validateId()` valida `req.params.id`;
+- `validateBody(FilmCreateDTOSchema)` valida y normaliza el body de creación;
+- `validateBody(FilmUpdateDTOSchema)` hace lo mismo para la actualización.
+
+```ts
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+
+import { Router } from 'express';
+import { validateBody, validateId } from '../../middleware/validations.ts';
+import type { FilmsController } from '../controllers/films.controller.ts';
+import { FilmCreateDTOSchema, FilmUpdateDTOSchema} from '../../zod/film.schemas.ts';
+import { AuthInterceptor } from '../../middleware/auth.interceptor.ts';
+
+
+const log = debug(`${env.PROJECT_NAME}:router:films`);
+log('Loading films router...');
+
+export class FilmsRouter {
+    #controller: FilmsController;
+    #router: Router;
+    #authInterceptor: AuthInterceptor;
+    constructor(controller: FilmsController, authInterceptor: AuthInterceptor) {
+        log('Initializing films router...');
+        this.#controller = controller;
+        this.#router = Router();
+        this.#authInterceptor = authInterceptor;
+    
+        this.#router.get('/', this.#controller.getAllFilms.bind(this.#controller));
+        this.#router.get('/:id', validateId(), this.#controller.getFilmById.bind(this.#controller));
+        this.#router.post(
+            '/',
+            validateBody(FilmCreateDTOSchema),
+            this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+            this.#authInterceptor.authorize(['EDITOR']).bind(this.#authInterceptor),
+            this.#controller.createFilm.bind(this.#controller),
+        );
+
+        this.#router.patch(
+            '/:id',
+            validateId(),
+            validateBody(FilmUpdateDTOSchema),
+            this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+            this.#authInterceptor.authorize(['EDITOR']).bind(this.#authInterceptor),
+            this.#controller.updateFilm.bind(this.#controller),
+        );
+
+        this.#router.delete(
+            '/:id',
+            validateId(),
+            this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+            this.#authInterceptor.isOwnerOrAdmin.bind(this.#authInterceptor),
+            this.#controller.deleteFilm.bind(this.#controller),
+        );
+    
+    }
+
+    get router() {
+        return this.#router;
+    }
+}
+```
+
+Las rutas disponibles quedan así:
+
+- `GET /api/films`: lista todas las películas;
+- `GET /api/films/:id`: devuelve una película concreta;
+- `POST /api/films`: crea una película, validando el body y exigiendo autenticación con rol `EDITOR` o `ADMIN`;
+- `PATCH /api/films/:id`: actualiza una película, con el mismo esquema de validación y autorización;
+- `DELETE /api/films/:id`: elimina una película tras validar el `id`, autenticar al usuario y pasar por `isOwnerOrAdmin`.
+
+En este último punto conviene fijarse en una diferencia práctica del estado actual del código: el middleware `isOwnerOrAdmin` está pensado de forma natural para recursos asociados a un usuario concreto, ya que compara `req.params.id` con `req.user.id`. En `users` esa lógica encaja directamente; en `films`, sin embargo, se está reutilizando tal cual. El código actual funciona como ejemplo de reutilización de middlewares, pero más adelante sería razonable sustituirlo por una regla específica del dominio de películas, por ejemplo permitir sólo `ADMIN` o `EDITOR`.
+
+Como en el resto de routers basados en clases, se utiliza `.bind(this.#controller)` para conservar el contexto correcto de `this` cuando Express invoque los métodos del controller.
+
+### Montaje en la aplicación: Films
+
+La integración final del módulo de películas en `app.ts` sigue exactamente el mismo patrón de DI ya utilizado con `users`. La diferencia principal es que ambos módulos comparten una única instancia de `AuthInterceptor`, lo que centraliza la lógica de autenticación y autorización.
+
+```ts
+const authInterceptor = new AuthInterceptor();
+
+const usersRepo = new UsersRepo(prisma);
+const usersController = new UsersController(usersRepo);
+const usersRouter = new UsersRouter(usersController, authInterceptor);
+app.use('/api/users', usersRouter.router);
+
+const filmsRepo = new FilmsRepo(prisma);
+const filmsController = new FilmsController(filmsRepo);
+const filmsRouter = new FilmsRouter(filmsController, authInterceptor);
+app.use('/api/films', filmsRouter.router);
+```
+
+## Generos
+
+Loa generos presentan algunas particularidades:
+
+- su relación n:n con las películas es implicita en prisma, que crea y en gran medida administra la tabla intermedia;
+- la entidad apenas tiene contenido, ya que solo incluye un campo `name` que es único y sirve como identificador natural;
+
+Una alternativa habria sido modelar los géneros como un simple enum, pero al tratarlos como una entidad completa se gana flexibilidad para añadir campos adicionales en el futuro (por ejemplo, una descripción del género) y para gestionar los géneros de forma independiente a las películas (crear nuevos géneros, eliminarlos, etc.).
+
+En cuanto a la creación se pueden plantear varias opciones de diseño:
+
+- crear géneros de forma independiente a las películas, con su propio CRUD;
+- crear géneros de forma implícita al crear o actualizar una película, utilizando `connectOrCreate` en el repositorio de películas.
+
+La primera opción es más explícita y permite gestionar los géneros de forma autónoma, pero requiere más endpoints y lógica adicional. Permite limitar mejor el número de géneros qcontemplados en la aplicación.
+
+Si optamos por esta opción debemos dirponer de los endpoint correspondientes al CRUD y protegerlos de forma adecuada, por ejemplo permitiendo su uso solo a usuarios con rol `ADMIN` o `EDITOR, de forma similar a lo que sucede con las películas.
+
+- [GET] /api/genres - 200 OK [No incluirá las películas]
+- [GET] /api/genres/:id - 200 OK / 404 Not Found [incluirá las películas]
+- [POST] /api/genres [Admin/Editor] - 201 Created
+- [PUT] /api/genres/:id [Admin/Editor] - 200 OK / 404 Not Found
+- [DELETE] /api/genres:id [Admin/Editor] - 200 OK / 404 Not Found
+
+
+En el get de todos los géneros, no plantearíamos si que incluir o no las películas relacionadas, ya que el número de géneros suele ser limitado y no supondría un problema de rendimiento. Sin embargo, en el get de un género concreto sí sería recomendable incluir las películas relacionadas para ofrecer una visión completa del género.
+
+Esto hace que al nivel de zod y tipos tenga sentido diferenciar entre Genere y GenreDetail, donde el segundo incluye la relación con películas.
+
+En la modiicación se utiliza PUT en lugar de PATCH, ya que el recurso de género es tan simple (1 campo) que el cliente siempre enviará la representación completa del género al actualizarlo. 
+
+## Reviews
+
