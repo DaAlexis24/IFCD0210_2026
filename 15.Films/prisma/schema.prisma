@@ -62,6 +62,7 @@ model Film {
   updated_at DateTime @default(now()) @updatedAt @ignore
 
   @@map("films")
+  @@index([title, year], name: "film_title_year_idx")
 }
 
 model Genre {

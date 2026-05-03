@@ -1,7 +1,8 @@
 import type { AppPrismaClient } from '../../config/db-config.ts';
+import type { Genre,  GenreDetail } from '../entities/genre.entity.ts';
+import type { GenreCreateDTO } from '../entities/genre.dto.ts';
 import { env } from '../../config/env.ts';
 import debug from 'debug';
-import type { Genre, GenreCreateDTO, GenreDetail } from '../../zod/film.schemas.ts';
 
 const log = debug(`${env.PROJECT_NAME}:repo:genres`);
 log('Loading genres repo...');

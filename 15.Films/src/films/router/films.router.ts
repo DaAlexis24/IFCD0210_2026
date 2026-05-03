@@ -1,10 +1,9 @@
-import { env } from '../../config/env.ts';
-import debug from 'debug';
-
-import { Router } from 'express';
-import { validateBody, validateId } from '../../middleware/validations.ts';
 import type { FilmsController } from '../controllers/films.controller.ts';
-import { FilmCreateDTOSchema, FilmUpdateDTOSchema} from '../../zod/film.schemas.ts';
+import { Router } from 'express';
+import debug from 'debug';
+import { env } from '../../config/env.ts';
+import { validateBody, validateParams } from '../../middleware/validations.ts';
+import { FilmCreateDTOSchema, FilmUpdateDTOSchema} from '../entities/film.dto.ts';
 import { AuthInterceptor } from '../../middleware/auth.interceptor.ts';
 
 
@@ -22,7 +21,7 @@ export class FilmsRouter {
         this.#authInterceptor = authInterceptor;
     
         this.#router.get('/', this.#controller.getAllFilms.bind(this.#controller));
-        this.#router.get('/:id', validateId(), this.#controller.getFilmById.bind(this.#controller));
+        this.#router.get('/:id', validateParams(), this.#controller.getFilmById.bind(this.#controller));
         this.#router.post(
             '/',
             validateBody(FilmCreateDTOSchema),
@@ -33,7 +32,7 @@ export class FilmsRouter {
 
         this.#router.patch(
             '/:id',
-            validateId(),
+            validateParams(),
             validateBody(FilmUpdateDTOSchema),
             this.#authInterceptor.authenticate.bind(this.#authInterceptor),
             this.#authInterceptor.authorize(['EDITOR']).bind(this.#authInterceptor),
@@ -42,7 +41,7 @@ export class FilmsRouter {
 
         this.#router.delete(
             '/:id',
-            validateId(),
+            validateParams(),
             this.#authInterceptor.authenticate.bind(this.#authInterceptor),
             //this.#authInterceptor.isOwnerOrAdmin.bind(this.#authInterceptor),
             this.#authInterceptor.authorize(['EDITOR']).bind(this.#authInterceptor),

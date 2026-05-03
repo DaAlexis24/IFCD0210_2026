@@ -11,10 +11,14 @@ description: Ejemplo de API REST para la gestión de una colección de película
   - [Entorno de desarrollo: servidor web Node.js + TypeScript](#entorno-de-desarrollo-servidor-web-nodejs--typescript)
     - [Typescript](#typescript)
   - [Bibliotecas esenciales para Express + REST](#bibliotecas-esenciales-para-express--rest)
+    - [\[Mejora.Versiones.Futuras\] Otras dependencias](#mejoraversionesfuturas-otras-dependencias)
   - [Estructura inicial del proyecto. Acceso al entorno y logs de debug](#estructura-inicial-del-proyecto-acceso-al-entorno-y-logs-de-debug)
   - [Creación del servidor y la aplicación Express](#creación-del-servidor-y-la-aplicación-express)
   - [Manejo de errores](#manejo-de-errores)
+    - [\[Mejora.Versiones.Futuras\] Extensiones de la clase HttpError](#mejoraversionesfuturas-extensiones-de-la-clase-httperror)
   - [Configuración de rutas básicas](#configuración-de-rutas-básicas)
+    - [\[Mejora\] Vista](#mejora-vista)
+    - [\[Mejora\] Rutas inválidas](#mejora-rutas-inválidas)
 - [Entorno de desarrollo: postgresql + Prisma](#entorno-de-desarrollo-postgresql--prisma)
   - [Configuración de prisma y conexión a la base de datos](#configuración-de-prisma-y-conexión-a-la-base-de-datos)
   - [Global prisma omit](#global-prisma-omit)
@@ -25,8 +29,24 @@ description: Ejemplo de API REST para la gestión de una colección de película
   - [Tipos en Prisma](#tipos-en-prisma)
   - [Schemas de validación con Zod](#schemas-de-validación-con-zod)
   - [Desarrollo de los esquemas de validación](#desarrollo-de-los-esquemas-de-validación)
-    - [Esquemas de películas, géneros y reviews](#esquemas-de-películas-géneros-y-reviews)
-    - [Esquemas de usuarios y perfiles](#esquemas-de-usuarios-y-perfiles)
+    - [Entidades de usuarios y perfiles](#entidades-de-usuarios-y-perfiles)
+      - [Modelo / Schema de usuario y perfil](#modelo--schema-de-usuario-y-perfil)
+      - [DTOs de usuario y perfil](#dtos-de-usuario-y-perfil)
+      - [Tools para los checks de compatibilidad](#tools-para-los-checks-de-compatibilidad)
+      - [Shapes y checks de compatibilidad de los Profiles](#shapes-y-checks-de-compatibilidad-de-los-profiles)
+      - [Shapes y checks de compatibilidad de los Usuarios](#shapes-y-checks-de-compatibilidad-de-los-usuarios)
+    - [Entidad de géneros](#entidad-de-géneros)
+      - [Modelo / Schema de género](#modelo--schema-de-género)
+      - [DTO de género](#dto-de-género)
+      - [Shapes y checks de compatibilidad de género](#shapes-y-checks-de-compatibilidad-de-género)
+    - [Entidad de películas](#entidad-de-películas)
+      - [Modelo / Schema de película](#modelo--schema-de-película)
+      - [DTO de película](#dto-de-película)
+      - [Shapes y checks de compatibilidad de película](#shapes-y-checks-de-compatibilidad-de-película)
+    - [Entidad de reviews](#entidad-de-reviews)
+      - [Modelo / Schema de review](#modelo--schema-de-review)
+      - [DTO de review](#dto-de-review)
+      - [Shapes y checks de compatibilidad de review](#shapes-y-checks-de-compatibilidad-de-review)
     - [Qué hemos conseguido con este enfoque](#qué-hemos-conseguido-con-este-enfoque)
   - [Seed de datos](#seed-de-datos)
     - [Contenido del seed](#contenido-del-seed)
@@ -40,7 +60,7 @@ description: Ejemplo de API REST para la gestión de una colección de película
   - [Políticas de servicio](#políticas-de-servicio)
   - [Pruebas y Documentación](#pruebas-y-documentación)
   - [Arquitectura y Secuencia de Implementación](#arquitectura-y-secuencia-de-implementación)
-- [Usuarios](#usuarios)
+- [Usuarios (User)](#usuarios-user)
   - [Contraseñas: Bcrypt y hashing](#contraseñas-bcrypt-y-hashing)
     - [Servicio auth](#servicio-auth)
   - [JSON Web Tokens (JWT)](#json-web-tokens-jwt)
@@ -64,8 +84,8 @@ description: Ejemplo de API REST para la gestión de una colección de película
   - [Router: UsersRouter](#router-usersrouter)
   - [Montaje en la aplicación](#montaje-en-la-aplicación)
   - [Validaciones con zod](#validaciones-con-zod)
-    - [Validador de ID](#validador-de-id)
-      - [Validador de Body](#validador-de-body)
+    - [\[Mejora\] Validador de ID y otros parámetros](#mejora-validador-de-id-y-otros-parámetros)
+      - [\[Mejora\] Validador de Body](#mejora-validador-de-body)
     - [Validadores en el UsersRouter](#validadores-en-el-usersrouter)
   - [Prueba de las rutas: Postman](#prueba-de-las-rutas-postman)
 - [Implementación de Políticas de servicio](#implementación-de-políticas-de-servicio)
@@ -78,7 +98,8 @@ description: Ejemplo de API REST para la gestión de una colección de película
     - [Método en el interceptor](#método-en-el-interceptor)
     - [Uso del interceptor en las rutas](#uso-del-interceptor-en-las-rutas)
   - [Autorización a propietarios (owners)](#autorización-a-propietarios-owners)
-- [Películas y géneros](#películas-y-géneros)
+- [Películas (Film)](#películas-film)
+  - [Estructura de carpetas: Films](#estructura-de-carpetas-films)
   - [Repositorio: FilmsRepo](#repositorio-filmsrepo)
     - [Read (FilmsRepo)](#read-filmsrepo)
     - [Create (FilmsRepo)](#create-filmsrepo)
@@ -91,8 +112,31 @@ description: Ejemplo de API REST para la gestión de una colección de película
     - [Delete (FilmsController)](#delete-filmscontroller)
   - [Router: FilmsRouter](#router-filmsrouter)
   - [Montaje en la aplicación: Films](#montaje-en-la-aplicación-films)
-- [Generos](#generos)
-- [Reviews](#reviews)
+- [Géneros (Genre)](#géneros-genre)
+  - [Estructura de carpetas: Genres](#estructura-de-carpetas-genres)
+  - [Repositorio: GenresRepo](#repositorio-genresrepo)
+    - [Read (GenresRepo)](#read-genresrepo)
+    - [Create (GenresRepo)](#create-genresrepo)
+    - [Update (GenresRepo)](#update-genresrepo)
+    - [Delete (GenresRepo)](#delete-genresrepo)
+  - [Controlador: GenresController](#controlador-genrescontroller)
+    - [Read (GenresController)](#read-genrescontroller)
+    - [Create, Update y Delete (GenresController)](#create-update-y-delete-genrescontroller)
+  - [Router: GenresRouter](#router-genresrouter)
+  - [Montaje en la aplicación: Genres](#montaje-en-la-aplicación-genres)
+- [Reviews (Review)](#reviews-review)
+  - [Estructura de carpetas: Reviews](#estructura-de-carpetas-reviews)
+  - [Repositorio: ReviewsRepo](#repositorio-reviewsrepo)
+    - [Read (ReviewsRepo)](#read-reviewsrepo)
+    - [Create (ReviewsRepo)](#create-reviewsrepo)
+    - [Update y Delete (ReviewsRepo)](#update-y-delete-reviewsrepo)
+  - [Controlador: ReviewsController](#controlador-reviewscontroller)
+    - [Read (ReviewsController)](#read-reviewscontroller)
+    - [Create, Update y Delete (ReviewsController)](#create-update-y-delete-reviewscontroller)
+  - [Router: ReviewsRouter](#router-reviewsrouter)
+  - [Montaje en la aplicación: Reviews](#montaje-en-la-aplicación-reviews)
+- [Gestión de ficheros: upload](#gestión-de-ficheros-upload)
+- [\[ToDo\]](#todo)
 
 ## Proyecto inicial. Arquitectura
 
@@ -109,6 +153,10 @@ La estructura de carpetas reflejo de esa arquitectura será la siguiente:
     - `http-error.ts` (clase base para errores HTTP)
   - middlewares/ (carpeta para definir middlewares personalizados)
     - `error-handler.ts` (middleware para manejar errores)
+    - `invalid-handler.ts` (middleware para manejar rutas inválidas)
+    - `custom-headers.ts` (middleware para añadir headers personalizados a las respuestas)
+  - views/ (carpeta para definir vistas, si se necesitara servir contenido HTML)
+    - `home.ts` (vista para la página de inicio / inicio del API)
   - `app.ts` (configuración de Express)
   - `index.ts` (punto de entrada del servidor)
 
@@ -130,18 +178,25 @@ Más adelante se añadirán las carpetas necesarias para acomodar nuevos element
 
 Para cada elemento del dominio, se seguirá una estructura modular con carpetas específicas para cada entidad, siguiendo el patrón de repositorios, controladores y routers:
 
-- films/
+- items/
+  - entities/
+        - `item.entity.ts` (definición de la entidad: schemas de zod para validación, interfaces de TypeScript)
+        - `item.dtos.ts` (definición de los DTOs para la entidad, incluyendo schemas de zod para validación de los datos de entrada en las rutas relacionadas con la entidad)
+        - `zod.prisma.ts` (check de que los schemas de zod coinciden con el modelo definido en Prisma)
   - repositories/
-    - `film.repository.ts` (clase con la lógica de acceso a datos para la entidad Film)
+    - `item.repository.ts` (clase con la lógica de acceso a datos para la entidad)
   - controllers/
-    - `film.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con películas)
+    - `item.controller.ts` (clase con el controlador para manejar las solicitudes relacionadas con la entidad)
   - routers/
-    - `film.router.ts` (clase con la definición de las rutas relacionadas con películas, utilizando el servicio)
-    - `film.router.test.ts` (tests de integración para las rutas de películas)
-    - `film.controller.test.ts` (tests unitarios para el controlador de películas)
-- reviews/ (mismo patrón que films)
-- categories/ (mismo patrón que films)
-- users/ (mismo patrón que films, pero con un servicio adicional para la autenticación de usuarios)
+    - `item.router.ts` (clase con la definición de las rutas relacionadas con la entidad, utilizando el servicio)
+    - `item.router.test.ts` (tests de integración para las rutas de la entidad)
+
+Este parón se repite para cada entidad
+
+- films/ 
+- reviews/ 
+- genres/ 
+- users/ (para users y profiles)
 
 ### Entorno de desarrollo: servidor web Node.js + TypeScript
 
@@ -186,15 +241,77 @@ Detalles de la configuración en tsconfig.json:
 - express @types/express
 - cors
 - morgan
-- ¿helmet?: `npm i helmet` [npm](https://www.npmjs.com/package/helmet)
-- ¿compression?: `npm i compression` [npm](https://www.npmjs.com/package/compression)
-- ¿rate-limit?: `npm i express-rate-limit` [npm](https://www.npmjs.com/package/express-rate-limit)
 - bcrypt
 - jsonwebtoken
 - openapi-typescript
 - swagger-ui-express
 
-[TODO]: Revisar si se usan las que aparecen ¿?
+Cors middleware de Express para habilitar el acceso desde diferentes orígenes, lo que es esencial para una API REST que pueda ser consumida desde aplicaciones web alojadas en dominios distintos al del servidor.
+
+Una versión con el acceso a la API muy limitado sería:
+
+```ts
+import cors from 'cors';
+app.use(cors({
+  origin: 'http://localhost:3000', // Configura el origen permitido para las solicitudes CORS
+}));
+```
+
+Por contra, para permitir el acceso desde cualquier origen, se puede configurar de la siguiente manera:
+
+```ts
+import cors from 'cors';
+app.use(cors({
+  origin: '*', // Permite el acceso desde cualquier origen
+}));
+```
+
+Morgan middleware de Express para el logging de solicitudes HTTP, lo que facilita el seguimiento de las peticiones que llegan al servidor y su respuesta, especialmente durante el desarrollo y la depuración.
+
+```ts
+import morgan from 'morgan';
+
+app.use(morgan('dev')); // Configura morgan para mostrar logs de solicitudes en formato 'dev'
+```
+
+Más adelante veremos las otras dependencias, como bcrypt para el hashing de contraseñas, jsonwebtoken para la gestión de tokens JWT, openapi-typescript para generar tipos TypeScript a partir de un esquema OpenAPI, y swagger-ui-express para servir una interfaz de documentación interactiva basada en OpenAPI.
+
+#### [Mejora.Versiones.Futuras] Otras dependencias
+
+- helmet: `npm i helmet` [npm](https://www.npmjs.com/package/helmet)
+
+Helmet es un middleware de seguridad para Express que ayuda a proteger la aplicación contra vulnerabilidades comunes al configurar adecuadamente los headers HTTP. Proporciona una capa adicional de seguridad al establecer headers como Content-Security-Policy, X-Content-Type-Options, X-Frame-Options, entre otros, lo que dificulta la explotación de vulnerabilidades como Cross-Site Scripting (XSS), clickjacking y ataques de inyección de código.
+
+```ts
+import helmet from 'helmet';
+
+app.use(helmet());
+```
+
+- compression: `npm i compression` [npm](https://www.npmjs.com/package/compression)
+
+Compression es un middleware de Express que permite comprimir las respuestas HTTP utilizando algoritmos como gzip o deflate. Esto reduce el tamaño de los datos enviados al cliente, lo que puede mejorar significativamente el rendimiento de la aplicación, especialmente para respuestas grandes como archivos JSON o contenido estático.
+
+```ts
+import compression from 'compression';
+
+app.use(compression());
+```
+
+- rate-limit: `npm i express-rate-limit` [npm](https://www.npmjs.com/package/express-rate-limit)
+
+EL rate-limit es un middleware de Express que ayuda a proteger la aplicación contra ataques de denegación de servicio (DoS) limitando el número de solicitudes que un cliente puede hacer en un período de tiempo determinado. Se puede configurar para limitar las solicitudes por IP, por ruta o por cualquier otro criterio personalizado, lo que lo convierte en una herramienta útil para mejorar la seguridad y la estabilidad de la API.
+
+```ts
+import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Limita a 100 solicitudes por ventana de tiempo
+  message: 'Demasiadas solicitudes desde esta IP, por favor inténtalo de nuevo más tarde.',
+});
+app.use(limiter);
+```
 
 ### Estructura inicial del proyecto. Acceso al entorno y logs de debug
 
@@ -212,12 +329,19 @@ Detalles de la configuración en tsconfig.json:
    - valida las variables de entorno e infiere su tipo `Env`
    - crea un objeto `env` con las variables de entorno validadas
    - exporta el objeto y el tipo
-3. Uso de debug para mostrar mensajes de depuración
+3. Uso de **debug** para mostrar mensajes de depuración
    - crea un logger con el namespace del proyecto (PROJECT_NAME:\*)
    - los mensajes de debug se muestran solo si la variable de entorno DEBUG incluye el namespace del proyecto, lo que permite controlar la salida de logs de depuración sin afectar a los logs de producción o testing
    - escribe en el log de debug al cargar el módulo
    - escribe en el log de debug al utilizar las funcionalidades del módulo
    - Se repite este patrón de logging en todos los módulos del proyecto para facilitar la depuración y el seguimiento del flujo de ejecución
+
+```ts
+import env from './config/env.ts';
+import debug from 'debug';
+const log = debug(`${env.PROJECT_NAME}:index`);
+log('Loaded index module...');
+```
 
 ### Creación del servidor y la aplicación Express
 
@@ -229,18 +353,26 @@ Detalles de la configuración en tsconfig.json:
 2. Creación de la aplicación Express en `app.ts`
    - importa express, morgan, cors y debug
    - exporta una función `createApp` que devuelve una aplicación Express
-   - la app esta configurada con los middlewares cors, morgan, express.json, express.urlencoded
+   - la app esta configurada con los middlewares cors, morgan, express.json, express.urlencoded...
 
      ```typescript
      // Gestión seguridad
      app.use(helmet()); // Headers seguridad
      app.use(cors(config)); // CORS configurado
      app.use(rateLimit(config)); // Rate limiting
+
+      // Gestión de logs
+      app.use(morgan('dev')); // Logs de solicitudes HTTP
+
+      // Gestión de respuestas
+      app.use(express.json()); // Parseo de JSON
+      app.use(express.urlencoded({ extended: true })); // Parseo de URL-encoded
+
      ```
 
    - muestra por consola un mensaje de debug indicando que la aplicación se ha iniciado
 
-3. Creación de un middleware personalizado en `customs.ts`
+3. Creación de un middleware personalizado en `custom-headers.ts`
    - exporta una función `customHeaders` que recibe un string `project` y devuelve un middleware que añade un header `X-Project` con el valor de `project` a cada respuesta
    - muestra por consola un mensaje de debug indicando que se ha añadido el header personalizado
 
@@ -251,12 +383,126 @@ Detalles de la configuración en tsconfig.json:
    - el constructor recibe un mensaje, un código de estado, un mensaje de estado y opciones
    - la clase tiene propiedades `status` y `statusMessage` para almacenar el código y mensaje de estado
    - muestra por consola un mensaje de debug indicando que se ha creado un error HTTP con su código, mensaje de estado y mensaje de error
+  
+```ts
+import debug from 'debug';
+import { env } from '../config/env.ts';
+
+const log = debug(`${env.PROJECT_NAME}:HttpError`);
+log('HttpError created...');
+
+export class HttpError extends Error {
+    status: number;
+    statusMessage: string;
+
+    constructor(
+        status: number,
+        statusMessage?: string,
+        message?: string,
+        options?: ErrorOptions | undefined,
+    ) {
+        super(message, options);
+        this.status = status;
+        this.statusMessage = statusMessage || '';
+        log('Creating HTTP error: %o', this.status, this.statusMessage);
+    }
+}
+```
+
 2. Creación de un middleware de manejo de errores en `error-handler.ts`
    - exporta una función `errorHandler` que recibe un error, la request, la response y el next function
    - si el error es una instancia de `HttpError`, devuelve un status con el código y mensaje del error
    - si el error es una instancia de `ZodError`, devuelve un status 400 con un mensaje de error de validación
+   - si el error es una instancia de `PrismaClientKnownRequestError` con código 'NOT_FOUND', devuelve un status 404 con un mensaje de error de recurso no encontrado
    - para cualquier otro error, devuelve un status 500 con un mensaje de error genérico
    - muestra por consola un mensaje de debug indicando que se ha manejado un error y su mensaje
+
+El caso de PrismaClientKnownRequestError, ya lo manejamos en los controllers, como luego veremos, pero podemos dejarlo como medida de seguridad adicional en el middleware de manejo de errores, para asegurarnos de que cualquier error de este tipo que no se haya manejado explícitamente en los controladores se capture y se devuelva una respuesta adecuada al cliente.
+
+```ts
+export const errorHandler = (
+    error: Error,
+    _req: Request,
+    res: Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _next: NextFunction,
+) => {
+    log('Handling error:', error?.message)
+    res.statusCode = 500;
+    res.statusMessage = 'Internal Server Error'
+
+    if (error instanceof HttpError) {
+        res.statusCode = error.status
+        res.statusMessage = error.statusMessage
+        res.send(error.message);
+    } else if (error instanceof PrismaClientKnownRequestError && error.code === 'NOT_FOUND') {
+        res.statusCode = 404;
+        res.statusMessage = 'Not Found';
+        res.send(error.message);
+    } else if (error instanceof ZodError) {
+        res.statusCode = 400 
+        res.statusMessage = 'Bad Request'
+        res.json(error.issues) 
+    } else if (error instanceof Error) {
+        res.send(error.message);
+    } else {
+        res.send(error);
+    }
+    console.error('Error handled:', error);
+    return
+};
+```
+
+#### [Mejora.Versiones.Futuras] Extensiones de la clase HttpError
+
+Se pueden crear clases de error específicas para diferentes tipos de errores HTTP, como `NotFoundError`, `BadRequestError`, `UnauthorizedError`, etc., que extiendan de `HttpError` y establezcan automáticamente el código de estado y el mensaje de estado correspondientes. Esto facilita la creación de errores específicos en los controladores y servicios, y mejora la claridad del código al manejar diferentes tipos de errores.
+
+```ts
+export class BadRequestError extends HttpError {
+    constructor(
+        message = 'Bad Request',
+        options?: ErrorOptions | undefined,
+    ) {
+        super(400, 'Bad Request', message, options);
+    }
+}
+
+export class UnauthorizedError extends HttpError {
+    constructor(
+        message: string,
+        options?: ErrorOptions | undefined,
+    ) {
+        super(401, 'Unauthorized', message, options);
+    }
+}
+
+export class ForbiddenError extends HttpError {
+    constructor(
+        message: string,
+        options?: ErrorOptions | undefined,
+    ) {
+        super(403, 'Forbidden', message, options);
+    }
+}
+
+export class NotFoundError extends HttpError {
+    constructor(
+        message: string,
+        options?: ErrorOptions | undefined,
+    ) {
+        super(404, 'Not Found', message, options);
+    }
+}
+
+export class InternalServerError extends HttpError {
+    constructor(
+        message = 'Internal Server Error',
+        options?: ErrorOptions | undefined,
+    ) {
+        super(500, 'Internal Server Error', message, options);
+    }
+}
+```
 
 ### Configuración de rutas básicas
 
@@ -264,8 +510,115 @@ Detalles de la configuración en tsconfig.json:
    - define un endpoint health-check en `[GET] /health` que devuelve un status 200 con un mensaje de éxito
    - para cualquier otra ruta, se crea un error 404 con la clase `HttpError` y se pasa al siguiente middleware de manejo de errores
 2. Configuración de los endpoint raíz en `app.ts`
-   - define un endpoint raíz `[GET] /` que devuelve un status 200 con un mensaje de bienvenida a la aplicación
-   - define un endpoint raíz `/api` que devuelve un status 200 con un mensaje de descripción de las apis
+   - define un endpoint raíz `[GET] /` que devuelve un status 200 y una página HTML con información sobre el proyecto y la API
+   - define un endpoint raíz `/api` que devuelve un status 200 y una página HTML con información sobre la API
+
+Para generar el contenido HTML de las páginas raíz, se utiliza una View sencilla que se encarga de construir el HTML con la información del proyecto y la API a partir del fichero readme.md, que se muestra a continuación:
+
+```ts
+app.get('/', async (_req, res) => {
+    log('Received request to root endpoint');
+    return res.send(HomeView.render(true));
+});
+
+app.get('/api', async (_req, res) => {
+    log('Received request to API endpoint');
+    return res.send(await HomeView.render(false));
+});
+```
+
+El parámetro `true` o `false` que se le pasa a `HomeView.render` indica si se debe mostrar la información del proyecto (true para `/`, false para `/api`), lo que permite reutilizar la misma vista para ambos endpoints con contenido ligeramente diferente.
+
+#### [Mejora] Vista 
+
+La vista `HomeView` se encarga de generar el contenido HTML para los endpoints raíz, mostrando información sobre el proyecto y la API obtenida de `readme.md`. Se implementa como ya se ha visto anteriormente, creando una clase con un método estático `render` que recibe un booleano para determinar qué información mostrar.
+
+Para obtener la información del markdown, se puede utilizar la función `getReadmeInfo` que lee el contenido del fichero `readme.md` y lo convierte a HTML utilizando una librería como `marked`. Luego, esta información se incluye en el HTML generado por la vista.
+
+```ts
+export class HomeView {
+    static #getInfo = async () => {
+        log('Getting home view info from readme.md...');
+        const readme = await readFile('./readme.md', 'utf-8');
+        const { data, content } = matter(readme);
+        const htmlHomeMain = marked.parse(content);
+        return { data, htmlHomeMain };
+    };
+
+    static #title = env.PROJECT_NAME || 'Home';
+    static #htmlAPImain = /*html*/ `
+        <h2>API Documentation</h2>
+        <p>La documentación de la API se completara más adelante con Swagger</p>
+    `;
+}
+```
+
+El método `render` de la vista utiliza la información obtenida para construir el HTML que se devuelve en la respuesta a los endpoints raíz. Dependiendo del valor del parámetro `showProjectInfo`, se muestra la información del proyecto o la información de la API.
+
+```ts
+export class HomeView {
+  // ...código anterior...
+    static render = async (isHome = true) => {
+        const { data, htmlHomeMain } = await this.#getInfo();
+        const html = isHome ? htmlHomeMain : this.#htmlAPImain;
+        const template = /*html*/ `
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Inicio | ${this.#title}</title>
+            <link rel="shortcut icon" href="./favicon.moose.svg" type="image/x-icon">
+            <link rel="stylesheet" href="./styles.css">
+        </head>
+        <body>
+            <header class="header">
+                <h1>${data.title}</h1>
+            </header>
+            <main>
+                <section>
+                    ${html}
+                </section>
+            </main>
+            <footer class="footer">
+                <p>Curso Desarrollo Web</p>
+            </footer>
+        </body>
+        </html>
+        `;
+        log('Rendering home view template...');
+        return template;
+    };
+}
+```
+
+#### [Mejora] Rutas inválidas
+
+Para manejar las rutas inválidas, se añade un middleware al final de la configuración de rutas en `app.ts` que captura cualquier solicitud que no coincida con las rutas definidas previamente. 
+
+Este middleware se añade como `/middleware/invalid-handler` y crea un error 404 utilizando la clase `HttpError` y lo pasa al siguiente middleware de manejo de errores.
+
+```ts
+
+import type { Response, Request, NextFunction } from 'express';
+import { env } from '../config/env.ts';
+import debug from 'debug';
+import { NotFoundError } from '../errors/http-error.ts';
+
+const log = debug(`${env.PROJECT_NAME}:invalid-routes`);
+log('Loading invalid routes handler...');
+
+export const invalidRoutes = (
+    _req: Request,
+    _res: Response,
+    next: NextFunction,
+) => {
+    log('Calling errorHandler for 404 error');
+    const error = new NotFoundError('Resource not found');
+    next(error);
+};
+
+```
 
 ## Entorno de desarrollo: postgresql + Prisma
 
@@ -547,6 +900,7 @@ model Film {
   updated_at DateTime @default(now()) @updatedAt @ignore
 
   @@map("films")
+  @@index([title, year], name: "film_title_year_idx")
 }
 
 model Genre {
@@ -615,7 +969,7 @@ Esto permite proporcionar respuestas de error más claras y específicas al clie
 
 Se pueden usar herramientas que generan automáticamente los schemas de validación de Zod a partir del schema de prisma, como `zod-prisma` o `prisma-zod-generator`, para mantener la consistencia entre el modelo de datos y las validaciones de entrada.
 
-En nuestro caso creamos manualmente los schemas de validación para cada entidad, definiendo los campos requeridos, sus tipos y cualquier restricción adicional (e.g. longitud máxima, formato de email, etc.) en archivos específicos como `src/zod/film.schemas.ts` y `src/zod/user.schemas.ts`.
+En nuestro caso creamos manualmente los schemas de validación para cada entidad, definiendo los campos requeridos, sus tipos y cualquier restricción adicional (e.g. longitud máxima, formato de email, etc.) en archivos específicos para cada una de las entidades.
 
 ### Desarrollo de los esquemas de validación
 
@@ -648,29 +1002,422 @@ Los `DTOSchema` tienen estas características:
 Además, en ambos ficheros acompañamos los schemas con:
 
 - tipos inferidos desde Zod (`z.infer<...>`);
+
+Por último añadimos un fichero de `zod.prisma.ts` con:
+
 - shapes derivadas de tipos Prisma;
 - utilidades para comparar esas shapes en tiempo de compilación;
 - checks `_...Check` que fuerzan a TypeScript a detectar cualquier desalineación.
 
 En la versión actual del proyecto, además, `tsconfig.json` usa `exactOptionalPropertyTypes: false`. Eso simplifica bastante la escritura de las shapes, porque podemos usar `Partial<T>` y propiedades opcionales normales sin tener que añadir tantas variantes explícitas con `| undefined`.
 
-#### Esquemas de películas, géneros y reviews
+#### Entidades de usuarios y perfiles
 
-El fichero `src/zod/film.schemas.ts` empieza importando Zod, `Decimal` y los tipos Prisma que usaremos como referencia:
+##### Modelo / Schema de usuario y perfil
+
+El fichero `src/users/entity/user.entity.ts` sigue la estrategia de utilizar zod para definir el schema de los datos y luego exportar los tipos correspondientes a usuarios y perfiles. 
+
+Empieza importando Zod, el schema de reviews (porque el modelo de usuario incluye un array de reviews):
 
 ```ts
-import { Decimal } from '@prisma/client/runtime/client';
 import { z } from 'zod';
-import type {
-  FilmCreateInput,
-  FilmModel,
-  GenreCreateInput,
-  GenreModel,
-  ReviewModel,
-  ReviewUncheckedCreateInput,
-  ReviewUserIDFilmIDCompoundUniqueInput,
-} from '../../generated/prisma/models.ts';
+import { ReviewModelSchema } from './film.schemas.ts';
 ```
+
+En los comentarios del fichero dejamos explicado el criterio general:
+
+- los `<name>ModelSchema` representan fielmente el modelo de Prisma;
+- se mantienen tipos fieles como `Date` o `Decimal` cuando existen;
+- no se incluyen atributos ignorados con `@ignore`;
+
+```ts
+export const ProfileModelSchema = z.object({
+  firstName: z.string(),
+  surname: z.string(),
+  avatar: z.string(),
+});
+```
+
+En el modelo del `ProfileModelSchema` no incluimos `id`, porque representa el modelo leído desde la base de datos, y como siempre leemos los datos como parte del user y omitimos el id del Profile, no es necesario incluirlo en el schema.
+
+```ts
+export const UserModelSchema = z.object({
+  id: z.number(),
+  email: z.string(),
+  role: z.enum(['ADMIN', 'EDITOR', 'USER']),
+  profile: ProfileModelSchema.optional(),
+  reviews: z.array(ReviewModelSchema).optional(),
+});
+```
+
+- `UserModelSchema` no incluye `password`, porque el modelo leído de Prisma solo puede contenerlo si lo recuperamos explícitamente;
+- `role` no tiene `default(...)` aquí, porque este schema representa datos ya leídos del modelo, y en la base de datos ese valor siempre existe.
+- profile y reviews son opcionales porque en prisma se configuran como relaciones opcionales, lo que implica que al leer un usuario desde la base de datos, el perfil o las reviews pueden no estar incluidos si no se especifica con `include` en la consulta. 
+
+En las operaciones con la base de datos no vamos a usar realmente el modelo al completo, por lo que podemos definir cvaios schemas derivados:
+
+```ts
+export const UserCredentialsModelSchema  = UserModelSchema.pick({
+    id: true,
+    email: true,
+    role: true,
+});
+
+
+export const UserCredentialsFullModelSchema = UserCredentialsModelSchema.extend({
+    password: z.string(),
+});
+
+export const UserModelWithProfile = UserModelSchema.extend({
+    profile: ProfileModelSchema
+});
+```
+
+El fichero termina exportando los **tipos inferidos** desde Zod
+
+```ts
+export type Profile = z.infer<typeof ProfileModelSchema>;
+export type User =  z.infer<typeof UserModelSchema>;
+export type UserCredentials = z.infer<typeof UserCredentialsModelSchema>;
+export type FullUserCredentials =  z.infer<typeof UserCredentialsFullModelSchema>;
+export type UserWithProfile = z.infer<typeof UserModelWithProfile>;
+```
+
+Un detalle respecto a los tipos de usuario:
+
+- `User` representa el modelo que omite `password`, porque en la API no queremos exponerlo ni siquiera como hash, y ese es el comportamiento por defecto de Prisma
+- `UserCredentials` es un tipo derivado que solo incluye los campos considereaaos como credenciales, es decir,`id`, `email` y `role`, pero no incluye `password` porque ese campo no se recupera por defecto en las consultas a la base de datos.
+- `FullUserCredentials` representa el modelo anterior, incluyendo `password`, tal como llega desde la DB durante el login.
+- `UserWithProfile` representa el modelo completo, incluyendo `profile` como campo obligatorio, para un mejor tipado de las operaciones en que la DB lo incluye, que sera´n la mayoría en el repo de usuarios (read, create, update).
+
+##### DTOs de usuario y perfil
+
+En el fichero `src/users/entity/user.dto.ts` seguimos la misma estrategia, pero esta vez para los DTOs de usuario y perfil. En los comentarios se explica el criterio general:
+
+- los `<name>DTOSchema` representan datos de entrada más cómodos para HTTP.
+
+En el caso de profile, existe un único DTO. Comparándolo con el modelo, se ve bien la diferencia entre modelo y DTO:
+
+- `ProfileModelSchema` incluye `id`;
+- `ProfileCreateDTOSchema` no incluye `id`, porque no lo mandamos desde la API al crear o actualizar; En la práctica no se usa, porque la creación del perfil se gestiona de forma anidada al crear el usuario
+- `ProfileUpdateDTOSchema` es una versión parcial de `ProfileCreateDTOSchema`, permitiendo actualizaciones parciales.
+
+```ts
+export const ProfileCreateDTOSchema = z.object({
+  firstName: z.string(),
+  surname: z.string(),
+  avatar: z.string(),
+});
+
+export const ProfileUpdateDTOSchema = ProfileCreateDTOSchema.partial();
+
+export type ProfileCreateDTO = z.infer<typeof ProfileCreateDTOSchema>;
+export type ProfileUpdateDTO = z.infer<typeof ProfileUpdateDTOSchema>;
+```
+
+Los DTOs de usuario cubren login, registro y actualización, para abarcar las diferentes operaciones relacionadas con usuarios en las que que deben validarse datos de entrada. En cada caso, se incluyen sólo los campos relevantes para esa operación, siguiendo el criterio de mantener los DTOs lo más planos y específicos posible para cada caso de uso.
+
+```ts
+export const UserCredentialsDTOSchema = z.object({
+  email: z.email(),
+  password: z.string().min(6),
+});
+
+export const UpdateUserDTOSchema = z.object({
+  email: z.string().optional(),
+  password: z.string().min(6).optional(),
+  role: z.enum(['ADMIN', 'EDITOR', 'USER']).optional(),
+  // profile: ProfileDTOSchema.partial().optional(),
+});
+
+export const RegisterUserDTOSchema = UserCredentialsDTOSchema.extend(
+  z.object({
+    role: z.enum(['ADMIN', 'EDITOR', 'USER']).optional(),
+    profile: ProfileDTOSchema,
+  }).shape,
+);
+```
+
+Estas decisiones reflejan la API que queremos exponer:
+
+- en login sólo pedimos `email` y `password`;
+- en update permitimos cambios parciales de `email`, `password` y `role`;
+- en register exigimos credenciales y perfil;
+- `role` se mantiene opcional en el registro porque en Prisma existe un valor por defecto (`USER`);
+- el `profile` se actualiza por un flujo separado del repo y por eso no aparece activo en `UpdateUserDTOSchema`.
+
+Finalmente, el fichero termina exportando los **tipos inferidos** desde Zod para los DTOs de usuario y perfil:
+
+```ts
+export type ProfileDTO = z.infer<typeof ProfileDTOSchema>;
+export type RegisterUserDTO = z.infer<typeof RegisterUserDTOSchema>;
+export type LoginUserDTO = z.infer<typeof UserCredentialsDTOSchema>;
+export type UserUpdateDTO = z.infer<typeof UpdateUserDTOSchema>;
+```
+
+##### Tools para los checks de compatibilidad
+
+En el fichero `src/types/tools.md` definimos las herramientas para los checks de compatibilidad entre los tipos inferidos desde Zod y los tipos generados por Prisma en tiempo de compilación.
+
+Estas herramientas incluyen:
+
+```ts
+type Assert<T extends true> = T;
+
+type IsExact<A, B> = [A] extends [B]
+  ? [B] extends [A]
+    ? [Exclude<keyof A, keyof B>, Exclude<keyof B, keyof A>] extends [
+        never,
+        never,
+      ]
+      ? true
+      : false
+    : false
+  : false;
+```
+
+La idea es sencilla:
+
+- `IsExact<A, B>` devuelve `true` sólo si ambos tipos tienen exactamente las mismas claves y tipos;
+- `Assert<T extends true>` hace que TypeScript falle si el resultado no es `true`.
+
+##### Shapes y checks de compatibilidad de los Profiles
+
+Después de los schemas vienen las shapes. Aquí es donde conectamos Zod con Prisma:
+
+```ts
+type _ProfileCheck = Assert<IsExact<Profile, ProfileModel>>;
+
+type _ProfileDTOCheck = Assert<
+  IsExact<ProfileDTO, ProfileCreateWithoutUserInput>
+>;
+
+// ProfileDTO En Prisma corresponde a ProfileCreateWithoutUserInput
+type _ProfileCreateDTOCheck = Assert<
+    IsExact<ProfileCreateDTO, ProfileCreateWithoutUserInput>
+>;
+
+// ProfileUpdateDTO En Prisma corresponde a ProfileUpdateWithoutUserInput
+type _ProfileUpdateDTOCheck = Assert<
+    IsExact<ProfileUpdateDTO, Partial<ProfileCreateWithoutUserInput>>
+>;
+```
+
+##### Shapes y checks de compatibilidad de los Usuarios
+
+Lo mismo sucede con los usuarios. Aquí definimos varias shapes para reflejar las diferentes formas en que el modelo de usuario se representa en la aplicación, y luego comprobamos su compatibilidad con los tipos generados por Prisma.
+
+```ts
+type UserCredentialsShape = Omit<UserModel, 'password'>;
+
+type UserModelShape = UserModel & {
+  profile?: ProfileModel;
+  reviews?: ReviewModel[];
+};
+
+type UserWithProfileShape = UserModelShape & {
+    profile: Omit<ProfileModel, 'id'>;
+};
+
+type LoginUserShape = Pick<UserCreateInput, 'email' | 'password'>;
+
+type RegisterUserShape = Pick<UserCreateInput, 'email' | 'password'> & {
+  role?: UserCreateInput['role'];
+  profile: ProfileCreateWithoutUserInput;
+};
+
+interface UserUpdateShape {
+  email?: UserCreateInput['email'];
+  password?: UserCreateInput['password'];
+  role?: UserCreateInput['role'];
+}
+```
+
+Aquí merece la pena detenerse en dos ideas:
+
+1. `LoginUserShape` no usa todo `UserCreateInput`, sino sólo `email` y `password`.
+2. `RegisterUserShape` usa `ProfileCreateWithoutUserInput`, porque el perfil se crea de forma anidada al persistir el usuario con Prisma.
+3. `UserUpdateShape` ya no incluye `profile`, porque en el repositorio actual el perfil se actualiza mediante una operación separada.
+
+El bloque final del fichero lleva a cabo las comprobaciones de compatibilidad entre los tipos inferidos de Zod y sus equivalentes en Prisma para garantizar que los shapes definidos coinciden exactamente con los tipos de prisma. De esta forma, cualquier cambio en el modelo de prisma que afecte a los tipos de usuario o perfil hará que fallen los checks de compatibilidad, alertándonos de que debemos revisar también los schemas de validación y los tipos inferidos.
+
+```ts
+type _FullUserCredentials = Assert<IsExact<FullUserCredentials, UserModel>>;
+
+type _UserCheck = Assert<IsExact<User, UserModelShape>>;
+
+type _UserCredentialsCheck = Assert<
+    IsExact<UserCredentials, UserCredentialsShape>
+>;
+
+type _UserWithProfile = Assert<IsExact<UserWithProfile, UserWithProfileShape>>;
+
+
+// El shape representa a UserCreateInput sin el campo profile
+// que se gestiona de forma anidada,
+// y sin el campo password que se encripta antes de guardarlo en la base de datos
+type _RegisterUserDTOCheck = Assert<
+  IsExact<RegisterUserDTO, RegisterUserShape>
+>;
+
+// El shape corresponde a UserCreateInput sin el campo profile
+type _LoginUserDTOCheck = Assert<
+  IsExact<LoginUserDTO, LoginUserShape>
+>;
+
+
+type _UserUpdateDTOCheck = Assert<
+  IsExact<UserUpdateDTO, UserUpdateShape>
+>;
+```
+
+#### Entidad de géneros
+
+##### Modelo / Schema de género
+
+En el caso del género, el modelo es bastante sencillo, porque sólo tiene un campo `name` además del `id`. El schema de validación con Zod refleja esa simplicidad:
+
+```ts
+export const GenreModelSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+```
+
+Sin embargo añadimos un segundo schema que representa el caso en que queremos más detalles de un género, incluyendo un array de películas asociadas 
+  - omitiendo los reviews de cada película para no cargar datos innecesarios. 
+  - incluyendo los géneros asociados a cada película, dado que pueden ser varios, además del que estamos recuperando. 
+
+Este schema se usará para validar datos leídos desde Prisma cuando queramos recuperar un género con sus películas:
+
+```ts
+export const GenreDetailModelSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    films: z.array(
+        FilmModelSchema.omit({
+            reviews: true,
+        }),
+    ),
+});
+```
+
+- en `GenreDetailModelSchema` tenemos una aparente dependencia: al incluir `films` como FilmModelSchema qu  e a su vez incluye `genres` que vuelve a llamar a `GenreModelSchema`. Sin embargo, en este caso, no hay un problema de recursión que complique la inferencia de TypeScript ni la validación de Zod.
+
+La La clave es que film.entity.ts no necesita GenreDetailModelSchema; solo necesita GenreModelSchema. O sea, la cadena real es esta:
+
+```plain
+GenreDetailModelSchema -> FilmModelSchema -> GenreModelSchema
+```
+
+Finalmente exportamos los **tipos inferidos** desde Zod para el modelo de género:
+
+```ts
+export type Genre = z.infer<typeof GenreModelSchema>;
+export type GenreDetail = z.infer<typeof GenreDetailModelSchema>;
+```
+
+##### DTO de género
+
+En cuanto al DTO de género, es aún más sencillo que el modelo, porque sólo incluye el campo `name`, que es el único dato que necesitamos para crear o actualizar un género desde la API:
+
+```ts
+export const GenreCreateDTOSchema = z.object({
+    name: z.string().trim().min(1).max(60),
+});
+
+export const GenreUpdateDTOSchema = GenreCreateDTOSchema;
+```
+
+En `GenreCreateDTOSchema` usamos `.trim().min(1).max(60)` para reflejar tanto la intención de negocio como la restricción física de Prisma (`VarChar(60)`). 
+
+El schema de actualización no necesita `.partial()` porque el DTO de género es tan sencillo que no hay campos opcionales: para actualizar un género, el cliente debe enviar un nuevo valor para `name`. Sin embargo creamos un alias `GenreUpdateDTOSchema` para mantener la consistencia con el resto de entidades, y para dejar claro que ese schema se usará también para validar los datos de actualización.
+
+De nuevo, el fichero termina exportando los **tipos inferidos** desde Zod para los DTOs de género:
+
+```ts 
+export type GenreCreateDTO = z.infer<typeof GenreCreateDTOSchema>;
+export type GenreUpdateDTO = z.infer<typeof GenreUpdateDTOSchema>;
+```
+
+##### Shapes y checks de compatibilidad de género
+
+Al igual que en el caso de usuario, definimos shapes para el modelo de género y para los DTOs, y luego comprobamos su compatibilidad con los tipos generados por Prisma:
+
+```ts 
+type FilmModelShape = FilmModel & {
+  genres?: GenreModel[];
+  reviews?: ReviewModel[];
+};
+
+type GenreDetailModelShape = GenreModel & {
+    films: Omit<FilmModelShape, 'reviews'>[];
+};
+```
+
+Las shapes de entrada quedan así:
+
+```ts
+type GenreCreateShape = Pick<GenreCreateInput, 'name'>;
+type GenreUpdateShape = Partial<GenreCreateShape>;
+```
+
+Las utilidades de comprobación son las que exportamos desde `src/types/tools.md` y los checks son:
+
+```ts
+type _GenreCheck = Assert<IsExact<Genre, GenreModel>>;
+
+type _GenreDetailCheck = Assert<
+    IsExact<GenreDetail, GenreDetailModelShape>
+>;
+
+type _GenreCreateDTOCheck = Assert<
+  IsExact<GenreCreateDTO, GenreCreateShape>
+>;
+
+type _GenreUpdateDTOCheck = Assert<
+  IsExact<GenreUpdateDTO, GenreUpdateShape>
+>
+```
+
+#### Entidad de películas
+
+##### Modelo / Schema de película
+
+Definimos el schema de modelo. Estos son los que pretenden parecerse a los tipos Prisma que obtenemos al leer datos:
+
+```ts
+export const FilmModelSchema = z.object({
+  id: z.number(),
+  title: z.string(),
+  year: z.number(),
+  director: z.string(),
+  duration: z.number(),
+  poster: z.string().nullable(),
+  rate: z.instanceof(Decimal),
+  genres: z.array(GenreModelSchema.omit({ id: true })).optional(),
+  get reviews() {
+        return z.array(ReviewModelSchema.omit({ film: true })).optional();
+    },
+});
+```
+
+Conviene fijarse en varios detalles:
+
+- `FilmModelSchema.rate` usa `z.instanceof(Decimal)` porque Prisma devuelve `Decimal`, no `number`.
+- `poster` en el modelo es `nullable()`, porque en Prisma es `String?` y al leerlo puede llegar `null`.
+ 
+`FilmModelSchema` sí incluye `genres` y `reviews`, que podrían dar lugar a una dependencia circular.
+  - en el caso de `genres`, no hay problema porque el schema de género no incluye a su vez un array de películas, sino sólo un array de nombres de géneros (excluimos el campo `id`), lo que evita la recursión.
+  - en el caso de `reviews`, para evitar la depencdecia circular utilizamos un getter, que en zod 4.x viene a sustituir a `z.lazy()`, y dentro de ese getter omitimos el campo `film` del schema de review, para que no reabra recursivamente el grafo completo 
+
+Finalmente exportamos los **tipos inferidos** desde Zod para el modelo de género:
+
+```ts
+export type Film = z.infer<typeof FilmModelSchema>;
+```
+
+##### DTO de película
 
 Lo primero que hacemos es definir un helper para comprobar que un número tenga como máximo un decimal. Esto se reutiliza en las puntuaciones de películas y reviews:
 
@@ -678,21 +1425,13 @@ Lo primero que hacemos es definir un helper para comprobar que un número tenga 
 const isSingleDecimal = (value: number) => Number.isInteger(value * 10);
 ```
 
-Con ese helper creamos dos schemas auxiliares para el campo `rate`. Separamos el de películas del de reviews porque en el modelo actual no tienen exactamente el mismo rango:
+Con ese helper creamos un schemas auxiliar para el campo `rate`. 
 
 ```ts
 export const FilmRateDTOSchema = z.coerce
   .number()
   .min(0)
   .max(9.9)
-  .refine(isSingleDecimal, {
-    message: 'rate debe tener como maximo un decimal',
-  });
-
-export const ReviewRateDTOSchema = z.coerce
-  .number()
-  .min(0)
-  .max(10)
   .refine(isSingleDecimal, {
     message: 'rate debe tener como maximo un decimal',
   });
@@ -704,53 +1443,6 @@ Aquí aparecen ya varias decisiones importantes:
 - limitamos los rangos desde el schema;
 - usamos `.refine(...)` para imponer la restricción de “como máximo un decimal”.
 
-Después definimos los schemas de modelo. Estos son los que pretenden parecerse a los tipos Prisma que obtenemos al leer datos:
-
-```ts
-export const ReviewModelSchema = z.object({
-  review: z.string(),
-  rate: z.instanceof(Decimal),
-  date: z.date(),
-  userID: z.number(),
-  filmID: z.number(),
-});
-
-export const GenreModelSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-});
-
-export const FilmModelSchema = z.object({
-  id: z.number(),
-  title: z.string(),
-  year: z.number(),
-  director: z.string(),
-  duration: z.number(),
-  poster: z.string().nullable(),
-  rate: z.instanceof(Decimal),
-  genres: z.array(GenreModelSchema).optional(),
-  reviews: z.array(ReviewModelSchema).optional(),
-});
-```
-
-Conviene fijarse en varios detalles:
-
-- `ReviewModelSchema.rate` y `FilmModelSchema.rate` usan `z.instanceof(Decimal)` porque Prisma devuelve `Decimal`, no `number`.
-- `poster` en el modelo es `nullable()`, porque en Prisma es `String?` y al leerlo puede llegar `null`.
-- en `GenreModelSchema` hemos cortado la recursión: no incluimos `films`. Eso simplifica la inferencia de TypeScript y evita tener que usar `z.ZodTypeAny`.
-- `FilmModelSchema` sí incluye `genres` y `reviews`, pero ya no reabre recursivamente el grafo completo.
-
-La siguiente parte del fichero define los DTOs de entrada:
-
-```ts
-export const GenreCreateDTOSchema = z.object({
-  name: z.string().trim().min(1).max(60),
-});
-
-export const GenreUpdateDTOSchema = GenreCreateDTOSchema.partial();
-```
-
-En `GenreCreateDTOSchema` usamos `.trim().min(1).max(60)` para reflejar tanto la intención de negocio como la restricción física de Prisma (`VarChar(60)`). El schema de actualización se obtiene con `.partial()`.
 
 El DTO de creación de películas es más rico:
 
@@ -811,48 +1503,24 @@ Con esto ya tenemos una separación clara entre:
 - validación de parámetros de ruta;
 - validación de parámetros de consulta.
 
-Las reviews siguen el mismo patrón:
+De nuevo, el fichero termina exportando los **tipos inferidos** desde Zod para los DTOs de película:
 
 ```ts
-export const ReviewCreateDTOSchema = z.object({
-  review: z.string().trim().min(1),
-  rate: ReviewRateDTOSchema,
-  userID: z.coerce.number().int().positive(),
-  filmID: z.coerce.number().int().positive(),
-});
-
-export const ReviewUpdateDTOSchema = z.object({
-  review: z.string().trim().min(1).optional(),
-  rate: ReviewRateDTOSchema.optional(),
-});
-
-export const ReviewParamsSchema = z.object({
-  userID: z.coerce.number().int().positive(),
-  filmID: z.coerce.number().int().positive(),
-});
+export type FilmCreateDTO = z.infer<typeof FilmCreateDTOSchema>;
+export type FilmUpdateDTO = z.infer<typeof FilmUpdateDTOSchema>;
+export type FilmParamsDTO = z.infer<typeof FilmParamsSchema>;
+export type FilmQueryDTO = z.infer<typeof FilmQuerySchema>;
 ```
 
-En `ReviewCreateDTOSchema` usamos directamente `userID` y `filmID` planos. Esto es importante porque en la API queremos una entrada sencilla, no objetos anidados con `user: { connect: ... }` o `film: { connect: ... }`.
-
-Después de los schemas vienen las shapes. Aquí es donde conectamos Zod con Prisma:
-
-```ts
-type GenreModelShape = GenreModel;
-
-type FilmModelShape = FilmModel & {
-  genres?: GenreModel[];
-  reviews?: ReviewModel[];
-};
-
-type ReviewModelShape = ReviewModel;
-```
+##### Shapes y checks de compatibilidad de película
 
 Las shapes de entrada quedan así:
 
 ```ts
-type GenreCreateShape = Pick<GenreCreateInput, 'name'>;
-
-type GenreUpdateShape = Partial<GenreCreateShape>;
+type FilmModelShape = FilmModel & {
+    genres?: Omit<GenreModel, 'id'>[];
+    reviews?: Omit<Review, 'film'>[];
+};
 
 type FilmCreateShape = Pick<
   FilmCreateInput,
@@ -881,6 +1549,142 @@ interface FilmQueryShape {
   sortBy?: 'id' | 'title' | 'year' | 'director' | 'duration' | 'rate';
   order?: 'asc' | 'desc';
 }
+```
+
+Hay varias decisiones de diseño aquí:
+
+- `FilmCreateShape` no intenta igualar a `FilmCreateInput` completo, porque Prisma acepta relaciones anidadas y nuestro DTO no.
+- al usar `exactOptionalPropertyTypes: false` en `tsconfig`, los shapes de update pueden expresarse de forma más directa con `Partial<...>`.
+
+Con las utilidades que ya conocemos para los checks de compatibilidad, el bloque final del fichero queda así:
+
+```ts
+type _FilmCheck = Assert<IsExact<Film, FilmModelShape>>;
+
+type _FilmCreateDTOCheck = Assert<
+    IsExact<FilmCreateDTO, FilmCreateShape>
+>;
+
+type _FilmUpdateDTOCheck = Assert<
+    IsExact<FilmUpdateDTO, FilmUpdateShape>
+>;
+
+ type _FilmParamsDTOCheck = Assert<
+    IsExact<FilmParamsDTO, FilmParamsShape>
+>;
+
+type _FilmQueryDTOCheck = Assert<IsExact<FilmQueryDTO, FilmQueryShape>>;
+```
+
+#### Entidad de reviews
+
+##### Modelo / Schema de review
+
+EL schema de modelo refleja los tipos Prisma que obtenemos al leer datos:
+
+```ts
+export const ReviewModelSchema = z.object({
+  review: z.string(),
+  rate: z.instanceof(Decimal),
+  date: z.date(),
+  // userID: z.number(),
+  // filmID: z.number(),
+  get user() {
+        return UserModelWithProfile.omit({ reviews: true }).optional();
+    },
+  get film() {
+      return FilmModelSchema.omit({ reviews: true }).optional();
+  },
+});
+```
+
+- el campo opcional `user` representa la relación con el modelo de usuario, y se define como un getter para evitar la dependencia circular con `UserModelSchema`, que a su vez incluye `ReviewModelSchema` en su campo `reviews`. Dentro de ese getter, usamos `UserModelWithProfile` para incluir el perfil del usuario, pero sin incluir sus reviews, para evitar reabrir recursivamente el grafo completo.
+
+- el campo opcional `film` representa la relación con el modelo de película, y se define como un getter para evitar la dependencia circular con `FilmModelSchema`, que a su vez incluye `ReviewModelSchema` en su campo `reviews`. Dentro de ese getter, omitimos el campo `reviews` del schema de película para evitar reabrir recursivamente el grafo completo.
+
+- `ReviewModelSchema.rate` nuevamente usa `z.instanceof(Decimal)` porque Prisma devuelve `Decimal`, no `number`.
+
+Por último exportamos los **tipos inferidos** desde Zod para el modelo de review:
+
+```ts
+export type Review = z.infer<typeof ReviewModelSchema>;
+```
+
+##### DTO de review
+
+Lo primero que hacemos es definir de nuevo el helper para comprobar que un número tenga como máximo un decimal. Esto se reutiliza en las puntuaciones de películas y reviews:
+
+```ts
+const isSingleDecimal = (value: number) => Number.isInteger(value * 10);
+```
+
+Con ese helper creamos un schemas auxiliar para el campo `rate`, distinto del que teníamos en películas del de reviews porque en el modelo actual no tienen exactamente el mismo rango:
+
+```ts
+export const ReviewRateDTOSchema = z.coerce
+  .number()
+  .min(0)
+  .max(10)
+  .refine(isSingleDecimal, {
+    message: 'rate debe tener como máximo un decimal',
+  });
+```
+
+Las reviews siguen el mismo patrón que las películas:
+
+```ts
+export const ReviewCreateDTOSchema = z.object({
+  review: z.string().trim().min(1),
+  rate: ReviewRateDTOSchema,
+  userID: z.coerce.number().int().positive(),
+  filmID: z.coerce.number().int().positive(),
+});
+
+export const ReviewCreateBodyDTOSchema = ReviewCreateDTOSchema.omit({
+    userID: true,
+    filmID: true,
+});
+
+export const ReviewUpdateDTOSchema = ReviewCreateBodyDTOSchema.partial();
+
+export const ReviewParamsSchema = z.object({
+  userID: z.coerce.number().int().positive(),
+  filmID: z.coerce.number().int().positive(),
+});
+```
+
+En `ReviewCreateDTOSchema` usamos directamente `userID` y `filmID` planos. Esto es importante porque en la API queremos una entrada sencilla, no objetos anidados con `user: { connect: ... }` o `film: { connect: ... }`.
+
+En `ReviewCreateBodyDTOSchema` no incluimos `userID` ni `filmID`, porque estos datos no vendrán en el body, sino como parametros o en el token.
+
+Lo mismo sucede en `ReviewUpdateDTOSchema` porque en el repositorio actual la actualización de una review se identifica por su clave compuesta (userID + filmID) y no se permite cambiar esos campos, sólo el contenido de la review y su puntuación.
+
+Para las validaciones de parámetros, se añaden los schemas `ReviewFilmParamsSchema` y `ReviewUserParamsSchema`, que permiten validar los parámetros de ruta cuando queremos recuperar las reviews de una película o de un usuario:
+
+```ts
+export const ReviewFilmParamsSchema = z.object({
+    filmID: z.coerce.number().int().positive(),
+});
+
+export const ReviewUserParamsSchema = z.object({
+    userID: z.coerce.number().int().positive(),
+});
+```
+
+Finalmente , exportamos los **tipos inferidos** desde Zod para los DTOs de review:
+
+```ts
+export type ReviewCreateBodyDTO = z.infer<typeof ReviewCreateBodyDTOSchema>;
+export type ReviewCreateDTO = z.infer<typeof ReviewCreateDTOSchema>;
+export type ReviewUpdateDTO = z.infer<typeof ReviewUpdateDTOSchema>;
+export type ReviewParamsDTO = z.infer<typeof ReviewParamsSchema>;
+```
+
+##### Shapes y checks de compatibilidad de review
+
+Aparece otra vez el bloque de shapes, donde las shapes de entrada quedan así:
+
+```ts
 
 type ReviewCreateShape = Pick<
   ReviewUncheckedCreateInput,
@@ -896,263 +1700,39 @@ type ReviewParamsShape = ReviewUserIDFilmIDCompoundUniqueInput;
 
 Hay varias decisiones de diseño aquí:
 
-- `FilmCreateShape` no intenta igualar a `FilmCreateInput` completo, porque Prisma acepta relaciones anidadas y nuestro DTO no.
 - `ReviewCreateShape` usa `ReviewUncheckedCreateInput`, porque el DTO trabaja con `userID` y `filmID` directos.
 - `ReviewParamsShape` reutiliza `ReviewUserIDFilmIDCompoundUniqueInput`, que encaja bien con la clave compuesta de la tabla `reviews`.
-- al usar `exactOptionalPropertyTypes: false`, los shapes de update pueden expresarse de forma más directa con `Partial<...>`.
+- al usar `exactOptionalPropertyTypes: false` en `tsconfig`, los shapes de update pueden expresarse de forma más directa con `Partial<...>`.
 
-Para comprobar la compatibilidad en tiempo de compilación usamos estas utilidades:
-
-```ts
-type Assert<T extends true> = T;
-
-type IsExact<A, B> = [A] extends [B]
-  ? [B] extends [A]
-    ? [Exclude<keyof A, keyof B>, Exclude<keyof B, keyof A>] extends [
-        never,
-        never,
-      ]
-      ? true
-      : false
-    : false
-  : false;
-```
-
-La idea es sencilla:
-
-- `IsExact<A, B>` devuelve `true` sólo si ambos tipos tienen exactamente las mismas claves y tipos;
-- `Assert<T extends true>` hace que TypeScript falle si el resultado no es `true`.
-
-El bloque final del fichero exporta los tipos inferidos y sus comprobaciones:
+Con las utilidades que ya conocemos para los checks de compatibilidad, el bloque final del fichero queda así:
 
 ```ts
-export type Genre = z.infer<typeof GenreModelSchema>;
-export type _GenreCheck = Assert<IsExact<Genre, GenreModelShape>>;
+type _ReviewCheck = Assert<IsExact<Review, ReviewModel>>;
 
-export type Film = z.infer<typeof FilmModelSchema>;
-export type _FilmCheck = Assert<IsExact<Film, FilmModelShape>>;
-
-export type Review = z.infer<typeof ReviewModelSchema>;
-export type _ReviewCheck = Assert<IsExact<Review, ReviewModelShape>>;
-
-export type GenreCreateDTO = z.infer<typeof GenreCreateDTOSchema>;
-export type _GenreCreateDTOCheck = Assert<
-  IsExact<GenreCreateDTO, GenreCreateShape>
+type _ReviewCreateBodyDTOCheck = Assert<
+    IsExact<ReviewCreateBodyDTO, Omit<ReviewCreateShape, 'userID' | 'filmID'>>
 >;
 
-export type GenreUpdateDTO = z.infer<typeof GenreUpdateDTOSchema>;
-export type _GenreUpdateDTOCheck = Assert<
-  IsExact<GenreUpdateDTO, GenreUpdateShape>
+type _ReviewCreateDTOCheck = Assert<
+    IsExact<ReviewCreateDTO, ReviewCreateShape>
 >;
 
-export type FilmCreateDTO = z.infer<typeof FilmCreateDTOSchema>;
-export type _FilmCreateDTOCheck = Assert<
-  IsExact<FilmCreateDTO, FilmCreateShape>
+type _ReviewUpdateDTOCheck = Assert<
+    IsExact<ReviewUpdateDTO, ReviewUpdateShape>
 >;
 
-export type FilmUpdateDTO = z.infer<typeof FilmUpdateDTOSchema>;
-export type _FilmUpdateDTOCheck = Assert<
-  IsExact<FilmUpdateDTO, FilmUpdateShape>
+type _ReviewParamsDTOCheck = Assert<
+    IsExact<ReviewParamsDTO, ReviewParamsShape>
 >;
 
-export type FilmParamsDTO = z.infer<typeof FilmParamsSchema>;
-export type _FilmParamsDTOCheck = Assert<
-  IsExact<FilmParamsDTO, FilmParamsShape>
+type _ReviewFilmParamsDTOCheck = Assert<
+    IsExact<ReviewFilmParamsDTO, Pick<ReviewParamsShape, 'filmID'>>
 >;
 
-export type FilmQueryDTO = z.infer<typeof FilmQuerySchema>;
-export type _FilmQueryDTOCheck = Assert<IsExact<FilmQueryDTO, FilmQueryShape>>;
-
-export type ReviewCreateDTO = z.infer<typeof ReviewCreateDTOSchema>;
-export type _ReviewCreateDTOCheck = Assert<
-  IsExact<ReviewCreateDTO, ReviewCreateShape>
->;
-
-export type ReviewUpdateDTO = z.infer<typeof ReviewUpdateDTOSchema>;
-export type _ReviewUpdateDTOCheck = Assert<
-  IsExact<ReviewUpdateDTO, ReviewUpdateShape>
->;
-
-export type ReviewParamsDTO = z.infer<typeof ReviewParamsSchema>;
-export type _ReviewParamsDTOCheck = Assert<
-  IsExact<ReviewParamsDTO, ReviewParamsShape>
+type _ReviewUserParamsDTOCheck = Assert<
+    IsExact<ReviewUserParamsDTO, Pick<ReviewParamsShape, 'userID'>>
 >;
 ```
-
-Con este patrón conseguimos que si cambiamos un schema Zod o cambia el tipo Prisma generado, TypeScript nos avise inmediatamente.
-
-#### Esquemas de usuarios y perfiles
-
-El fichero `src/zod/user.schemas.ts` sigue la misma estrategia, pero aplicada a usuarios y perfiles. Empieza importando Zod, el schema de reviews y los tipos Prisma necesarios:
-
-```ts
-import { z } from 'zod';
-import { ReviewModelSchema } from './film.schemas.ts';
-
-import type {
-  ProfileCreateWithoutUserInput,
-  ProfileModel,
-  UserCreateInput,
-  UserModel,
-  ReviewModel,
-} from '../../generated/prisma/models.ts';
-```
-
-En los comentarios del fichero dejamos explicado el criterio general:
-
-- los `<name>ModelSchema` representan fielmente el modelo de Prisma;
-- se mantienen tipos fieles como `Date` o `Decimal` cuando existen;
-- no se incluyen atributos ignorados con `@ignore`;
-- los `<name>DTOSchema` representan datos de entrada más cómodos para HTTP.
-
-Los primeros schemas son los de perfil y usuario como modelos:
-
-```ts
-export const ProfileModelSchema = z.object({
-  id: z.number(),
-  firstName: z.string(),
-  surname: z.string(),
-  avatar: z.string(),
-});
-
-export const ProfileDTOSchema = z.object({
-  firstName: z.string(),
-  surname: z.string(),
-  avatar: z.string(),
-});
-
-export const UserModelSchema = z.object({
-  id: z.number(),
-  email: z.string(),
-  password: z.string(),
-  role: z.enum(['ADMIN', 'EDITOR', 'USER']),
-  profile: ProfileModelSchema.optional(),
-  reviews: z.array(ReviewModelSchema).optional(),
-});
-```
-
-Aquí se ve bien la diferencia entre modelo y DTO:
-
-- `ProfileModelSchema` incluye `id`;
-- `ProfileDTOSchema` no incluye `id`, porque no lo mandamos desde la API al crear o actualizar;
-- `UserModelSchema` sí incluye `password`, porque el modelo leído de Prisma puede contenerlo si lo recuperamos explícitamente;
-- `role` no tiene `default(...)` aquí, porque este schema representa datos ya leídos del modelo, y en la base de datos ese valor siempre existe.
-
-Los DTOs de usuario cubren login, registro y actualización:
-
-```ts
-export const UserCredentialsDTOSchema = z.object({
-  email: z.email(),
-  password: z.string().min(6),
-});
-
-export const UpdateUserDTOSchema = z.object({
-  email: z.string().optional(),
-  password: z.string().min(6).optional(),
-  role: z.enum(['ADMIN', 'EDITOR', 'USER']).optional(),
-  // profile: ProfileDTOSchema.partial().optional(),
-});
-
-export const RegisterUserDTOSchema = UserCredentialsDTOSchema.extend(
-  z.object({
-    role: z.enum(['ADMIN', 'EDITOR', 'USER']).optional(),
-    profile: ProfileDTOSchema,
-  }).shape,
-);
-```
-
-Estas decisiones reflejan la API que queremos exponer:
-
-- en login sólo pedimos `email` y `password`;
-- en update permitimos cambios parciales de `email`, `password` y `role`;
-- en register exigimos credenciales y perfil;
-- `role` se mantiene opcional en el registro porque en Prisma existe un valor por defecto (`USER`);
-- el `profile` se actualiza por un flujo separado del repo y por eso no aparece activo en `UpdateUserDTOSchema`.
-
-Después aparece otra vez el bloque de shapes:
-
-```ts
-type UserModelShape = UserModel & {
-  profile?: ProfileModel;
-  reviews?: ReviewModel[];
-};
-
-type LoginUserShape = Pick<UserCreateInput, 'email' | 'password'>;
-
-type RegisterUserShape = Pick<UserCreateInput, 'email' | 'password'> & {
-  role?: UserCreateInput['role'];
-  profile: ProfileCreateWithoutUserInput;
-};
-
-interface UserUpdateShape {
-  email?: UserCreateInput['email'];
-  password?: UserCreateInput['password'];
-  role?: UserCreateInput['role'];
-}
-```
-
-Aquí merece la pena detenerse en dos ideas:
-
-1. `LoginUserShape` no usa todo `UserCreateInput`, sino sólo `email` y `password`.
-2. `RegisterUserShape` usa `ProfileCreateWithoutUserInput`, porque el perfil se crea de forma anidada al persistir el usuario con Prisma.
-3. `UserUpdateShape` ya no incluye `profile`, porque en el repositorio actual el perfil se actualiza mediante una operación separada.
-
-Las utilidades de comprobación son las mismas que en `film.schemas.ts`:
-
-```ts
-type Assert<T extends true> = T;
-
-type IsExact<A, B> = [A] extends [B]
-  ? [B] extends [A]
-    ? [Exclude<keyof A, keyof B>, Exclude<keyof B, keyof A>] extends [
-        never,
-        never,
-      ]
-      ? true
-      : false
-    : false
-  : false;
-```
-
-Y el fichero termina exportando los tipos y sus checks:
-
-```ts
-export type Profile = z.infer<typeof ProfileModelSchema>;
-export type _ProfileCheck = Assert<IsExact<Profile, ProfileModel>>;
-
-export type ProfileDTO = z.infer<typeof ProfileDTOSchema>;
-export type _ProfileDTOCheck = Assert<
-  IsExact<ProfileDTO, ProfileCreateWithoutUserInput>
->;
-
-export type FullUser = z.infer<typeof UserModelSchema>;
-export type _UserCheck = Assert<IsExact<FullUser, UserModelShape>>;
-
-export type User = Omit<FullUser, 'password'>;
-export type _UserWithoutPasswordCheck = Assert<
-  IsExact<User, Omit<UserModelShape, 'password'>>
->;
-
-export type RegisterUserData = z.infer<typeof RegisterUserDTOSchema>;
-export type _RegisterUserDataCheck = Assert<
-  IsExact<RegisterUserData, RegisterUserShape>
->;
-
-export type LoginUserData = z.infer<typeof UserCredentialsDTOSchema>;
-export type _LoginUserDataCheck = Assert<
-  IsExact<LoginUserData, LoginUserShape>
->;
-
-export type UserUpdateDTO = z.infer<typeof UpdateUserDTOSchema>;
-export type _UserUpdateDTOCheck = Assert<
-  IsExact<UserUpdateDTO, UserUpdateShape>
->;
-```
-
-Un detalle respecto a los tipos de usuario:
-
-- `FullUser` representa el modelo completo, incluyendo `password`.
-- `User` es un tipo derivado que omite `password`, porque en la API no queremos exponerlo ni siquiera como hash.
 
 #### Qué hemos conseguido con este enfoque
 
@@ -1771,7 +2351,7 @@ Sus funciones serán las siguientes:
 
 **Montaje en la aplicación**: Una vez definidos el repositorio, el controlador y el router para la entidad Film, se integran en la aplicación principal. En el archivo `app.ts`, se instancia el repositorio pasando el cliente de prisma, luego se instancia el controlador pasando el repositorio, y finalmente se instancia el router pasando el controlador. El router se conecta a la aplicación utilizando `app.use()` para que las rutas relacionadas con films estén disponibles en la API.
 
-## Usuarios
+## Usuarios (User)
 
 Los usuarios comportan una serie de características especiales que requieren un diseño específico, por su papel en dor elementos clave
 de las políticas de servicio.
@@ -1925,6 +2505,35 @@ En nuestra arquitectura,
 - desde `env.ts` importaremos `JWT_SECRET` como parte de `env`, para que esté disponible en toda la aplicación a través de `env.JWT_SECRET` y pueda ser utilizada en el resto del proyecto
 - esta variable se usará en el `AuthService` para generar y verificar los JWTs
 
+Una forma sencilla de obtener un secreto robusto es generar una cadena aleatoria de 32 caracteres utilizando herramientas como `openssl`:
+
+```shell
+openssl rand -base64 32
+```
+
+Esto funcionará en cualquier sistema que tenga OpenSSL instalado, incluyendo Linux, macOS y Windows (con WSL o Git Bash). Teniendo instalado el Git Bash, se puede añadir al path para poder ejecutar el comando directamente en la terminal de Windows. Podemos hacerlo por consola, para la sesión actual, o modificando "Variables de entorno" en la configuración del sistema para que el cambio sea permanente.
+
+```cmd
+set PATH=C:\Program Files\Git\usr\bin;%PATH%
+```
+
+En Windows, también se puede usar PowerShell modificar el path permanentemente
+
+```PowerShell
+[Environment]::SetEnvironmentVariable(
+  "Path",
+  "C:\Program Files\Git\usr\bin;" + [Environment]::GetEnvironmentVariable("Path", "User"),
+  "User"
+)
+```
+
+O directamente para generar un secreto aleatorio:
+
+```powershell
+Add-Type -AssemblyName System.Web
+[System.Web.Security.Membership]::GeneratePassword(32, 0)
+``` 
+
 #### Servicio auth y token JWT
 
 Se utiliza la librería [`jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken) para generar y verificar JWTs.
@@ -2017,6 +2626,10 @@ Los errores se capturan en el catch, se loguea el error y se devuelve null. Esto
     - middleware/
       - `validations.ts` (definición de los schemas de zod para validación de los datos)
     - users/
+      - entities/
+        - `user.entity.ts` (definición de las entidades User y Profile: schemas de zod para validación, interfaces de TypeScript)
+        - `user.dtos.ts` (definición de los DTOs para las entidades User y Profile, incluyendo schemas de zod para validación de los datos de entrada en las rutas relacionadas con usuarios)
+        - `zod.prisma.ts` (check de que los schemas de zod de User y Profile coinciden con el modelo definido en Prisma)
       - repositories/
         - `users.repository.ts` (clase con la lógica de acceso a datos para la entidad User)
         - `users.repository.test.ts` (tests unitarios para el repositorio de usuarios)
@@ -2620,55 +3233,82 @@ Para validar los datos de entrada en las solicitudes relacionadas con users, se 
     - middleware/
       - `validations.ts` (definición de los schemas de zod para validación de los datos)
 - cada validador es un middleware de Express que utiliza el schema de zod que recibe como parámetro
-  - validateId: middleware para validar que el parámetro id en la ruta es un número entero positivo
+  - validateParmas: middleware para validar que el parámetro id en la ruta es un número entero positivo
   - validateBody: middleware para validar que el cuerpo de la solicitud cumple con el schema de zod correspondiente a la operación que se está realizando (creación o actualización de users)
 - estos middlewares se pueden utilizar en las rutas definidas en el router de users para asegurar que los datos recibidos en las solicitudes cumplen con el formato esperado antes de ser procesados por el controlador y el repositorio.
 
-#### Validador de ID
+#### [Mejora] Validador de ID y otros parámetros
 
-El validador de ID es un middleware que se encarga de validar que el parámetro `id` en la ruta es un número entero positivo. Utiliza un schema de zod para realizar esta validación y, si el ID no es válido, devuelve una respuesta con un error de tipo `400 Bad Request` indicando que el ID proporcionado no es válido.
+El validador de los parámetros es un middleware que se encarga de validar los para´metros de la URL en base al esquema zod que recibe
+
+Cuando no recibe ningún schema, por defecto, valida que el parámetro `id` en la ruta es un número entero positivo. Utiliza un schema de zod para realizar esta validación y, si el ID no es válido, devuelve una respuesta con un error de tipo `400 Bad Request` indicando que el ID proporcionado no es válido.
 
 ```ts
-export const validateId = (
-  schema: ZodObject = z.object({ id: z.coerce.number().int().positive() }),
-) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    log('Validating ID...');
-    const { id } = req.params;
-    if (!id) {
-      const error = new HttpError(400, 'Bad Request', 'Animal ID is required');
-      next(error);
-    }
-    try {
-      schema.parse({ id });
-      next();
-    } catch (error) {
-      next(error);
-    }
-  };
+export const validateParams = ( schema: ZodObject = z.strictObject({
+        id: z.coerce.number().int().positive(),
+    })) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        log('Validating request params...');
+        try {
+            schema.parse(req.params);
+            return next();
+        } catch (error) {
+            const { id } = req.params;
+            if (!id) {
+                const idError = new BadRequestError('Entity ID is required', {cause: error});
+                return next(idError);
+            }
+            const paramsError = new BadRequestError(`Invalid parameter: ${id}`, {cause: error});
+            return next(paramsError);
+        }
+    };
 };
 ```
 
-##### Validador de Body
+En este caso se valida pero no se recuperan los valores trasnformados. Al utilizar los ids seguirá siendo necesario aplicar la coerciío a number. Una opción más eficaz, que aplicaremos en el siguiente ejemplo , sería roger los valores transformados por zod, en caso de que loas haya (como sucede en el schema por defecto)
+
+```ts
+export const validateParams = ( schema: ZodObject = z.strictObject({
+        id: z.coerce.number().int().positive(),
+    })) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        log('Validating request params...');
+        try {
+            const validationResult = schema.parse(req.params);
+            // Actualiza los parámetros de la solicitud con los datos validados
+            // incluyendo posibles transformaciones realizadas por Zod
+            req.params = validationResult;
+            return next();
+        } catch (error) {
+            // el mismo código
+        }
+    };
+};
+```
+
+##### [Mejora] Validador de Body
 
 El validador de body es un middleware que se encarga de validar que el cuerpo de la solicitud cumple con el schema de zod correspondiente a la operación que se está realizando (creación o actualización de users). Recibe como parámetro el schema de zod que se desea utilizar para la validación y, si los datos no son válidos, devuelve una respuesta con un error de tipo `400 Bad Request` indicando que los datos proporcionados no son válidos.
 
 ```ts
 export const validateBody = (schema: ZodObject) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    log('Validating request body...');
-    try {
-      const validationResult = schema.parse(req.body);
-      // Actualiza el body de la solicitud con los datos validados
-      // incluyendo posibles transformaciones realizadas por Zod
-      req.body = validationResult;
-      next();
-    } catch (error) {
-      next(error);
-    }
-  };
+    return (req: Request, res: Response, next: NextFunction) => {
+        log('Validating request body...');
+        try {
+            const validationResult = schema.parse(req.body);
+            // Actualiza el body de la solicitud con los datos validados
+            // incluyendo posibles transformaciones realizadas por Zod
+            req.body = validationResult;
+            return next();
+        } catch (error) {
+            const bodyError = new BadRequestError('Invalid request body', {cause: error});
+            return next(bodyError);
+        }
+    };
 };
 ```
+
+En ambos validadores se capturan los errores de zod y se convierten en errores personalizados de tipo `BadRequestError`, que extienden la clase `HttpError` y añaden un mensaje específico para indicar que los datos proporcionados no son válidos. Estos errores se pasan al middleware de errores utilizando `next()`, lo que permite generar una respuesta HTTP adecuada con un código de estado `400 Bad Request` y un mensaje descriptivo del error.
 
 NOTA: puede ser interesante cambiar los schemas de zod usando strictObject para evitar que se permitan campos adicionales no definidos en el schema, lo que puede ayudar a prevenir errores o ataques relacionados con datos inesperados en las solicitudes.
 
@@ -2700,18 +3340,18 @@ export class UsersRouter {
     this.#router.get('/', this.#controller.getAllUsers.bind(this.#controller));
     this.#router.get(
       '/:id',
-      validateId(),
+      validateParmas(),
       this.#controller.getUserById.bind(this.#controller),
     );
     this.#router.patch(
       '/:id',
-      validateId(),
+      validateParmas(),
       validateBody(UpdateUserDTOSchema),
       this.#controller.updateUser.bind(this.#controller),
     );
     this.#router.delete(
       '/:id',
-      validateId(),
+      validateParmas(),
       this.#controller.deleteUser.bind(this.#controller),
     );
   }
@@ -3050,7 +3690,7 @@ export class AuthInterceptor {
 }
 ```
 
-## Películas y géneros
+## Películas (Film)
 
 [GET] /api/films - 200 OK
 [GET] /api/films/:id - 200 OK / 404 Not Found
@@ -3058,27 +3698,23 @@ export class AuthInterceptor {
 [PATCH] /api/films/:id [Admin/Editor] - 200 OK / 404 Not Found
 [DELETE] /api/films/:id [Admin/Editor] - 204 No Content / 404 Not Found
 
-[GET] /api/genres - 200 OK
-[POST] /api/genres [Admin/Editor] - 201 Created
-[PUT] /api/genres/:id [Admin/Editor] - 200 OK / 404 Not Found
-[DELETE] /api/genres:id [Admin/Editor] - 200 OK / 404 Not Found
+### Estructura de carpetas: Films
 
 - estructura de carpetas
   - src/
     - films/
+      - entities/
+        - `film.entity.ts` (definición de la entidad Film: schemas de zod para validación, interfaces de TypeScript)
+        - `film.dtos.ts` (definición de los DTOs para la entidad Film, incluyendo schemas de zod para validación de los datos de entrada en las rutas relacionadas con películas)
+        - `zod.prisma.ts` (check de que los schemas de zod de Film coinciden con el modelo definido en Prisma)
       - repositories/
         - `films.repository.ts` (definición del repositorio para manejar la persistencia de las películas y géneros utilizando Prisma)
         - `films.repository.test.ts` (tests unitarios para el repositorio de películas)
-        - `genres.repository.ts` (definición del repositorio para manejar la persistencia de los géneros utilizando Prisma)
-        - `genres.repository.test.ts` (tests unitarios para el repositorio de géneros)
       - controllers/
         - `films.controller.ts` (clase para manejar la lógica de negocio relacionada con las películas y géneros)
         - `film.controller.test.ts` (tests unitarios para el controlador de películas)
-        - `genres.controller.ts` (clase para manejar la lógica de negocio relacionada con los géneros)
-        - `genres.controller.test.ts` (tests unitarios para el controlador de géneros)
       - routers/
         - `films.router.ts` (clase para manejar las rutas relacionadas con las películas y géneros, conectando el controlador con las rutas HTTP correspondientes)
-        - `genres.router.ts` (clase para manejar las rutas relacionadas con los géneros, conectando el controlador con las rutas HTTP correspondientes)
 
 ### Repositorio: FilmsRepo
 
@@ -3434,7 +4070,7 @@ La diferencia más importante respecto al módulo de usuarios es esta:
 
 Además, en `films` la validación con Zod ya está completamente conectada en el router:
 
-- `validateId()` valida `req.params.id`;
+- `validateParmas()` valida `req.params.id`;
 - `validateBody(FilmCreateDTOSchema)` valida y normaliza el body de creación;
 - `validateBody(FilmUpdateDTOSchema)` hace lo mismo para la actualización.
 
@@ -3443,7 +4079,7 @@ import { env } from '../../config/env.ts';
 import debug from 'debug';
 
 import { Router } from 'express';
-import { validateBody, validateId } from '../../middleware/validations.ts';
+import { validateBody, validateParmas } from '../../middleware/validations.ts';
 import type { FilmsController } from '../controllers/films.controller.ts';
 import { FilmCreateDTOSchema, FilmUpdateDTOSchema} from '../../zod/film.schemas.ts';
 import { AuthInterceptor } from '../../middleware/auth.interceptor.ts';
@@ -3463,7 +4099,7 @@ export class FilmsRouter {
         this.#authInterceptor = authInterceptor;
     
         this.#router.get('/', this.#controller.getAllFilms.bind(this.#controller));
-        this.#router.get('/:id', validateId(), this.#controller.getFilmById.bind(this.#controller));
+        this.#router.get('/:id', validateParmas(), this.#controller.getFilmById.bind(this.#controller));
         this.#router.post(
             '/',
             validateBody(FilmCreateDTOSchema),
@@ -3474,7 +4110,7 @@ export class FilmsRouter {
 
         this.#router.patch(
             '/:id',
-            validateId(),
+            validateParmas(),
             validateBody(FilmUpdateDTOSchema),
             this.#authInterceptor.authenticate.bind(this.#authInterceptor),
             this.#authInterceptor.authorize(['EDITOR']).bind(this.#authInterceptor),
@@ -3483,7 +4119,7 @@ export class FilmsRouter {
 
         this.#router.delete(
             '/:id',
-            validateId(),
+            validateParmas(),
             this.#authInterceptor.authenticate.bind(this.#authInterceptor),
             this.#authInterceptor.isOwnerOrAdmin.bind(this.#authInterceptor),
             this.#controller.deleteFilm.bind(this.#controller),
@@ -3527,7 +4163,7 @@ const filmsRouter = new FilmsRouter(filmsController, authInterceptor);
 app.use('/api/films', filmsRouter.router);
 ```
 
-## Generos
+## Géneros (Genre)
 
 Loa generos presentan algunas particularidades:
 
@@ -3543,7 +4179,7 @@ En cuanto a la creación se pueden plantear varias opciones de diseño:
 
 La primera opción es más explícita y permite gestionar los géneros de forma autónoma, pero requiere más endpoints y lógica adicional. Permite limitar mejor el número de géneros qcontemplados en la aplicación.
 
-Si optamos por esta opción debemos dirponer de los endpoint correspondientes al CRUD y protegerlos de forma adecuada, por ejemplo permitiendo su uso solo a usuarios con rol `ADMIN` o `EDITOR, de forma similar a lo que sucede con las películas.
+Si optamos por esta opción debemos dirponer de los endpoint correspondientes al CRUD y protegerlos de forma adecuada, por ejemplo permitiendo su uso solo a usuarios con rol `ADMIN` o `EDITOR`, de forma similar a lo que sucede con las películas.
 
 - [GET] /api/genres - 200 OK [No incluirá las películas]
 - [GET] /api/genres/:id - 200 OK / 404 Not Found [incluirá las películas]
@@ -3558,5 +4194,959 @@ Esto hace que al nivel de zod y tipos tenga sentido diferenciar entre Genere y G
 
 En la modiicación se utiliza PUT en lugar de PATCH, ya que el recurso de género es tan simple (1 campo) que el cliente siempre enviará la representación completa del género al actualizarlo. 
 
-## Reviews
+### Estructura de carpetas: Genres
 
+- estructura de carpetas
+  - src/
+    - genres/
+      - entities/
+        - `genre.entity.ts` (definición de la entidad Genre: schemas de zod para validación, interfaces de TypeScript)
+        - `genre.dto.ts` (definición de los DTOs para la entidad Genre, incluyendo schemas de zod para validación de los datos de entrada en las rutas relacionadas con géneros)
+        - `zod.prisma.ts` (check de que los schemas de zod de Genre coinciden con el modelo definido en Prisma)
+      - repo/
+        - `genres.repo.ts` (definición del repositorio para manejar la persistencia de los géneros utilizando Prisma)
+      - controller/
+        - `genres.controller.ts` (clase para manejar la lógica de negocio relacionada con los géneros)
+      - router/
+        - `genres.router.ts` (clase para manejar las rutas relacionadas con los géneros, conectando el controlador con las rutas HTTP correspondientes)
+
+### Repositorio: GenresRepo
+
+La clase `GenresRepo` encapsula el acceso a datos de la entidad `Genre`. Comparte la misma estructura general que `FilmsRepo`, pero aquí el dominio es más simple:
+
+- `Genre` solo tiene un atributo escalar (`name`) además del `id`;
+- la lectura de detalle incluye las películas relacionadas;
+- la creación y actualización reciben únicamente el `name`, no un DTO complejo.
+
+```ts
+import type { AppPrismaClient } from '../../config/db-config.ts';
+import type { Genre, GenreDetail } from '../entities/genre.entity.ts';
+import type { GenreCreateDTO } from '../entities/genre.dto.ts';
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+
+const log = debug(`${env.PROJECT_NAME}:repo:genres`);
+log('Loading genres repo...');
+
+export class GenresRepo {
+    #prisma: AppPrismaClient;
+    constructor(prisma: AppPrismaClient) {
+        this.#prisma = prisma;
+    }
+}
+```
+
+#### Read (GenresRepo)
+
+En lectura se distinguen dos casos:
+
+- `getAllGenres` devuelve la colección simple de géneros, sin incluir películas;
+- `getGenreByID` devuelve un `GenreDetail`, incluyendo las películas relacionadas.
+
+En el detalle, Prisma incluye `films` y, dentro de cada película, vuelve a incluir `genres`, omitiendo el `id` de cada género para mantener la respuesta coherente con `FilmModelSchema`.
+
+```ts
+async getAllGenres(): Promise<Genre[]> {
+    log('Getting all genres');
+    return await this.#prisma.genre.findMany();
+}
+
+async getGenreByID(id: number): Promise<GenreDetail> {
+    log('Getting genre with id %s', id);
+    return await this.#prisma.genre.findUniqueOrThrow({
+        where: {
+            id,
+        },
+        include: {
+            films: {
+                include: {
+                    genres: {
+                        omit: {
+                            id: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+}
+```
+
+#### Create (GenresRepo)
+
+La creación es directa: recibe el `name` ya validado por Zod y lo persiste. No hay relaciones que conectar ni transformaciones adicionales.
+
+```ts
+async createGenre(name: GenreCreateDTO['name']): Promise<Genre> {
+    log('Creating genre with name %s', name);
+    return await this.#prisma.genre.create({
+        data: {
+            name,
+        },
+    });
+}
+```
+
+#### Update (GenresRepo)
+
+La actualización también es muy simple porque el recurso tiene un único campo editable. El repositorio localiza el género por `id` y reemplaza `name`.
+
+```ts
+async updateGenre(id: number, name: GenreCreateDTO['name']): Promise<Genre> {
+    log('Updating genre with id %s', id);
+    return await this.#prisma.genre.update({
+        where: {
+            id,
+        },
+        data: {
+            name,
+        },
+    });
+}
+```
+
+#### Delete (GenresRepo)
+
+La eliminación se resuelve con `delete` sobre la clave primaria y devuelve el género eliminado.
+
+```ts
+async deleteGenre(id: number): Promise<Genre> {
+    log('Deleting genre with id %s', id);
+    return await this.#prisma.genre.delete({
+        where: {
+            id,
+        },
+    });
+}
+```
+
+### Controlador: GenresController
+
+El `GenresController` sigue el mismo patrón que los demás controllers del proyecto:
+
+- recibe la petición HTTP;
+- delega la persistencia en `GenresRepo`;
+- transforma errores técnicos en errores HTTP adecuados.
+
+En este módulo se usan `InternalServerError` y `NotFoundError`, y los métodos distinguen especialmente el error `P2025` de Prisma cuando no existe el género solicitado.
+
+```ts
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+import type { GenresRepo } from '../repo/genres.repo.ts';
+import type { Request, Response, NextFunction } from 'express';
+import { InternalServerError, NotFoundError } from '../../errors/http-error.ts';
+import type { Genre, GenreDetail } from '../entities/genre.entity.ts';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+
+const log = debug(`${env.PROJECT_NAME}:controller:genres`);
+log('Loading genres controller...');
+
+export class GenresController {
+    #repo: GenresRepo;
+    constructor(repo: GenresRepo) {
+        this.#repo = repo;
+    }
+}
+```
+
+#### Read (GenresController)
+
+Los métodos de lectura:
+
+- devuelven `Genre[]` en la colección;
+- devuelven `GenreDetail` en el detalle;
+- convierten `P2025` en `404 Not Found` cuando el género no existe.
+
+```ts
+async getAllGenres(req: Request, res: Response, next: NextFunction) {
+    try {
+        log('Getting all genres...');
+        const genres: Genre[] = await this.#repo.getAllGenres();
+        return res.json(genres);
+    } catch (error) {
+        const finalError = new InternalServerError(
+            'Failed to get all genres',
+            { cause: error },
+        );
+        log('Error getting all genres: %s', finalError.message);
+        return next(error);
+    }
+}
+
+async getGenreById(req: Request, res: Response, next: NextFunction) {
+    try {
+        const id = Number(req.params.id);
+        log('Get Genre: %s', id);
+        const genre: GenreDetail = await this.#repo.getGenreByID(id);
+        return res.json(genre);
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            const notFoundError = new NotFoundError('Genre requested not found', {
+                cause: error,
+            });
+            log('Error getting genre by id: %s', notFoundError.message);
+            return next(notFoundError);
+        }
+        const finalError = new InternalServerError(
+            'Failed to get genre by id',
+            { cause: error },
+        );
+        log('Error getting genre by id: %s', finalError.message);
+        return next(finalError);
+    }
+}
+```
+
+#### Create, Update y Delete (GenresController)
+
+En escritura el controller sigue el patrón habitual: leer `id` o `name` desde la request, delegar en el repositorio y gestionar `P2025` cuando procede.
+
+```ts
+async createGenre(req: Request, res: Response, next: NextFunction) {
+    try {
+        const name: string = req.body.name;
+        log('Creating genre: %s', name);
+        const genre: Genre = await this.#repo.createGenre(name);
+        return res.status(201).json(genre);
+    } catch (error) {
+        const finalError = new InternalServerError(
+            'Failed to create genre',
+            { cause: error },
+        );
+        log('Error creating genre: %s', finalError.message);
+        return next(finalError);
+    }
+}
+
+async updateGenre(req: Request, res: Response, next: NextFunction) {
+    try {
+        const id = Number(req.params.id);
+        const name: string = req.body.name;
+        log('Updating genre with ID: %s', id);
+        const genre: Genre = await this.#repo.updateGenre(id, name);
+        return res.json(genre);
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            const notFoundError = new NotFoundError('Genre for update not found', {
+                cause: error,
+            });
+            log('Error updating genre: %s', notFoundError.message);
+            return next(notFoundError);
+        }
+        const finalError = new InternalServerError(
+            'Failed to update genre',
+            { cause: error },
+        );
+        log('Error updating genre: %s', finalError.message);
+        return next(finalError);
+    }
+}
+
+async deleteGenre(req: Request, res: Response, next: NextFunction) {
+    try {
+        const id = Number(req.params.id);
+        log('Deleting genre: %s', id);
+        await this.#repo.deleteGenre(id);
+        return res.status(204).send();
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            const notFoundError = new NotFoundError('Genre for deletion not found', {
+                cause: error,
+            });
+            log('Error deleting genre: %s', notFoundError.message);
+            return next(notFoundError);
+        }
+        const finalError = new InternalServerError(
+            'Failed to delete genre',
+            { cause: error },
+        );
+        log('Error deleting genre: %s', finalError.message);
+        return next(finalError);
+    }
+}
+```
+
+### Router: GenresRouter
+
+El `GenresRouter` conecta el controller con Express y aplica las validaciones y restricciones de acceso del módulo.
+
+- `GET /api/genres` y `GET /api/genres/:id` son públicas;
+- `POST`, `PUT` y `DELETE` exigen autenticación;
+- en el código actual la autorización está limitada a `EDITOR`.
+
+Además:
+
+- `validateParmas()` valida `req.params.id`;
+- `validateBody(GenreCreateDTOSchema)` valida el body tanto para crear como para actualizar;
+- como `Genre` tiene un único campo editable, se reutiliza el mismo schema en `POST` y `PUT`.
+
+```ts
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+import type { GenresController } from '../controller/genres.controller.ts';
+import { Router } from 'express';
+import { validateBody, validateParmas } from '../../middleware/validations.ts';
+import type { AuthInterceptor } from '../../middleware/auth.interceptor.ts';
+import { GenreCreateDTOSchema } from '../entities/genre.dto.ts';
+
+const log = debug(`${env.PROJECT_NAME}:router:genres`);
+log('Loading genres router...');
+
+export class GenresRouter {
+    #controller: GenresController;
+    #router: Router;
+    #authInterceptor: AuthInterceptor;
+    constructor(
+        controller: GenresController,
+        authInterceptor: AuthInterceptor,
+    ) {
+        log('Initializing genres router...');
+        this.#router = Router();
+        this.#controller = controller;
+        this.#authInterceptor = authInterceptor;
+    }
+}
+```
+
+Las rutas quedan definidas así:
+
+```ts
+this.#router.get(
+    '/',
+    this.#controller.getAllGenres.bind(this.#controller),
+);
+
+this.#router.get(
+    '/:id',
+    validateParmas(),
+    this.#controller.getGenreById.bind(this.#controller),
+);
+
+this.#router.post(
+    '/',
+    validateBody(GenreCreateDTOSchema),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#authInterceptor
+        .authorize(['EDITOR'])
+        .bind(this.#authInterceptor),
+    this.#controller.createGenre.bind(this.#controller),
+);
+
+this.#router.put(
+    '/:id',
+    validateParmas(),
+    validateBody(GenreCreateDTOSchema),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#authInterceptor
+        .authorize(['EDITOR'])
+        .bind(this.#authInterceptor),
+    this.#controller.updateGenre.bind(this.#controller),
+);
+
+this.#router.delete(
+    '/:id',
+    validateParmas(),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#authInterceptor
+        .authorize(['EDITOR'])
+        .bind(this.#authInterceptor),
+    this.#controller.deleteGenre.bind(this.#controller),
+);
+```
+
+En este módulo conviene fijarse en dos diferencias prácticas respecto a lo planteado de forma más abstracta al principio:
+
+- la actualización se implementa con `PUT`, no con `PATCH`;
+- aunque conceptualmente se mencionaba `ADMIN` o `EDITOR`, el código actual restringe la escritura a `EDITOR`.
+
+Como en el resto de routers basados en clases, se utiliza `.bind(this.#controller)` para conservar el contexto correcto de `this`.
+
+### Montaje en la aplicación: Genres
+
+El montaje del módulo en `app.ts` sigue exactamente el mismo patrón de inyección de dependencias que en `users` y `films`: repositorio, controller, router y finalmente registro en la aplicación mediante `app.use`.
+
+```ts
+const authInterceptor = new AuthInterceptor();
+
+const usersRepo = new UsersRepo(prisma);
+const usersController = new UsersController(usersRepo);
+const usersRouter = new UsersRouter(usersController, authInterceptor);
+app.use('/api/users', usersRouter.router);
+
+const filmsRepo = new FilmsRepo(prisma);
+const filmsController = new FilmsController(filmsRepo);
+const filmsRouter = new FilmsRouter(filmsController, authInterceptor);
+app.use('/api/films', filmsRouter.router);
+
+const genresRepo = new GenresRepo(prisma);
+const genresController = new GenresController(genresRepo);
+const genresRouter = new GenresRouter(genresController, authInterceptor);
+app.use('/api/genres', genresRouter.router);
+```
+
+## Reviews (Review)
+
+Las reviews añaden una particularidad importante respecto a `films` y `genres`: no se identifican con un `id` simple, sino mediante una **clave compuesta** formada por `userID` y `filmID`.
+
+Eso encaja bien con la regla de dominio que ya habíamos planteado antes:
+
+- un usuario puede escribir reviews;
+- una película puede recibir muchas reviews;
+- pero un usuario solo puede dejar **una review por película**.
+
+En Prisma, esa restricción queda representada con `@@id([userID, filmID])`, lo que después condiciona tanto los DTOs como el repositorio y las rutas.
+
+Además, en este módulo no basta con un único tipo de salida. En función del caso de uso, el proyecto distingue entre:
+
+- `Review`, como modelo completo con relaciones opcionales;
+- `FilmReview`, para listar reviews de una película;
+- `UserReview`, para listar reviews de un usuario;
+- `ReviewBase`, para respuestas mínimas, por ejemplo en borrado.
+
+### Estructura de carpetas: Reviews
+
+- estructura de carpetas
+  - src/
+    - reviews/
+      - `info.md` (notas específicas del módulo)
+      - entities/
+        - `review.entity.ts` (schemas de Zod y tipos inferidos para `Review`, `FilmReview`, `UserReview` y `ReviewBase`)
+        - `review.dto.ts` (DTOs de creación, actualización y validación de parámetros)
+        - `zod.prisma.ts` (checks de compatibilidad entre los DTOs y los tipos generados por Prisma)
+      - repo/
+        - `reviews.repo.ts` (persistencia y consultas de reviews mediante Prisma)
+      - controller/
+        - `reviews.controller.ts` (lógica HTTP del módulo de reviews)
+      - router/
+        - `reviews.router.ts` (definición de rutas y conexión con middlewares)
+
+### Repositorio: ReviewsRepo
+
+La clase `ReviewsRepo` se encarga del acceso a datos del módulo. Su patrón general es el mismo que en los demás repositorios del proyecto, pero aquí aparecen dos rasgos propios:
+
+- hay consultas orientadas a película y consultas orientadas a usuario;
+- no siempre se devuelve la misma proyección del modelo, por eso se usan tipos distintos como `FilmReview[]`, `UserReview[]` o `ReviewBase`.
+
+```ts
+import type { AppPrismaClient } from '../../config/db-config.ts';
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+import type {
+    ReviewCreateDTO,
+    ReviewUpdateDTO,
+} from '../entities/review.dto.ts';
+import type {
+    FilmReview,
+    ReviewBase,
+    UserReview,
+} from '../entities/review.entity.ts';
+
+const log = debug(`${env.PROJECT_NAME}:repo:reviews`);
+log('Loading reviews repo...');
+
+export class ReviewsRepo {
+    #prisma: AppPrismaClient;
+    constructor(prisma: AppPrismaClient) {
+        this.#prisma = prisma;
+    }
+}
+```
+
+#### Read (ReviewsRepo)
+
+Las dos lecturas principales son:
+
+- `getAllFilmsReviews(filmID)`, que devuelve las reviews de una película;
+- `getAllUserReviews(userID)`, que devuelve las reviews escritas por un usuario.
+
+En ambos casos, el repositorio:
+
+- filtra por una de las dos claves de la relación;
+- omite `filmID` y `userID` del resultado;
+- incluye una vista reducida de `user` y `film`.
+
+Por eso el resultado no se tipa como `Review[]`, sino como `FilmReview[]` o `UserReview[]`.
+
+```ts
+async getAllFilmsReviews(filmID: number): Promise<FilmReview[]> {
+    log('Getting all reviews of film %s', filmID);
+    return await this.#prisma.review.findMany({
+        where: {
+            filmID,
+        },
+        omit: {
+            filmID: true,
+            userID: true,
+        },
+        include: {
+            user: {
+                select: {
+                    profile: {
+                        select: {
+                            firstName: true,
+                            surname: true,
+                        },
+                    },
+                },
+            },
+            film: {
+                select: {
+                    title: true,
+                },
+            },
+        },
+    });
+}
+
+async getAllUserReviews(userID: number): Promise<UserReview[]> {
+    log('Getting all reviews of user with id %s', userID);
+    return await this.#prisma.review.findMany({
+        where: {
+            userID,
+        },
+        omit: {
+            filmID: true,
+            userID: true,
+        },
+        include: {
+            user: {
+                select: {
+                    profile: {
+                        select: {
+                            firstName: true,
+                            surname: true,
+                        },
+                    },
+                },
+            },
+            film: {
+                select: {
+                    title: true,
+                    year: true,
+                    director: true,
+                },
+            },
+        },
+    });
+}
+```
+
+#### Create (ReviewsRepo)
+
+La creación recibe un `ReviewCreateDTO`, pero devuelve una proyección del tipo `FilmReview`, porque la respuesta queda alineada con la vista de reviews sobre una película.
+
+```ts
+async createReview(data: ReviewCreateDTO): Promise<FilmReview> {
+    log('Creating review for film %s by user %s', data.filmID, data.userID);
+    return await this.#prisma.review.create({
+        data: {
+            review: data.review,
+            rate: data.rate,
+            filmID: data.filmID,
+            userID: data.userID,
+        },
+        omit: {
+            filmID: true,
+            userID: true,
+        },
+        include: {
+            user: {
+                select: {
+                    profile: {
+                        select: {
+                            firstName: true,
+                            surname: true,
+                        },
+                    },
+                },
+            },
+            film: {
+                select: {
+                    title: true,
+                },
+            },
+        },
+    });
+}
+```
+
+#### Update y Delete (ReviewsRepo)
+
+La actualización y el borrado utilizan la clave compuesta `userID_filmID`. Eso encaja con la idea de que la review pertenece al usuario autenticado y a una película concreta.
+
+```ts
+async updateReview(
+    userID: number,
+    filmID: number,
+    data: ReviewUpdateDTO,
+): Promise<FilmReview> {
+    log('Updating review for film %s by user %s', filmID, userID);
+    return await this.#prisma.review.update({
+        where: {
+            userID_filmID: {
+                userID,
+                filmID,
+            },
+        },
+        data,
+        omit: {
+            filmID: true,
+            userID: true,
+        },
+        include: {
+            user: {
+                select: {
+                    profile: {
+                        select: {
+                            firstName: true,
+                            surname: true,
+                        },
+                    },
+                },
+            },
+            film: {
+                select: {
+                    title: true,
+                },
+            },
+        },
+    });
+}
+
+async deleteReview(userID: number, filmID: number): Promise<ReviewBase> {
+    log('Deleting review for film %s by user %s', filmID, userID);
+    return await this.#prisma.review.delete({
+        where: {
+            userID_filmID: {
+                userID,
+                filmID,
+            },
+        },
+        omit: {
+            filmID: true,
+            userID: true,
+        },
+    });
+}
+```
+
+### Controlador: ReviewsController
+
+El `ReviewsController` sigue el patrón habitual del proyecto:
+
+- recibe la request HTTP;
+- delega la operación en `ReviewsRepo`;
+- transforma errores técnicos en respuestas HTTP más significativas.
+
+En este módulo se utilizan `InternalServerError` y `NotFoundError`, igual que en otros controllers, y se detecta `P2025` cuando la review, la película o el usuario no existen.
+
+```ts
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+import type { ReviewsRepo } from '../repo/reviews.repo.ts';
+import type { Request, Response, NextFunction } from 'express';
+import { InternalServerError, NotFoundError } from '../../errors/http-error.ts';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client';
+import type {
+    ReviewCreateBodyDTO,
+    ReviewUpdateDTO,
+} from '../entities/review.dto.ts';
+
+const log = debug(`${env.PROJECT_NAME}:controller:reviews`);
+log('Loading reviews controller...');
+
+export class ReviewsController {
+    #repo: ReviewsRepo;
+    constructor(repo: ReviewsRepo) {
+        this.#repo = repo;
+    }
+}
+```
+
+#### Read (ReviewsController)
+
+Las lecturas siguen un patrón muy directo:
+
+- se toma `filmID` o `userID` desde `req.params`;
+- se delega en el repositorio;
+- si Prisma lanza `P2025`, se responde con `404 Not Found`.
+
+```ts
+async getAllFilmsReviews(req: Request, res: Response, next: NextFunction) {
+    try {
+        const reviews = await this.#repo.getAllFilmsReviews(
+            Number(req.params.filmID),
+        );
+        return res.json(reviews);
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            const notFoundError = new NotFoundError(
+                'Film requested not found',
+                {
+                    cause: error,
+                },
+            );
+            return next(notFoundError);
+        }
+
+        const internalError = new InternalServerError(
+            'Failed to get all film reviews',
+            { cause: error },
+        );
+        next(internalError);
+    }
+}
+
+async getAllUserReviews(req: Request, res: Response, next: NextFunction) {
+    try {
+        const reviews = await this.#repo.getAllUserReviews(
+            Number(req.params.userID),
+        );
+        return res.json(reviews);
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            const notFoundError = new NotFoundError(
+                'User requested not found',
+                {
+                    cause: error,
+                },
+            );
+            return next(notFoundError);
+        }
+
+        const internalError = new InternalServerError(
+            'Failed to get all user reviews',
+            { cause: error },
+        );
+        next(internalError);
+    }
+}
+```
+
+#### Create, Update y Delete (ReviewsController)
+
+La creación tiene una particularidad importante: el cliente no envía `userID`, porque se toma del usuario autenticado. Del mismo modo, `filmID` se extrae de la URL.
+
+En actualización y borrado se sigue la misma idea: la review se localiza con el `filmID` de la ruta y el `userID` del token.
+
+```ts
+async createReview(req: Request, res: Response, next: NextFunction) {
+    try {
+        const reviewData: ReviewCreateBodyDTO = req.body;
+        const review = await this.#repo.createReview({
+            ...reviewData,
+            filmID: Number(req.params.filmID),
+            userID: Number(req.user?.id),
+        });
+        return res.status(201).json(review);
+    } catch (error) {
+        const internalError = new InternalServerError(
+            'Failed to create review',
+            { cause: error },
+        );
+        next(internalError);
+    }
+}
+
+async updateReview(req: Request, res: Response, next: NextFunction) {
+    try {
+        const reviewData: ReviewUpdateDTO = req.body;
+        const review = await this.#repo.updateReview(
+            Number(req.user?.id),
+            Number(req.params.filmID),
+            reviewData,
+        );
+        return res.json(review);
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            const notFoundError = new NotFoundError(
+                'Review requested not found',
+                {
+                    cause: error,
+                },
+            );
+            return next(notFoundError);
+        }
+
+        const internalError = new InternalServerError(
+            'Failed to update review',
+            { cause: error },
+        );
+        return next(internalError);
+    }
+}
+
+async deleteReview(req: Request, res: Response, next: NextFunction) {
+    try {
+        await this.#repo.deleteReview(
+            Number(req.user?.id),
+            Number(req.params.filmID),
+        );
+        return res.status(204).send();
+    } catch (error) {
+        if (
+            error instanceof PrismaClientKnownRequestError &&
+            error.code === 'P2025'
+        ) {
+            const notFoundError = new NotFoundError(
+                'Review requested not found',
+                {
+                    cause: error,
+                },
+            );
+            return next(notFoundError);
+        }
+
+        const internalError = new InternalServerError(
+            'Failed to delete review',
+            { cause: error },
+        );
+        return next(internalError);
+    }
+}
+```
+
+### Router: ReviewsRouter
+
+El `ReviewsRouter` conecta el módulo con Express y aplica autenticación y validación.
+
+A diferencia de `films` y `genres`, aquí no hay autorización por rol en las operaciones de escritura. La lógica del módulo se apoya en otra idea:
+
+- cualquier usuario autenticado puede crear, modificar o borrar reviews;
+- pero solo puede actuar sobre **su propia** review, porque el `userID` se toma del token y no de la URL.
+
+Además, este módulo utiliza tanto validación de body como de params:
+
+- `validateParams(ReviewFilmParamsSchema)` valida `filmID`;
+- `validateParams(ReviewUserParamsSchema)` valida `userID`;
+- `validateBody(ReviewCreateBodyDTOSchema)` valida el body de creación sin aceptar `userID` ni `filmID` desde el cliente;
+- `validateBody(ReviewUpdateDTOSchema)` valida el body de actualización.
+
+```ts
+import { Router } from 'express';
+import { env } from '../../config/env.ts';
+import debug from 'debug';
+import type { AuthInterceptor } from '../../middleware/auth.interceptor.ts';
+import type { ReviewsController } from '../controller/reviews.controller.ts';
+import { validateBody, validateParams } from '../../middleware/validations.ts';
+import {
+    ReviewCreateBodyDTOSchema,
+    ReviewFilmParamsSchema,
+    ReviewUpdateDTOSchema,
+    ReviewUserParamsSchema,
+} from '../entities/review.dto.ts';
+
+const log = debug(`${env.PROJECT_NAME}:router:reviews`);
+log('Loading reviews router...');
+
+export class ReviewsRouter {
+    #controller: ReviewsController;
+    #router: Router;
+    #authInterceptor: AuthInterceptor;
+    constructor(
+        controller: ReviewsController,
+        authInterceptor: AuthInterceptor,
+    ) {
+        log('Initializing reviews router...');
+        this.#router = Router();
+        this.#controller = controller;
+        this.#authInterceptor = authInterceptor;
+    }
+}
+```
+
+Las rutas quedan definidas así:
+
+```ts
+this.#router.get(
+    '/films/:filmID',
+    validateParams(ReviewFilmParamsSchema),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#controller.getAllFilmsReviews.bind(this.#controller),
+);
+
+this.#router.get(
+    '/users/:userID',
+    validateParams(ReviewUserParamsSchema),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#controller.getAllUserReviews.bind(this.#controller),
+);
+
+this.#router.post(
+    '/:filmID',
+    validateParams(ReviewFilmParamsSchema),
+    validateBody(ReviewCreateBodyDTOSchema),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#controller.createReview.bind(this.#controller),
+);
+
+this.#router.patch(
+    '/:filmID',
+    validateParams(ReviewFilmParamsSchema),
+    validateBody(ReviewUpdateDTOSchema),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#controller.updateReview.bind(this.#controller),
+);
+
+this.#router.delete(
+    '/:filmID',
+    validateParams(ReviewFilmParamsSchema),
+    this.#authInterceptor.authenticate.bind(this.#authInterceptor),
+    this.#controller.deleteReview.bind(this.#controller),
+);
+```
+
+Las rutas disponibles quedan así:
+
+- `GET /api/reviews/films/:filmID`: lista las reviews de una película;
+- `GET /api/reviews/users/:userID`: lista las reviews de un usuario;
+- `POST /api/reviews/:filmID`: crea una review para la película indicada;
+- `PATCH /api/reviews/:filmID`: actualiza la review del usuario autenticado sobre esa película;
+- `DELETE /api/reviews/:filmID`: elimina la review del usuario autenticado sobre esa película.
+
+Como en el resto de routers basados en clases, se utiliza `.bind(this.#controller)` para conservar el contexto correcto de `this`.
+
+### Montaje en la aplicación: Reviews
+
+La integración final del módulo en `app.ts` sigue exactamente el mismo patrón de inyección de dependencias que en `users`, `films` y `genres`.
+
+```ts
+const reviewsRepo = new ReviewsRepo(prisma);
+const reviewsController = new ReviewsController(reviewsRepo);
+const reviewsRouter = new ReviewsRouter(reviewsController, authInterceptor);
+app.use('/api/reviews', reviewsRouter.router);
+```
+
+## Gestión de ficheros: upload
+
+Para subir ficheros al servidor desde el cliente (navegador) no se puede utilizar el formato JSON, sino que es necesario enviar los datos en formato `multipart/form-data`. 
+
+Para manejar ese tipo de peticiones de forma sencilla, el proyecto incluye un módulo de gestión de ficheros basado en `multer`. Este módulo se encarga de recibir archivos desde el cliente, almacenarlos en el servidor y devolver una URL de acceso.
+
+Ver el fichero `15.Films\info\files.md` para más detalles sobre la implementación de este módulo.
+
+## [ToDo]
+
+- Paginación y filtros: añadir soporte para paginación, ordenación y filtrado en las rutas de listado de películas, géneros y reviews, para mejorar la experiencia de usuario y optimizar el rendimiento.
+- Caducidad del token: implementar un sistema de refresh tokens para renovar el token de acceso cuando caduque, sin necesidad de que el usuario vuelva a autenticarse con sus credenciales.
+- Tests: implementar tests unitarios para repositorios y controllers, y tests de integración para las rutas principales de cada módulo.
+- Documentación: generar documentación automática de la API con herramientas como Swagger o Postman, para facilitar la comprensión de los endpoints disponibles y su uso por parte de clientes o frontend.

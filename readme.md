@@ -1442,22 +1442,18 @@ Ejercicio: Repo de Films
 
 [descanso]
 
-- Prueba con postman 
-
-<!-- 
-
+- Prueba con postman
 
  Nuevo modelo: Reviews
   - Repositorio, Controller, DTOs, Rutas
   - Endpoints
-    - GET /reviews
-    - POST /reviews
-    - GET /reviews/:id 
-    - PATCH /reviews/:id 
-    - DELETE /reviews/:id
+    - GET /reviews/film/:filmId [User]
+    - GET /reviews/user/:userId [User]
+    - GET /reviews/:filmId/:userId [User]
+    - POST /reviews/:filmId/ [User] -> token :userId
+    - PATCH /reviews/:filmId [User] -> token :userId
+    - DELETE /reviews/:filmId [User] -> token :userId
 Rutas review:/id -> Authorization: owner
-
--->
 
 <!-- Extras
 
@@ -1483,7 +1479,7 @@ Rutas review:/id -> Authorization: owner
 
 <!-- Code review del examen
 
-Upload de ficheros desde Angular
+Upload de ficheros desde Front
 Almacenamiento de las imágenes: Cloudinary -->
 
 ## Semana 16 (Mayo) - Módulo 3

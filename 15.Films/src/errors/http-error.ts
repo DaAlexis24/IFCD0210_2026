@@ -17,7 +17,7 @@ export class HttpError extends Error {
         super(message, options);
         this.status = status
         this.statusMessage = statusMessage || ''
-        log('Creating HTTP error: %o', this.status, this.statusMessage, this.message);
+        log('Creating HTTP error: %o', this.status, this.statusMessage);
     }
 }
 

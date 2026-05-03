@@ -1,13 +1,9 @@
 import type { JwtPayload } from 'jsonwebtoken';
-import type { Role } from '../../generated/prisma/enums.ts';
+import type { UserCredentials } from '../users/entities/user.entity.ts';
 
-export interface TokenPayload extends JwtPayload {
-    id: number;
-    email: string;
-    role: Role;
-}
+export interface TokenPayload extends JwtPayload, UserCredentials {}
 
 export interface LoginResult {
     token: string;
-    payload: TokenPayload;
+    credentials: UserCredentials;
 }

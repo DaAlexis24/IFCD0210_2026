@@ -1,23 +1,16 @@
 import type { Request, Response, NextFunction } from 'express';
 import { env } from '../config/env.ts';
 import debug from 'debug';
-import { HttpError } from '../errors/http-error.ts';
+import { ForbiddenError, UnauthorizedError } from '../errors/http-error.ts';
 import { AuthService } from '../services/auth.ts';
 import { Role } from '../../generated/prisma/enums.ts';
 
 const log = debug(`${env.PROJECT_NAME}:middleware:auth`);
-log('Loading middleware (AuthInterceptor)...');
+log('Loading authInterceptor middleware...');
 
-const unauthorizedError = new HttpError(
-    401,
-    'Unauthorized',
-    'Authentication failed. Please provide valid credentials.',
-);
-const forbiddenError = new HttpError(
-    403,
-    'Forbidden',
-    'You do not have permission to access this resource.',
-);
+const unauthorizedErrorMessage =
+    'Authentication failed. Please provide valid credentials.';
+const forbiddenError = 'You do not have permission to access this resource.';
 
 export class AuthInterceptor {
     authenticate(req: Request, res: Response, next: NextFunction) {
@@ -26,13 +19,13 @@ export class AuthInterceptor {
         const authHeader = req.header('Authorization');
         if (!authHeader) {
             log('No authorization header found');
-            return next(unauthorizedError);
+            return next(new UnauthorizedError(unauthorizedErrorMessage));
         }
 
         const [type, token] = authHeader.split(' ');
         if (!token || type !== 'Bearer') {
             log('No valid token found in authorization header');
-            return next(unauthorizedError);
+            return next(new UnauthorizedError(unauthorizedErrorMessage));
         }
 
         try {
@@ -40,7 +33,9 @@ export class AuthInterceptor {
             req.user = payload;
             return next();
         } catch (error) {
-            unauthorizedError.cause = error;
+            const unauthorizedError = new UnauthorizedError(unauthorizedErrorMessage, {
+                cause: error,
+            });
             log('Token verification failed', { error });
             return next(unauthorizedError);
         }
@@ -51,7 +46,7 @@ export class AuthInterceptor {
             log('Authorizing request for roles:', roles);
             if (!req.user) {
                 log('No user information found in request');
-                return next(unauthorizedError);
+                return next(new UnauthorizedError(unauthorizedErrorMessage));
             }
 
             if (
@@ -59,7 +54,7 @@ export class AuthInterceptor {
                 !roles.includes(req.user.role)
             ) {
                 log('User role not authorized', { userRole: req.user.role });
-                return next(forbiddenError);
+                return next(new ForbiddenError(forbiddenError));
             }
 
             return next();
@@ -70,7 +65,7 @@ export class AuthInterceptor {
         log('Checking if user is owner or admin...');
         if (!req.user) {
             log('No user information found in request');
-            return next(unauthorizedError);
+            return next(new UnauthorizedError(unauthorizedErrorMessage));
         }
 
         const resourceOwnerId = Number(req.params.id);
@@ -84,7 +79,7 @@ export class AuthInterceptor {
                 userId: req.user.id,
                 resourceOwnerId,
             });
-            return next(forbiddenError);
+            return next(new ForbiddenError(forbiddenError));
         }
 
         return next();

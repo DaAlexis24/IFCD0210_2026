@@ -1,11 +1,8 @@
 import type { AppPrismaClient } from '../../config/db-config.ts';
 import { env } from '../../config/env.ts';
 import debug from 'debug';
-import type {
-    Film,
-    FilmCreateDTO,
-    FilmUpdateDTO,
-} from '../../zod/film.schemas.ts';
+import type { Film } from '../entities/film.entity.ts';
+import type { FilmCreateDTO, FilmUpdateDTO } from '../entities/film.dto.ts';
 
 const log = debug(`${env.PROJECT_NAME}:repo:films`);
 log('Loading films repo...');
@@ -89,6 +86,13 @@ export class FilmsRepo {
                 rate: filmData.rate,
                 genres: filmData.genres && {
                     set: filmData.genres.map((genre) => ({ name: genre })),
+                },
+            },
+            include: {
+                genres: {
+                    omit: {
+                        id: true,
+                    },
                 },
             },
         });

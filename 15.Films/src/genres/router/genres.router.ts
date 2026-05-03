@@ -2,9 +2,9 @@ import { env } from '../../config/env.ts';
 import debug from 'debug';
 import type { GenresController } from '../controller/genres.controller.ts';
 import { Router } from 'express';
-import { validateBody, validateId } from '../../middleware/validations.ts';
+import { validateBody, validateParams } from '../../middleware/validations.ts';
 import type { AuthInterceptor } from '../../middleware/auth.interceptor.ts';
-import { GenreCreateDTOSchema } from '../../zod/film.schemas.ts';
+import { GenreCreateDTOSchema } from '../entities/genre.dto.ts';
 
 const log = debug(`${env.PROJECT_NAME}:router:genres`);
 log('Loading genres router...');
@@ -29,7 +29,7 @@ export class GenresRouter {
 
         this.#router.get(
             '/:id',
-            validateId(),
+            validateParams(),
             this.#controller.getGenreById.bind(this.#controller),
         );
 
@@ -45,7 +45,7 @@ export class GenresRouter {
 
         this.#router.put(
             '/:id',
-            validateId(),
+            validateParams(),
             validateBody(GenreCreateDTOSchema),
             this.#authInterceptor.authenticate.bind(this.#authInterceptor),
             this.#authInterceptor
@@ -56,7 +56,7 @@ export class GenresRouter {
 
         this.#router.delete(
             '/:id',
-            validateId(),
+            validateParams(),
             this.#authInterceptor.authenticate.bind(this.#authInterceptor),
             this.#authInterceptor
                 .authorize(['EDITOR'])
