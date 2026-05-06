@@ -529,7 +529,7 @@ app.get('/api', async (_req, res) => {
 
 El parámetro `true` o `false` que se le pasa a `HomeView.render` indica si se debe mostrar la información del proyecto (true para `/`, false para `/api`), lo que permite reutilizar la misma vista para ambos endpoints con contenido ligeramente diferente.
 
-#### [Mejora] Vista 
+#### [Mejora] Vista
 
 La vista `HomeView` se encarga de generar el contenido HTML para los endpoints raíz, mostrando información sobre el proyecto y la API obtenida de `readme.md`. Se implementa como ya se ha visto anteriormente, creando una clase con un método estático `render` que recibe un booleano para determinar qué información mostrar.
 

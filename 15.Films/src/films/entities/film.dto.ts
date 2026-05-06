@@ -8,7 +8,7 @@ export const FilmRateDTOSchema = z.coerce
     .min(0)
     .max(9.9)
     .refine(isSingleDecimal, {
-        message: 'rate debe tener como maximo un decimal',
+        message: 'rate debe tener como máximo un decimal',
     });
 
 export const FilmCreateDTOSchema = z.object({

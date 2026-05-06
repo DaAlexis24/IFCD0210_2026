@@ -94,6 +94,7 @@ export const createApp = (prisma: AppPrismaClient) => {
     const reviewsRouter = new ReviewsRouter(reviewsController, authInterceptor);
     app.use('/api/reviews', reviewsRouter.router);
 
+
     app.use(invalidRoutes);
     app.use(errorHandler);
 

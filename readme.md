@@ -27,7 +27,7 @@ Formador / Desarrollador Web FullStack
 6. [Serigne Modou Fall Belle](https://github.com/MODOU19999)
 7. [Ronny Alexander Pin Pincay](https://github.com/ronnyaalez)
 8. [Jefferson Steven Espitia Flórez](https://github.com/Jefferespitia)
-9. [Carlos Amo Martínez](https://github.com/)
+9. [Carlos Amo Martínez](https://github.com/camozzzomac)
 10. [Aranzazu Checa Alvaro](https://github.com/ArantxaCheca)
 
 11. ***
@@ -1444,7 +1444,7 @@ Ejercicio: Repo de Films
 
 - Prueba con postman
 
- Nuevo modelo: Reviews
+- Nuevo modelo: Reviews
   - Repositorio, Controller, DTOs, Rutas
   - Endpoints
     - GET /reviews/film/:filmId [User]
@@ -1471,7 +1471,14 @@ Rutas review:/id -> Authorization: owner
 
 ### Día 1 (L 04/05/2026) - M2.03 09
 
-<!-- Examen Módulo 2 (Primera convocatoria) -->
+Examen Módulo 2 (Primera convocatoria)
+
+- Teórico (1:30 hora)
+
+[descanso]
+
+- Práctico (1:30 hora)
+  - API Rest con Node / Express
 
 ### Día 2 (M 05/05/2026) - M2.03 10
 
@@ -1486,19 +1493,87 @@ Almacenamiento de las imágenes: Cloudinary -->
 
 ### Día 3 (X 06/05/2026) - M3.00 01 - Web - Agile - Testing
 
+<!-- 
+
+- Introducción al módulo
+
+- Internet. Web
+- Ciclo de vida del software
+- Agile: Scrum -->
+
+[descanso]
+
+<!-- Testing
+
+- Introducción. Tipos
+  - Test unitarios
+  - Test de integración
+  - Test de extremo a extremo (E2E)
+- Herramientas de testing en Backend
+  - Node: node:test + assert
+  - Vitest. Instalación y configuración
+  - Supertest
+- Review: Test Driven Development (TDD)
+  - Ejemplo (Fizzbuzz) 
+- Test con Vitest.
+  - Ejemplos en códigos previos
+-->
+
 ### Día 4 (J 07/05/2026) - M3.00 02 - Vitest
 
 ### Día 5 (V 08/05/2026) - M3.00 03 - Test Backend
+
+<!-- Posiblemente pasar aquí todo lo anterior de TEST -->
+
+<!-- 
+- Testing unitario del backend (1)
+  - Repositories -->
 
 ## Semana 17 (Mayo)
 
 ### Día 1 (L 11/05/2026) - M3.00 04 - Test Backend
 
+<!-- Antes 2 días -->
+
+<!-- - Testing unitario del backend (2)
+  - Controllers
+  - Servicios -->
+
+<!-- - Testing unitario del backend (3)
+  - Servicios
+  - Interceptores (Middleware) -->
+
 ### Día 2 (M 12/05/2026) - M3.00 05 - Supertest
+
+<!-- Se podría añadir algo de lo anterior -->
+
+<!-- - Testing de integración del backend
+  - Supertest
+    - Test de rutas (endpoints)
+    - Test de rutas protegidas (auth) -->
 
 ### Día 3 (X 13/05/2026) - M3.00 06 - Test Frontend
 
+<!-- 
+- Test unitario del frontend (1)
+
+  - Creación de un proyecto TS a partir de JS
+  - Tests de un servicio
+  - jsdom y testing-library
+  - Tests de un componente 
+-->
+
 ### Día 4 (J 14/05/2026) - M3.00 07 - Tests Frontend
+
+<!-- 
+
+- Test unitario del frontend (2)
+
+  - Tests de un componente (continuación)
+    - Aspectos estáticos
+    - Caja negra (comportamiento) v. caja blanca (implementación)
+    - Interacciones: Evento click 
+-->
 
 ### Día 5 (V 15/05/2026) - Fiesta
 
@@ -1506,17 +1581,70 @@ Almacenamiento de las imágenes: Cloudinary -->
 
 ### Día 1 (L 18/05/2026) - M3.00 08 - JsDoc - Review Tests
 
-### Día 2 (M 19/05/2026) - M3.00 09 - ¿Test Angular?
+<!-- Añadir lo que arrastre de anteriores -->
+
+<!-- - Test unitario del frontend (3)
+
+  - Revisión de los tests de un componente (conceptos)
+  - Mocking de timers
+  - Nuevos componentes header / addForm
+  - Test de formularios -->
+
+### Día 2 (M 19/05/2026) - M3.00 09 -  Documentación: JsDoc / Swagger
+
+<!-- - Comentarios de documentación
+- Tipos en los comentarios de documentación
+- Generación de documentación a partir de los comentarios: Swagger
+- Uso de la documentación generada -->
+
+<!-- 
+- Entornos: desarrollo y producción (y testing)
+- Procesos de construcción y despliegue  
+-->
 
 ### Día 3 (X 20/05/2026) - M3.00 10 - E2E
 
+<!-- - Test e2e del frontend
+  - Herramientas: Cypress, Playwright...
+  - Playwright. Instalación y configuración
+  - Ejemplos de uso -->
+
 ### Día 4 (J 21/05/2026) - M3.00 11 -  Git y GitHub
 
+<!-- - Git y GitHub
+
+  - Revisión de los conceptos conocidos
+    - Etiquetas: Git reset y git checkout
+    - Ramas: procesos de merge
+    - Remotos: github
+  - Git internals
+    - Objetos: blob, tree y commit
+    - plumbing commands: creación de hashes
+    - Relación entre elementos
+    - estructura interna de la carpeta .git -->
+
 ### Día 5 (V 22/05/2026) - M3.00 12 - Git y GitHub
+
+<!-- - Git y GitHub
+  - Git internals
+  - Comandos Git
+    - git rebase
+    - git commit --amend
+    - rebase interactivo
+    - git cherry-pick
+    - git stash
+  - Flujos de trabajo
+    - Git Flow
+    - GitLab Flow
+    - GitHub Flow / Feature Branch / Trunk Based Development
+    - Ship-show-ask -->
 
 ## Semana 19 (Mayo)
 
 ### Día 1 (L 25/05/2026) - M3.00 13 - CI/CD Husky - GitHub Actions
+
+<!-- Husky -->
+<!-- CD/CD: Github Actions -->
 
 ### Día 2 (M 26/05/2026) - M3.00 14
 
@@ -1528,3 +1656,4 @@ Almacenamiento de las imágenes: Cloudinary -->
 
 ### Día 4 (J 28/05/2026) - M3.00 16 - (2 horas)
 
+<!-- 2 horas -->

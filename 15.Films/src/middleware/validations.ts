@@ -17,12 +17,8 @@ export const validateParams = ( schema: ZodObject = z.strictObject({
             schema.parse(req.params);
             return next();
         } catch (error) {
-            const { id } = req.params;
-            if (!id) {
-                const idError = new BadRequestError('Entity ID is required', {cause: error});
-                return next(idError);
-            }
-            const paramsError = new BadRequestError(`Invalid parameter: ${id}`, {cause: error});
+            const paramsText = JSON.stringify(req.params);
+            const paramsError = new BadRequestError(`Invalid parameters: ${paramsText}`, {cause: error});
             return next(paramsError);
         }
     };
