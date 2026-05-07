@@ -117,7 +117,7 @@ describe("factorial", () => {
     { n: 1, expected: 1 },
     { n: 2, expected: 2 },
     { n: 5, expected: 120 },
-  ])("should return %i when n is %i", ({ n, expected }) => {
+  ])("should return $expected when n is $n", ({ n, expected }) => {
     expect(factorial(n)).toBe(expected);
   });
 });

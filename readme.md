@@ -1305,7 +1305,7 @@ docker run -d --name postgres --shm-size=1g -e POSTGRES_USER=postgres -e POSTGRE
 API REST Películas
 
 Nuevo proyecto: API REST con Prisma: Películas
-  
+
 - proyecto: Films - Users - Reviews
 
 Presentación de la Arquitectura distribuida
@@ -1348,7 +1348,7 @@ Ya consumidos
 - (L 23/03/2026) - M2.03 04 - 04 - Frontend OOP - Despliegue
 -->
 
-### Día 1 (L 27/04/2026) - M2.03 05  - Login / Validación 
+### Día 1 (L 27/04/2026) - M2.03 05 - Login / Validación
 
 - Aplicaciones Web Distribuidas
   - Conceptos
@@ -1361,7 +1361,7 @@ Ya consumidos
   - Schemas de Zod y tipos
   - DB Seed
   - Entorno de test: Seed
-  
+
 [descanso]
 
 - Usuarios: Autenticación: Login
@@ -1371,7 +1371,7 @@ Ya consumidos
 - Router
 - Montaje de la API REST
 
-### Día 2 (M 28/04/2026) - M2.03 06  - Proyecto Films (Back)
+### Día 2 (M 28/04/2026) - M2.03 06 - Proyecto Films (Back)
 
 - Revisión de la feature usuarios (echo fuera de clase)
 
@@ -1381,8 +1381,6 @@ Ya consumidos
   - PATCH /users/role/:id
   - PATCH /users/:id
   - DELETE /users/:id
-
-  
 - Completando el control de Errors
   - Errores de Prisma
   - eliminando SqlError
@@ -1425,7 +1423,7 @@ Ejercicio: Repo de Films
 - Revisión del ejercicios
 - Controllers de films. Gestión de errores
 - Rutas de films -> validación, interceptores de auth
-- montaje en app.  
+- montaje en app.
 - revisar en postman; especialmente Auth
 
 ### Día 4 (J 30/04/2026) - M2.03 08 - Proyecto Films (Back)
@@ -1446,14 +1444,8 @@ Ejercicio: Repo de Films
 
 - Nuevo modelo: Reviews
   - Repositorio, Controller, DTOs, Rutas
-  - Endpoints
-    - GET /reviews/film/:filmId [User]
-    - GET /reviews/user/:userId [User]
-    - GET /reviews/:filmId/:userId [User]
-    - POST /reviews/:filmId/ [User] -> token :userId
-    - PATCH /reviews/:filmId [User] -> token :userId
-    - DELETE /reviews/:filmId [User] -> token :userId
-Rutas review:/id -> Authorization: owner
+  - Endpoints - GET /reviews/film/:filmId [User] - GET /reviews/user/:userId [User] - GET /reviews/:filmId/:userId [User] - POST /reviews/:filmId/ [User] -> token :userId - PATCH /reviews/:filmId [User] -> token :userId - DELETE /reviews/:filmId [User] -> token :userId
+    Rutas review:/id -> Authorization: owner
 
 <!-- Extras
 
@@ -1461,7 +1453,7 @@ Rutas review:/id -> Authorization: owner
 - Films:permite añadir/eliminar géneros posteriormente
   - POST /films/:id/genres/:id
   - DELETE /films/:id/genres/:id
-  - PATCH /films/:id/genres/:id  
+  - PATCH /films/:id/genres/:id
 
 -->
 
@@ -1482,7 +1474,7 @@ Examen Módulo 2 (Primera convocatoria)
 
 ### Día 2 (M 05/05/2026) - M2.03 10
 
-Examen Módulo 2 (Segunda convocatoria) 
+Examen Módulo 2 (Segunda convocatoria)
 
 Code review del examen [teoría]
 
@@ -1492,14 +1484,13 @@ Code review del examen [práctica]
 
 - Ejemplo completo de API Rest con Node / Express
 
-
 ## Semana 16 (Mayo) - Módulo 3
 
 ### Día 3 (X 06/05/2026) - M3.00 01 - Web - Agile - Testing
 
 - Comentario (breve)
   - Upload de ficheros desde Front
-  - Almacenamiento de las imágenes: Cloudinary --> 
+  - Almacenamiento de las imágenes: Cloudinary -->
 
 - Introducción al módulo 3
 
@@ -1533,9 +1524,10 @@ Code review del examen [práctica]
 - Contenedores (Docker)
 
 - Ciclo de vida del software
-  - Agile: Scrum  
+  - Agile: Scrum
 
-<!-- 
+### Día 4 (J 07/05/2026) - M3.00 02 - Vitest
+
 Testing
 
 - Introducción. Tipos
@@ -1545,35 +1537,44 @@ Testing
 - Herramientas de testing en Backend
   - Node: node:test + assert
   - Vitest. Instalación y configuración
-  - Supertest
-- Review: Test Driven Development (TDD)
-  - Ejemplo (Fizzbuzz) 
-- Test con Vitest.
-  - Ejemplos en códigos previos
--->
+  - Supertest (e2e)
 
-### Día 4 (J 07/05/2026) - M3.00 02 - Vitest
+- Test con Vitest.
+  - Instalación y configuración
+  - Patrones de test
+    - AAA (Arrange, Act, Assert)
+    - Given-When-Then (gherkin)
+  - Ejemplo básico
+
+[descanso]
+
+- Review: Test Driven Development (TDD)
+  - Ejemplo (Fizzbuzz)
+    - Stubs: Mocks y Spies: console.log
+  - Factorial. Automatización de casos de prueba
+- Coverage y casos de prueba
+- Matchers. Ejercicios
 
 ### Día 5 (V 08/05/2026) - M3.00 03 - Test Backend
 
-<!-- Posiblemente pasar aquí todo lo anterior de TEST -->
-
-<!-- 
+<!--
 - Testing unitario del backend (1)
-  - Repositories -->
+  - Clone del proyecto Films
+  - Vitest. Instalación y configuración
+-->
+
+<!--
+- Testing unitario del backend (2)
+  - Repositories 
+  - Controllers
+-->
 
 ## Semana 17 (Mayo)
 
 ### Día 1 (L 11/05/2026) - M3.00 04 - Test Backend
 
-<!-- Antes 2 días -->
-
-<!-- - Testing unitario del backend (2)
-  - Controllers
-  - Servicios -->
-
 <!-- - Testing unitario del backend (3)
-  - Servicios
+  - Servicios 
   - Interceptores (Middleware) -->
 
 ### Día 2 (M 12/05/2026) - M3.00 05 - Supertest
@@ -1587,25 +1588,25 @@ Testing
 
 ### Día 3 (X 13/05/2026) - M3.00 06 - Test Frontend
 
-<!-- 
+<!--
 - Test unitario del frontend (1)
 
   - Creación de un proyecto TS a partir de JS
   - Tests de un servicio
   - jsdom y testing-library
-  - Tests de un componente 
+  - Tests de un componente
 -->
 
 ### Día 4 (J 14/05/2026) - M3.00 07 - Tests Frontend
 
-<!-- 
+<!--
 
 - Test unitario del frontend (2)
 
   - Tests de un componente (continuación)
     - Aspectos estáticos
     - Caja negra (comportamiento) v. caja blanca (implementación)
-    - Interacciones: Evento click 
+    - Interacciones: Evento click
 -->
 
 ### Día 5 (V 15/05/2026) - Fiesta
@@ -1623,16 +1624,16 @@ Testing
   - Nuevos componentes header / addForm
   - Test de formularios -->
 
-### Día 2 (M 19/05/2026) - M3.00 09 -  Documentación: JsDoc / Swagger
+### Día 2 (M 19/05/2026) - M3.00 09 - Documentación: JsDoc / Swagger
 
 <!-- - Comentarios de documentación
 - Tipos en los comentarios de documentación
 - Generación de documentación a partir de los comentarios: Swagger
 - Uso de la documentación generada -->
 
-<!-- 
+<!--
 - Entornos: desarrollo y producción (y testing)
-- Procesos de construcción y despliegue  
+- Procesos de construcción y despliegue
 -->
 
 ### Día 3 (X 20/05/2026) - M3.00 10 - E2E
@@ -1642,7 +1643,7 @@ Testing
   - Playwright. Instalación y configuración
   - Ejemplos de uso -->
 
-### Día 4 (J 21/05/2026) - M3.00 11 -  Git y GitHub
+### Día 4 (J 21/05/2026) - M3.00 11 - Git y GitHub
 
 <!-- - Git y GitHub
 
