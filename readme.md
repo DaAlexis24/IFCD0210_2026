@@ -1482,28 +1482,61 @@ Examen Módulo 2 (Primera convocatoria)
 
 ### Día 2 (M 05/05/2026) - M2.03 10
 
-<!-- Examen Módulo 2 (Segunda convocatoria) -->
+Examen Módulo 2 (Segunda convocatoria) 
 
-<!-- Code review del examen
+Code review del examen [teoría]
 
-Upload de ficheros desde Front
-Almacenamiento de las imágenes: Cloudinary -->
+[descanso]
+
+Code review del examen [práctica]
+
+- Ejemplo completo de API Rest con Node / Express
+
 
 ## Semana 16 (Mayo) - Módulo 3
 
 ### Día 3 (X 06/05/2026) - M3.00 01 - Web - Agile - Testing
 
-<!-- 
+- Comentario (breve)
+  - Upload de ficheros desde Front
+  - Almacenamiento de las imágenes: Cloudinary --> 
 
-- Introducción al módulo
+- Introducción al módulo 3
 
 - Internet. Web
-- Ciclo de vida del software
-- Agile: Scrum -->
+- Aspectos prácticos
+  - Terminales: WSL, Docker, Git Bash, Windows Terminal
+  - Ubicaciones: VPS, Hosting, Cloud
+  - Terminología:
+    - Capas de la red: física, enlace, red, transporte, sesión, presentación y aplicación
+    - Protocolos:
+      - HTTP: HyperText Transfer Protocol
+      - HTTPS: HTTP Secure
+      - FTP: File Transfer Protocol
+      - SMTP: Simple Mail Transfer Protocol
+      - SSH: Secure Shell
+      - TCP/IP: Transmission Control Protocol / Internet Protocol
+      - UDP: User Datagram Protocol
+      - DNS: Domain Name System
+      - SSL/TLS: Secure Sockets Layer / Transport Layer Security
 
 [descanso]
 
-<!-- Testing
+- Terminología:
+  - DNS: resolución de nombres de dominio
+  - IP: IPv4 e IPv6
+  - Puertos y protocolos
+  - Cliente-Servidor
+  - Servidores Web
+    - Servidores web específicos: Nginx, Apache como proxy inverso para Node.js
+    - Virtual Server. PM2 como gestor de procesos para Node.js
+- Contenedores (Docker)
+
+- Ciclo de vida del software
+  - Agile: Scrum  
+
+<!-- 
+Testing
 
 - Introducción. Tipos
   - Test unitarios

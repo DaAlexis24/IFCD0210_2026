@@ -248,6 +248,7 @@ app.post('/upload', fileInterceptor.single('file'), (req, res) => {
     .then((result) => console.log(result));
 });
 ```
+
 Después de que la request de subida de un fichero se procese con multer, su propiedad `files` tendrá un objeto file con la información del fichero subido, incluyendo su ruta en el disco. Esta ruta se puede utilizar para subir el fichero a Cloudinary.
 
 Una alternativa sería utilizar el buffer del fichero, en lugar de su ruta en el disco, para subirlo a Cloudinary, sin necesidad de que multer lo guarde en el disco:
