@@ -38,6 +38,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     globals: true,
+    setupFiles: './src/config/setup-test.ts'
   },
 });
 ```
@@ -51,6 +52,14 @@ export default defineConfig({
     "types": [..., "vitest/globals"]
   }
 }
+```
+
+- Agregar setup para tests en `src/config/setup-test.ts`:
+
+```typescript
+import { loadEnvFile } from "node:process"; 
+
+loadEnvFile('.env.test')
 ```
 
 ## Estructura del proyecto

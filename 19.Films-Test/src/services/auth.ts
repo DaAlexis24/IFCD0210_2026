@@ -9,7 +9,7 @@ log('Loading auth service...');
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class AuthService {
-    static saltRounds = 12;
+    static saltRounds = env.SALT_ROUND;
 
     static hash(password: string): Promise<string> {
         return hash(password, this.saltRounds);
@@ -27,7 +27,34 @@ export class AuthService {
         );
     }
 
+    static generateTokenAsync(payload: TokenPayload): Promise<string> {
+        return new Promise((resolve) => {
+            jwt.sign(
+                payload,
+                env.JWT_SECRET,
+                //{ expiresIn: '1h' }
+                (_err, token) => {
+                    // if (err) {
+                    //     reject(err);
+                    // }
+                    resolve(token as string);
+                },
+            );
+        });
+    }
+
     static verifyToken(token: string): TokenPayload {
         return jwt.verify(token, env.JWT_SECRET) as TokenPayload;
+    }
+
+    static verifyTokenAsync(token: string): Promise<TokenPayload> {
+        return new Promise((resolve, reject) => {
+            jwt.verify(token, env.JWT_SECRET, (err, payload) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(payload as TokenPayload);
+            });
+        });
     }
 }

@@ -13,7 +13,7 @@ const unauthorizedErrorMessage =
 const forbiddenError = 'You do not have permission to access this resource.';
 
 export class AuthInterceptor {
-    authenticate(req: Request, res: Response, next: NextFunction) {
+    async authenticate(req: Request, res: Response, next: NextFunction) {
         log('Authenticating request...');
 
         const authHeader = req.header('Authorization');
@@ -29,7 +29,7 @@ export class AuthInterceptor {
         }
 
         try {
-            const payload = AuthService.verifyToken(token);
+            const payload = await AuthService.verifyTokenAsync(token);
             req.user = payload;
             return next();
         } catch (error) {

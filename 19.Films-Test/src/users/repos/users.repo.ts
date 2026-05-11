@@ -85,7 +85,7 @@ export class UsersRepo {
             email: result.email,
             role: result.role,
         };
-        const token = AuthService.generateToken(credentials);
+        const token = await AuthService.generateTokenAsync(credentials);
 
         return {
             credentials: credentials,

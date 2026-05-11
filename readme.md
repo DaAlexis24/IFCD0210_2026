@@ -1535,7 +1535,7 @@ Testing
   - Test de integración
   - Test de extremo a extremo (E2E)
 - Herramientas de testing en Backend
-  - Node: node:test + assert
+  - Node: node:test + node:assert
   - Vitest. Instalación y configuración
   - Supertest (e2e)
 
@@ -1557,24 +1557,42 @@ Testing
 
 ### Día 5 (V 08/05/2026) - M3.00 03 - Test Backend
 
-<!--
 - Testing unitario del backend (1)
   - Clone del proyecto Films
   - Vitest. Instalación y configuración
--->
 
-<!--
+- Refactors en el proyecto Films
+  - server/handlers
+  - Index.ts + server.ts
+    - encapsulación en clases/funciones
+    - mínimo de lógica directamente en módulos (e.g. en index.ts) 
+
+
 - Testing unitario del backend (2)
-  - Repositories 
-  - Controllers
--->
+  - Servicios 
+    - Problemas con el environment: mock de Zod
+
+[descanso]
+
+- Testing unitario del backend (2 - continuación)
+  - Configuración de Vitest: read .env.test
+  - Servicios (Auth)
+    - Tests de integración: con librerías bcrypt y jsonwebtoken
+    - Refactor de jsonwebtoken tools: asincronía y promisificación 
+  - Repositories: Films repo (happy path)
+
+- Challenge: Testing unitario del backend
+  - Completar los tests del repositorio de films (happy path)
+  - Completar happy path de otros repositorios (users, genres)
+  - Repositories (errores) 
 
 ## Semana 17 (Mayo)
 
 ### Día 1 (L 11/05/2026) - M3.00 04 - Test Backend
 
 <!-- - Testing unitario del backend (3)
-  - Servicios 
+  - Repositories (errores) 
+  - Controllers
   - Interceptores (Middleware) -->
 
 ### Día 2 (M 12/05/2026) - M3.00 05 - Supertest
@@ -1586,62 +1604,71 @@ Testing
     - Test de rutas (endpoints)
     - Test de rutas protegidas (auth) -->
 
-### Día 3 (X 13/05/2026) - M3.00 06 - Test Frontend
+### Día 3 (X 13/05/2026) - M3.00 06 - Frontend
 
 <!--
-- Test unitario del frontend (1)
 
-  - Creación de un proyecto TS a partir de JS
-  - Tests de un servicio
-  - jsdom y testing-library
-  - Tests de un componente
+- Preparación del Frontend para el testing
+  - Creación de un proyecto Vite/TS
+  - Web Components
+
+- Test unitario del frontend (1)
+  - Configuración de Vitest
+  - Configuración de jsdom y testing-library
+
 -->
 
-### Día 4 (J 14/05/2026) - M3.00 07 - Tests Frontend
+### Día 4 (J 14/05/2026) - M3.00 07 - Tests Frontend: Componentes (1)
 
 <!--
 
 - Test unitario del frontend (2)
-
-  - Tests de un componente (continuación)
+    - Tests de un servicio
+    - Tests de un componente
     - Aspectos estáticos
     - Caja negra (comportamiento) v. caja blanca (implementación)
-    - Interacciones: Evento click
+
 -->
 
 ### Día 5 (V 15/05/2026) - Fiesta
 
 ## Semana 18 (Mayo)
 
-### Día 1 (L 18/05/2026) - M3.00 08 - JsDoc - Review Tests
+### Día 1 (L 18/05/2026) - M3.00 08 - Tests Frontend: Componentes (2) 
 
-<!-- Añadir lo que arrastre de anteriores -->
+<!-- - Test unitario del frontend (2)
 
-<!-- - Test unitario del frontend (3)
+  - Tests de un componente (continuación)
+    - Interacciones: Evento click
+    - Mocking de timers
+    - Nuevos componentes header / addForm
+    - Test de formularios 
 
-  - Revisión de los tests de un componente (conceptos)
-  - Mocking de timers
-  - Nuevos componentes header / addForm
-  - Test de formularios -->
+-->
 
-### Día 2 (M 19/05/2026) - M3.00 09 - Documentación: JsDoc / Swagger
+### Día 2 (M 19/05/2026) - M3.00 09 - E2E
 
 <!-- - Comentarios de documentación
+- Entornos: desarrollo y producción (y testing)
+- Test e2e del frontend
+  - Herramientas: Cypress, Playwright...
+  - Playwright. Instalación y configuración
+  - Ejemplos de uso 
+
+-->
+
+### Día 3 (X 20/05/2026) - M3.00 10 -  Documentación: JsDoc / Swagger
+
+<!-- 
 - Tipos en los comentarios de documentación
 - Generación de documentación a partir de los comentarios: Swagger
-- Uso de la documentación generada -->
+- Uso de la documentación generada 
+-->
 
 <!--
 - Entornos: desarrollo y producción (y testing)
 - Procesos de construcción y despliegue
 -->
-
-### Día 3 (X 20/05/2026) - M3.00 10 - E2E
-
-<!-- - Test e2e del frontend
-  - Herramientas: Cypress, Playwright...
-  - Playwright. Instalación y configuración
-  - Ejemplos de uso -->
 
 ### Día 4 (J 21/05/2026) - M3.00 11 - Git y GitHub
 

@@ -14,48 +14,54 @@ npm create vite@latest my-react-app --template react
 
 En el proyecto debemos añadir Jest y configurarlo de forma un poco diferente a como explicamos en la unidad correspondiente al backend.
 
-#### Configuración de Jest en un proyecto Vite
+#### Configuración de Vitest en un proyecto Vite
 
-Para configurar Jest en un proyecto Vite, necesitamos instalar las siguientes dependencias:
+Para configurar Vitest en un proyecto Vite, debemos instalar las siguientes dependencias:
 
 ```sh
-npm install -D jest
-npm install -D @babel/preset-env @babel/preset-react
-npm install -D jest-svg-transformer identity-obj-proxy
+npm install -D vitest @vitest/coverage-v8
 ```
 
-Los paquetes de babel dan soporte a uso de ESM y JSX por parte de Jest.
-Los paquetes de jest-svg-transformer e identity-obj-proxy son necesarios para que Jest pueda interpretar las importaciones de archivos SVG y archivos CSS, propias de Vite.
+A continuación, debemos crear un archivo de configuración para Vitest en la raíz del proyecto, llamado `vitest.config.ts`, con el siguiente contenido:
 
-Para configurar el uso de estas dependencias, podemos crear ficheros específicos de configuración de Babel y Jest, o añadir las configuraciones necesarias en el fichero package.json.
+```ts
+/// <reference types="vitest/config" />
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    // opcionalmente
+    include: ['**/*.test.ts', '**/*.test.tsx'],
+    // opcionalmente, para configurar la cobertura
+    coverage: {
+      include: ['src/**/*.ts'],
+      exclude: ['src/index.ts', 'src/**/types/*.ts'],
+    },
+  },
+});
+```
+
+Se actualiza `tsconfig.app.json` y `tsconfig.node.json` añadiendo `vitest` al array `types`:
 
 ```json
 {
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      [
-        "@babel/preset-react",
-        {
-          "runtime": "automatic"
-        }
-      ]
-    ]
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "moduleNameMapper": {
-      "^.+\\.svg$": "jest-svg-transformer",
-      "^.+\\.(css|less|scss)$": "identity-obj-proxy"
-    }
+  "compilerOptions": {
+    "types": ["vitest/globals"] // Opcionalmente también "vite/client" si se usa HMR
   }
 }
 ```
 
-Como Vite incluye la instalación y configuración de ESLint, debemos añadir un modificador para usar Jest en su configuración, que en este caso se encuentra en el fichero .eslintrc.cjs.
+Finalmente puede se interesante agregar un script para ejecutar las pruebas en tu archivo `package.json`:
 
-```js
-   env: { browser: true, es2020: true, jest: true },
+```json
+"scripts": {
+  "test": "vitest"
+}
 ```
 
 ### testing library
@@ -63,13 +69,20 @@ Como Vite incluye la instalación y configuración de ESLint, debemos añadir un
 Cuando creamos una aplicación web del lado cliente (frontend) esta se ejecuta en un navegador web. Por lo tanto, para probarla necesitamos un entorno de pruebas que simule un navegador y nos permita interactuar con la aplicación como lo haría un usuario real. En principio, las pruebas que realiza Jest no aportan esta funcionalidad, ya que Jest es un entorno de pruebas para Node.js y no simula un navegador. Para conseguirlo debemos instalar una librería adicional que nos permita realizar pruebas en un entorno de navegador simulado.
 
 ```sh
-npm i -D jest-environment-jsdom
+npm i -D jsdom
 ```
 
-A continuación modificaremos la configuración de Jest para que utilice jsdom como entorno de pruebas, añadiendo un nuevo valor en el fichero jest.config.js
+A continuación modificaremos la configuración de Vitest para que utilice jsdom como entorno de pruebas, añadiendo un nuevo valor en el fichero vitest.config.ts
 
-```js
-testEnvironment: 'jsdom',
+```ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+  },
+});
 ```
 
 Con esto podemos ejecutar pruebas que interactúen con el DOM de la página, como por ejemplo comprobar que un elemento se muestra o se oculta correctamente. Sin embargo, Jest no proporciona una forma sencilla acceder a los elementos del DOM simulado ni de simular la interacción del usuario con la página, como hacer clic en un botón o rellenar un formulario. Existen varias librería adicionales que facilitan gestionar el DOM y simular la interacción del usuario con la página, como por ejemplo [Enzyme](https://enzymejs.github.io/enzyme/) o [Testing Library](https://testing-library.com/) que es la que usaremos nosotros.
@@ -88,6 +101,20 @@ En nuestro caso, para testar los componentes de React, vamos a utilizar la libre
 
 ```sh
 npm i -D @testing-library/react @testing-library/jest-dom testing-library/user-event
+```
+
+#### Mejorar el uso de los matchers extra de @testing-library/jest-dom
+
+`testConfig.ts` to src folder:
+
+```ts
+import '@testing-library/jest-dom/vitest';
+```
+
+Update `vite.config.ts` to add the `setupFiles` property:
+
+```ts
+setupFiles: ['src/testConfig.ts'],
 ```
 
 ## Test de componentes (integración)
@@ -114,7 +141,7 @@ Para testar este componente, creamos un fichero Sample.test.js en el mismo direc
 ```js
 // src/components/sample.test.jsx
 import { render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
+// import "@testing-library/jest-dom";
 import Sample from "./sample";
 
 test("The componente is rendered in the screen", () => {
