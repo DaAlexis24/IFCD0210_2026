@@ -63,11 +63,11 @@ export class UsersRepo {
                     password: false,
                 },
             });
-
-        const isValid = await AuthService.compare(
-            userData.password, // desencriptada
-            result.password, // encriptada
-        );
+            
+            const isValid = await AuthService.compare(
+                userData.password, // desencriptada
+                result.password, // encriptada
+            );
 
         if (!isValid) {
             throw new PrismaClientKnownRequestError(

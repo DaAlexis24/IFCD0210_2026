@@ -1565,11 +1565,10 @@ Testing
   - server/handlers
   - Index.ts + server.ts
     - encapsulación en clases/funciones
-    - mínimo de lógica directamente en módulos (e.g. en index.ts) 
-
+    - mínimo de lógica directamente en módulos (e.g. en index.ts)
 
 - Testing unitario del backend (2)
-  - Servicios 
+  - Servicios (Auth)
     - Problemas con el environment: mock de Zod
 
 [descanso]
@@ -1578,22 +1577,39 @@ Testing
   - Configuración de Vitest: read .env.test
   - Servicios (Auth)
     - Tests de integración: con librerías bcrypt y jsonwebtoken
-    - Refactor de jsonwebtoken tools: asincronía y promisificación 
+    - Refactor de jsonwebtoken tools: asincronía y promisificación
   - Repositories: Films repo (happy path)
 
 - Challenge: Testing unitario del backend
   - Completar los tests del repositorio de films (happy path)
-  - Completar happy path de otros repositorios (users, genres)
-  - Repositories (errores) 
+  - Completar happy path de otros repositorios (users, genres, reviews)
+  - Repositories (errores)
 
 ## Semana 17 (Mayo)
 
 ### Día 1 (L 11/05/2026) - M3.00 04 - Test Backend
 
-<!-- - Testing unitario del backend (3)
-  - Repositories (errores) 
+- Testing unitario del backend (3)
+  - Review vitest.config.ts
+  - Review de los tests realizados en el challenge
+  - Repositories (errores)
+  - User repo: dependencia de AuthService
+    - integración: uso de AuthService real
+    - unitario: mock de AuthService
+
+[descanso]
+
+- Testing unitario del backend (3 - continuación)
   - Controllers
-  - Interceptores (Middleware) -->
+    - e.g FilmsController
+  - Middleware
+    - Middleware básico: custom-headers
+
+Challenge
+  
+- Añadir test de los demás controllers
+- Añadir test del resto del middleware
+  - Interceptores
 
 ### Día 2 (M 12/05/2026) - M3.00 05 - Supertest
 
@@ -1627,7 +1643,6 @@ Testing
     - Tests de un componente
     - Aspectos estáticos
     - Caja negra (comportamiento) v. caja blanca (implementación)
-
 -->
 
 ### Día 5 (V 15/05/2026) - Fiesta

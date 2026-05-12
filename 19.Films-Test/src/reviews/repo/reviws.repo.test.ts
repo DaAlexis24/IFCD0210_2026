@@ -86,13 +86,6 @@ describe('Given a instance of ReviewsRepo class', () => {
         test('Then it return the created review', async () => {
             // Act
             const review = await repo.createReview({
-                // title: 'Test Review',
-                // year: 2024,
-                // director: 'Test Director',
-                // duration: 120,
-                // poster: 'test-poster.jpg',
-                // rate: 8.5,
-                // genres: ['Action', 'Adventure']
             } as ReviewCreateDTO);
             // Assert
             expect(review).toEqual({});
@@ -104,13 +97,6 @@ describe('Given a instance of ReviewsRepo class', () => {
             test('Then it return the updated review', async () => {
                 // Act
                 const review = await repo.updateReview(1, 1, {
-                    // title: 'Updated Test Review',
-                    // year: 2025,
-                    // director: 'Updated Test Director',
-                    // duration: 130,
-                    // poster: 'updated-test-poster.jpg',
-                    // rate: 9.0,
-                    // genres: ['Action', 'Adventure', 'Sci-Fi']
                 } as ReviewCreateDTO);
                 // Assert
                 expect(review).toEqual({});

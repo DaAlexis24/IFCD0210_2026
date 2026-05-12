@@ -1,6 +1,6 @@
-import  { type Mock, vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
 import type { AppPrismaClient } from '../../config/db-config.ts';
-import type { FilmCreateDTO } from '../entities/film.dto.ts';
+import type { FilmCreateDTO, FilmUpdateDTO } from '../entities/film.dto.ts';
 import { FilmsRepo } from './films.repo.ts';
 
 describe('Given a instance of FilmsRepo class', () => {
@@ -56,7 +56,7 @@ describe('Given a instance of FilmsRepo class', () => {
                 // Act
                 const film = await repo.getFilmByID(1);
                 // Assert de implementacion
-                expect(prismaMock.film.findUniqueOrThrow).toHaveBeenCalled()
+                expect(prismaMock.film.findUniqueOrThrow).toHaveBeenCalled();
                 // Assert
                 expect(film).toEqual({});
             });
@@ -64,9 +64,9 @@ describe('Given a instance of FilmsRepo class', () => {
         describe('And the film with the given id NOT exists', () => {
             test('Then it throw an error', async () => {
                 // Arrange
-                (prismaMock.film.findUniqueOrThrow as Mock).mockRejectedValueOnce(
-                    new Error('Film not found'),
-                );
+                (
+                    prismaMock.film.findUniqueOrThrow as Mock
+                ).mockRejectedValueOnce(new Error('Film not found'));
                 // Act & Assert
                 await expect(repo.getFilmByID(999)).rejects.toThrow(
                     'Film not found',
@@ -76,19 +76,24 @@ describe('Given a instance of FilmsRepo class', () => {
     });
 
     describe('When method createFilm is called', () => {
-        test('Then it return the created film', async () => {
-            // Act
-            const film = await repo.createFilm({
-                // title: 'Test Film',
-                // year: 2024,
-                // director: 'Test Director',
-                // duration: 120,
-                // poster: 'test-poster.jpg',
-                // rate: 8.5,
-                // genres: ['Action', 'Adventure']
-            } as FilmCreateDTO);
-            // Assert
-            expect(film).toEqual({});
+        describe('And there are a genre in data', () => {
+            test('Then it return the created film', async () => {
+                // Act
+                const film = await repo.createFilm({
+                    genres: ['Action'],
+                } as FilmCreateDTO);
+                // Assert
+                expect(film).toEqual({});
+            });
+        });
+
+        describe('And there are NOT a genre in data', () => {
+            test('Then it return the created film', async () => {
+                // Act
+                const film = await repo.createFilm({} as FilmCreateDTO);
+                // Assert
+                expect(film).toEqual({});
+            });
         });
     });
 
@@ -97,14 +102,8 @@ describe('Given a instance of FilmsRepo class', () => {
             test('Then it return the updated film', async () => {
                 // Act
                 const film = await repo.updateFilm(1, {
-                    // title: 'Updated Test Film',
-                    // year: 2025,
-                    // director: 'Updated Test Director',
-                    // duration: 130,
-                    // poster: 'updated-test-poster.jpg',
-                    // rate: 9.0,
-                    // genres: ['Action', 'Adventure', 'Sci-Fi']
-                } as FilmCreateDTO);
+                    genres: ['Action'],
+                } as FilmUpdateDTO);
                 // Assert
                 expect(film).toEqual({});
             });
@@ -117,7 +116,7 @@ describe('Given a instance of FilmsRepo class', () => {
                 );
                 // Act & Assert
                 await expect(
-                    repo.updateFilm(999, {} as FilmCreateDTO),
+                    repo.updateFilm(999, {} as FilmUpdateDTO),
                 ).rejects.toThrow('Film not found');
             });
         });
