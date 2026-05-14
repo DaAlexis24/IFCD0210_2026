@@ -40,3 +40,4 @@ export class Header extends HTMLElement {
         this.innerHTML = this.#template;
     }
 }
+

@@ -92,7 +92,7 @@ Testing Library es en realidad una colección de librerías que nos permiten rea
 En el caso de vanilla JavaScript, Testing Library proporciona la librería @testing-library/dom, que nos permite interactuar con el DOM de la página de forma sencilla y eficaz. Para instalarla ejecutamos el siguiente comando:
 
 ```sh
-npm i -D @testing-library/dom @testing-library/jest-dom testing-library/user-event
+npm i -D @testing-library/dom @testing-library/jest-dom @testing-library/user-event
 ```
 
 La segunda librería que vamos a instalar es @testing-library/jest-dom, que proporciona matchers adicionales para Jest con el fin de realizar comprobaciones sobre el DOM de la página. Por último, la librería testing-library/user-event nos facilita simular la interacción del usuario con la página, como hacer clic en un botón o rellenar un formulario, enfocándose siempre en la perspectiva del usuario.

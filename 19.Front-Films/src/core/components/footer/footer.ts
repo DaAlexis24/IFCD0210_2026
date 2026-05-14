@@ -35,7 +35,11 @@ export class Footer extends HTMLElement {
     #setTemplate(): void {
         this.#setList();
         this.#template = /*html*/ `    
-         <footer class="footer">
+         <footer class="footer" 
+            aria-label="main-footer" 
+            title="footer"
+            data-testId="footer"
+            >
              <ul>${this.#list}</ul>
              <address>${this.#address}</address>
          </footer>

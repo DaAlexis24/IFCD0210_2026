@@ -1648,18 +1648,20 @@ Challenge
 
 ### Día 4 (J 14/05/2026) - M3.00 07 - Tests Frontend: Componentes (1)
 
-<!--
+- Review supertest
+- Test unitario del frontend (2)
+  - Tests de un servicio
+    - Completando entidades
+    - Completando films repo: fetch mock
+    - Casos ok: true y ok: false
 
-- Test unitario del frontend (1)
-    - Tests de un servicio
-      - Completando entidades
-      - Completando films repo
-    - Configuración de jsdom y testing-library
-      - Caja negra (comportamiento) v. caja blanca (implementación)
-      - Tests de un componente
-      - Aspectos estáticos
+[descanso]
 
--->
+- Test unitario de componentes (1)
+  - Configuración de jsdom y testing-library
+    - Caja negra (comportamiento) v. caja blanca (implementación)
+    - Tests de un componente
+    - Aspectos estáticos o visual
 
 ### Día 5 (V 15/05/2026) - Fiesta
 
@@ -1679,7 +1681,7 @@ Challenge
 
 ### Día 2 (M 19/05/2026) - M3.00 09 - E2E
 
-<!-- 
+<!--
 
 - Comentarios de documentación
 - Entornos: desarrollo y producción (y testing)
