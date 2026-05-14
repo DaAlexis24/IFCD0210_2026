@@ -1555,7 +1555,7 @@ Testing
 - Coverage y casos de prueba
 - Matchers. Ejercicios
 
-### Día 5 (V 08/05/2026) - M3.00 03 - Test Backend
+### Día 5 (V 08/05/2026) - M3.00 03 - Test Backend (1)
 
 - Testing unitario del backend (1)
   - Clone del proyecto Films
@@ -1567,13 +1567,13 @@ Testing
     - encapsulación en clases/funciones
     - mínimo de lógica directamente en módulos (e.g. en index.ts)
 
-- Testing unitario del backend (2)
+- Testing unitario del backend
   - Servicios (Auth)
     - Problemas con el environment: mock de Zod
 
 [descanso]
 
-- Testing unitario del backend (2 - continuación)
+- Testing unitario del backend (1 - continuación)
   - Configuración de Vitest: read .env.test
   - Servicios (Auth)
     - Tests de integración: con librerías bcrypt y jsonwebtoken
@@ -1587,9 +1587,9 @@ Testing
 
 ## Semana 17 (Mayo)
 
-### Día 1 (L 11/05/2026) - M3.00 04 - Test Backend
+### Día 1 (L 11/05/2026) - M3.00 04 - Test Backend (2)
 
-- Testing unitario del backend (3)
+- Testing unitario del backend (2)
   - Review vitest.config.ts
   - Review de los tests realizados en el challenge
   - Repositories (errores)
@@ -1599,57 +1599,73 @@ Testing
 
 [descanso]
 
-- Testing unitario del backend (3 - continuación)
+- Testing unitario del backend (2 - continuación)
   - Controllers
     - e.g FilmsController
   - Middleware
     - Middleware básico: custom-headers
 
 Challenge
-  
+
 - Añadir test de los demás controllers
 - Añadir test del resto del middleware
   - Interceptores
 
-### Día 2 (M 12/05/2026) - M3.00 05 - Supertest
+### Día 2 (M 12/05/2026) - M3.00 05 - Backend e2e: Supertest
 
-<!-- Se podría añadir algo de lo anterior -->
+- Review test propuestos
+  - custom-headers Middleware
+  - Intereptores
+  - HomeView
 
-<!-- - Testing de integración del backend
+[descanso]
+
+- Testing e2e del backend
+  - Setup del entorno; seeds
+    - Truncate table + seed -> beforeEach
   - Supertest
     - Test de rutas (endpoints)
-    - Test de rutas protegidas (auth) -->
 
-### Día 3 (X 13/05/2026) - M3.00 06 - Frontend
+### Día 3 (X 13/05/2026) - M3.00 06 - Backend / Frontend (1)
 
-<!--
+- Testing de integración del backend (continuación)
+  - Supertest
+    - Test de rutas (endpoints)
+    - Test de rutas protegidas (auth)
+
+[descanso]
 
 - Preparación del Frontend para el testing
-  - Creación de un proyecto Vite/TS
+  - Comentarios del proyecto Vite/TS
   - Web Components
 
 - Test unitario del frontend (1)
   - Configuración de Vitest
-  - Configuración de jsdom y testing-library
-
--->
+  - Tests de un servicio mínimo
+    - Uso de Codex
+    - Entidad y repo de films (getAll con fetch)
+    - Test correspondiente
 
 ### Día 4 (J 14/05/2026) - M3.00 07 - Tests Frontend: Componentes (1)
 
 <!--
 
-- Test unitario del frontend (2)
+- Test unitario del frontend (1)
     - Tests de un servicio
-    - Tests de un componente
-    - Aspectos estáticos
-    - Caja negra (comportamiento) v. caja blanca (implementación)
+      - Completando entidades
+      - Completando films repo
+    - Configuración de jsdom y testing-library
+      - Caja negra (comportamiento) v. caja blanca (implementación)
+      - Tests de un componente
+      - Aspectos estáticos
+
 -->
 
 ### Día 5 (V 15/05/2026) - Fiesta
 
 ## Semana 18 (Mayo)
 
-### Día 1 (L 18/05/2026) - M3.00 08 - Tests Frontend: Componentes (2) 
+### Día 1 (L 18/05/2026) - M3.00 08 - Tests Frontend: Componentes (2)
 
 <!-- - Test unitario del frontend (2)
 
@@ -1657,32 +1673,38 @@ Challenge
     - Interacciones: Evento click
     - Mocking de timers
     - Nuevos componentes header / addForm
-    - Test de formularios 
+    - Test de formularios
 
 -->
 
 ### Día 2 (M 19/05/2026) - M3.00 09 - E2E
 
-<!-- - Comentarios de documentación
+<!-- 
+
+- Comentarios de documentación
 - Entornos: desarrollo y producción (y testing)
 - Test e2e del frontend
   - Herramientas: Cypress, Playwright...
   - Playwright. Instalación y configuración
-  - Ejemplos de uso 
+  - Ejemplos de uso
 
 -->
 
-### Día 3 (X 20/05/2026) - M3.00 10 -  Documentación: JsDoc / Swagger
+### Día 3 (X 20/05/2026) - M3.00 10 - Documentación: JsDoc / Swagger
 
-<!-- 
+<!--
+
 - Tipos en los comentarios de documentación
 - Generación de documentación a partir de los comentarios: Swagger
-- Uso de la documentación generada 
+- Uso de la documentación generada
+
 -->
 
 <!--
+
 - Entornos: desarrollo y producción (y testing)
 - Procesos de construcción y despliegue
+
 -->
 
 ### Día 4 (J 21/05/2026) - M3.00 11 - Git y GitHub

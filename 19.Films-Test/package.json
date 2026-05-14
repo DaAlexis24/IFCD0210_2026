@@ -15,7 +15,7 @@
         "_comment:2": "llama a  node --env-file=.env.test ./src/config/db-test.seed.ts",
         "test": "vitest",
         "test:c": "vitest run --coverage",
-        "test:serie": "node --env-file=.env.test --test --test-concurrency=1"
+        "e2e": "vitest -c vitest.config.e2e.js --maxConcurrency=1"
     },
     "keywords": [],
     "author": "",
@@ -46,12 +46,14 @@
         "@types/morgan": "^1.9.10",
         "@types/node": "^25.5.0",
         "@types/pg": "^8.20.0",
+        "@types/supertest": "^7.2.0",
         "@vitest/coverage-v8": "^4.1.5",
         "eslint": "^10.0.3",
         "globals": "^17.4.0",
         "prettier": "^3.8.1",
         "prisma": "^7.7.0",
         "prisma-zod-generator": "^2.1.4",
+        "supertest": "^7.2.2",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.57.0",
         "vitest": "^4.1.5"

@@ -1,0 +1,36 @@
+const L = "Santa+Cruz+de+Tenerife";
+const URL = `https://goweather.xyz/v2/weather/${L}`;
+
+class WeatherTime extends HTMLElement {
+  data = {};
+
+  constructor() {
+    super();
+    this.init();
+  }
+
+  async init() {
+    const response = await fetch(URL);
+    setTimeout(async () => {
+      this.data = await response.json();
+      this.render();
+    }, 2000);
+  }
+
+  connectedCallback() { this.render() }
+
+  render() {
+    if (!this.data?.temperature) {
+      console.log("Cargando datos...");
+      this.setHTMLUnsafe(
+        /* html */`<div class="loading"></div>`.repeat(3));
+    }
+    else {
+      console.log("Datos cargados.");
+      this.setHTMLUnsafe(
+        /* html */`<main>${this.data?.temperature}</main>`);
+    }
+  }
+}
+
+customElements.define("weather-time", WeatherTime);
