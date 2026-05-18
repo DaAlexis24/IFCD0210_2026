@@ -4,7 +4,7 @@ import socials from '../../data/socials.json';
 export class Footer extends HTMLElement {
     // Propiedades y métodos estáticos
     static selector = 'app-footer';
-    static render() {
+    static register() {
         if (customElements.get(Footer.selector) === undefined) {
             customElements.define(Footer.selector, Footer);
         }
@@ -19,7 +19,10 @@ export class Footer extends HTMLElement {
         super();
         this.#address = address ?? this.#address;
         this.#setTemplate();
-        this.#setElement();
+    }
+
+    connectedCallback() {
+        this.#render();
     }
 
     #setList() {
@@ -46,7 +49,7 @@ export class Footer extends HTMLElement {
          `;
     }
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
     }
 }

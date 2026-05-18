@@ -6,13 +6,13 @@ import './app.css';
 
 export class App extends HTMLElement {
     static #selector = 'app-root';
-    static render() {
+    static register() {
         if (customElements.get(App.#selector) === undefined) {
             customElements.define(App.#selector, App);
         }
-        Header.render();
-        Menu.render(routes);
-        Footer.render();
+        Header.register();
+        Menu.register(routes);
+        Footer.register();
     }
 
     #template!: string;
@@ -20,7 +20,10 @@ export class App extends HTMLElement {
     constructor() {
         super();
         this.#setTemplate();
-        this.#setElement();
+    }
+
+    connectedCallback() {
+        this.#render();
     }
 
     #setTemplate() {
@@ -31,7 +34,7 @@ export class App extends HTMLElement {
         `;
     }
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
     }
 }

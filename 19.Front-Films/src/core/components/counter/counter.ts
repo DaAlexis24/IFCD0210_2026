@@ -3,7 +3,7 @@ import './counter.css';
 export class Counter extends HTMLElement {
     // Propiedades y métodos estáticos
     static selector = 'app-counter';
-    static render() {
+    static register() {
         if (customElements.get(Counter.selector) === undefined) {
             customElements.define(Counter.selector, Counter);
         }
@@ -16,10 +16,13 @@ export class Counter extends HTMLElement {
 
     constructor() {
         super();
-        this.counterId = this.attributes.getNamedItem('counterId')
-            ?.value as string;
+        this.counterId = '';
+    }
+    
+    connectedCallback() {
+        this.counterId = this.getAttribute('counterId') || '';
         this.#setTemplate();
-        this.#setElement();
+        this.#render();
     }
 
     #setTemplate(): void {
@@ -27,19 +30,22 @@ export class Counter extends HTMLElement {
         this.#template = /*html*/ `
          <div class="counter">
              <h3>Counter - id ${this.counterId}</h3>
-             <button>Click: ${this.counter}</button>
+             <button>Click: <output>${this.counter}</output></button>
          </div>
          `;
     }
 
-    #setElement(): void {
+    #render(): void {
         // Convertimos el template en elemento
         this.innerHTML = this.#template;
-        this.querySelector('button')?.addEventListener('click', () => {
+        const output = this.querySelector('output') as HTMLOutputElement;
+        this.querySelector('button')?.addEventListener('click', (ev: Event) => {
+            ev.stopPropagation();
             this.counter++;
-            console.log(this.counter);
-            this.#setTemplate();
-            this.#setElement();
+            console.log(`Click button ${this.counterId}: ${this.counter}`);
+            // this.#setTemplate();
+            // this.#render();
+            output.textContent = this.counter.toString();
         });
     }
 }

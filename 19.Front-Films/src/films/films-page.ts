@@ -1,17 +1,21 @@
 export class FilmsPage extends HTMLElement {
     static #selector = 'app-films-page';
-    static render() {
-        // Prepare main
-        const el: HTMLElement | null = document.querySelector('main');
-        if (el === null) {
-            throw new Error('Selector main no disponible');
-        }
-        el.innerHTML = `<${FilmsPage.#selector}></${FilmsPage.#selector}>`;
+    static register() {
         // Register custom element
         if (customElements.get(FilmsPage.#selector) === undefined) {
             customElements.define(FilmsPage.#selector, FilmsPage);
         }
+        // Prepare main
+        FilmsPage.#addPage();
         // Render child custom elements
+    }
+    static #addPage(selector = 'main') {
+        const el: HTMLElement | null = document.querySelector(selector);
+        if (el === null) {
+            throw new Error(`Selector ${selector} no disponible`);
+        }
+        el.innerHTML = '';
+        el.appendChild(new FilmsPage());
     }
 
     #template!: string;
@@ -19,7 +23,10 @@ export class FilmsPage extends HTMLElement {
     constructor() {
         super();
         this.#setTemplate();
-        this.#setElement();
+    }
+
+     connectedCallback() {
+        this.#render();
     }
 
     #setTemplate() {
@@ -31,7 +38,7 @@ export class FilmsPage extends HTMLElement {
         `;
     }
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
     }
 }

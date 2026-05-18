@@ -2,12 +2,12 @@ import { Theme } from '../theme/theme';
 import './header.css';
 
 export class Header extends HTMLElement {
-    static #selector = 'app-header';
-    static render() {
-        if (customElements.get(Header.#selector) === undefined) {
-            customElements.define(Header.#selector, Header);
+    static selector = 'app-header';
+    static register() {
+        if (customElements.get(Header.selector) === undefined) {
+            customElements.define(Header.selector, Header);
         }
-        Theme.render();
+        Theme.register();
     }
 
     #template!: string;
@@ -15,7 +15,10 @@ export class Header extends HTMLElement {
     constructor() {
         super();
         this.#setTemplate();
-        this.#setElement();
+    }
+
+    connectedCallback() {
+        this.#render();
     }
 
     #setTemplate() {
@@ -23,8 +26,8 @@ export class Header extends HTMLElement {
             /*html*/
             `<header class="header">
                 <nav>
-                    <app-menu data-type="mobile-menu"></app-menu>
-                    <app-menu data-type="full-menu"></app-menu>
+                    <app-menu menu-type="mobile-menu"></app-menu>
+                    <app-menu menu-type="full-menu"></app-menu>
                 </nav>
                 <dialog class="menu-dialog" id="menu-dialog">
                     <nav>
@@ -36,8 +39,7 @@ export class Header extends HTMLElement {
             `;
     }
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
     }
 }
-

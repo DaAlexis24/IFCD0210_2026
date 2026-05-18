@@ -4,7 +4,7 @@ import { navigate } from './core/router/router';
 console.log('Load main');
 
 // Componente app
-App.render();
+App.register();
 
 // Router
 history.replaceState({ url: 'start' }, '', location.pathname);

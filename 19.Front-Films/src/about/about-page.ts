@@ -1,17 +1,22 @@
 export class AboutPage extends HTMLElement {
     static #selector = 'app-about-page';
-    static render() {
-        // Prepare main
-        const el: HTMLElement | null = document.querySelector('main');
-        if (el === null) {
-            throw new Error('Selector main no disponible');
-        }
-        el.innerHTML = `<${AboutPage.#selector}></${AboutPage.#selector}>`;
+    static register() {
         // Register custom element
         if (customElements.get(AboutPage.#selector) === undefined) {
             customElements.define(AboutPage.#selector, AboutPage);
         }
+        // Prepare main
+        AboutPage.#addPage();
         // Render child custom elements
+    }
+
+    static #addPage(selector = 'main') {
+        const el: HTMLElement | null = document.querySelector(selector);
+        if (el === null) {
+            throw new Error(`Selector ${selector} no disponible`);
+        }
+        el.innerHTML = '';
+        el.appendChild(new AboutPage());
     }
 
     #template!: string;
@@ -19,7 +24,10 @@ export class AboutPage extends HTMLElement {
     constructor() {
         super();
         this.#setTemplate();
-        this.#setElement();
+    }
+
+     connectedCallback() {
+        this.#render();
     }
 
     #setTemplate() {
@@ -31,7 +39,7 @@ export class AboutPage extends HTMLElement {
         `;
     }
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
     }
 }

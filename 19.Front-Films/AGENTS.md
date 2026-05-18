@@ -44,7 +44,6 @@
 ## Implementation Notes
 
 - The router is intentionally basic: it handles the main pages, uses the History API, and does not support nested routes or advanced `query`/`hash` handling.
-- The menu implementation is intentionally educational; a production-ready version should manage listeners through `connectedCallback`/`disconnectedCallback`.
 - Global styling is centralized in `base.css` and `index.css`; component-specific styles should be imported from the component file.
 
 ## Commit & Pull Request Guidelines

@@ -2,19 +2,24 @@ import { Counter } from '../core/components/counter/counter';
 
 export class HomePage extends HTMLElement {
     static #selector = 'app-home-page';
-    static render() {
-        // Prepare main
-        const el: HTMLElement | null = document.querySelector('main');
-        if (el === null) {
-            throw new Error('Selector main no disponible');
-        }
-        el.innerHTML = `<${HomePage.#selector}></${HomePage.#selector}>`;
+    static register() {
         // Register custom element
         if (customElements.get(HomePage.#selector) === undefined) {
             customElements.define(HomePage.#selector, HomePage);
         }
+        // Prepare main
+        HomePage.#addPage();
         // Render child custom elements
-        Counter.render();
+        Counter.register();
+    }
+
+    static #addPage(selector = 'main') {
+        const el: HTMLElement | null = document.querySelector(selector);
+        if (el === null) {
+            throw new Error(`Selector ${selector} no disponible`);
+        }
+        el.innerHTML = '';
+        el.appendChild(new HomePage());
     }
 
     #template!: string;
@@ -22,7 +27,10 @@ export class HomePage extends HTMLElement {
     constructor() {
         super();
         this.#setTemplate();
-        this.#setElement();
+    }
+
+    connectedCallback() {
+        this.#render();
     }
 
     #setTemplate() {
@@ -36,7 +44,7 @@ export class HomePage extends HTMLElement {
         `;
     }
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
     }
 }

@@ -2,7 +2,7 @@ import './theme.css';
 
 export class Theme extends HTMLElement {
     static #selector = 'app-theme';
-    static render() {
+    static register() {
         if (customElements.get(Theme.#selector) === undefined) {
             customElements.define(Theme.#selector, Theme);
         }
@@ -14,7 +14,10 @@ export class Theme extends HTMLElement {
         super();
         console.log('loading the theme component');
         this.#setTemplate();
-        this.#setElement();
+    }
+
+    connectedCallback() {
+        this.#render();
     }
 
     handleChange(event: Event) {
@@ -37,7 +40,7 @@ export class Theme extends HTMLElement {
         `;
     };
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
 
         const toggleElement = this.querySelector(

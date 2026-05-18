@@ -170,13 +170,11 @@ Decisiones clave del enfoque actual:
 Patrón común que seguimos en los componentes:
 
 - un método para preparar el contenido (`setTemplate` o equivalente), donde se genera el marcado dinámico;
-- un método para pintar el contenido (`setElement` o equivalente), que asigna ese HTML al elemento;
+- un método para pintar el contenido (`render` o equivalente), que asigna ese HTML al elemento;
 - una fase de enlace de eventos después del render, para conectar botones, menús e interacciones de usuario.
-
-Nota sobre el componente de menú:
-
-- la implementación actual del menú es deliberadamente didáctica;
-- en una versión productiva, la gestión de listeners se movería al ciclo de vida del componente (`connectedCallback`/`disconnectedCallback`) para registrar y limpiar eventos de forma explícita.
+- se aprovecha el ciclo de vida del componente para organizar la lógica:
+  -`connectedCallback` renderiza el componente y enlaza eventos al insertarse en el DOM;
+  -`disconnectedCallback` se usaría para limpiar eventos al retirarse del DOM, sobre todo si tienen efecto más alla del componente (e.g., listeners en el documento).
 
 Implicaciones formativas de este diseño:
 

@@ -5,12 +5,19 @@ type MenuType = 'mobile-menu' | 'full-menu';
 
 export class Menu extends HTMLElement {
     static #selector = 'app-menu';
-    static render(routes: Route[]) {
+    static #routes: Route[] = [];
+    static register(routes: Route[]) {
         if (customElements.get(Menu.#selector) === undefined) {
             customElements.define(Menu.#selector, Menu);
         }
+        Menu.#routes = routes;
+        Menu.setOptions();
+    }
+
+    static setOptions(routes: Route[] = Menu.#routes) {
         const elements = document.querySelectorAll(Menu.#selector);
         elements.forEach((element) => {
+            // DI de rutas a cada instancia de menu
             (element as Menu).routes = routes;
         });
     }
@@ -22,16 +29,24 @@ export class Menu extends HTMLElement {
     set routes(menuOptions: Route[]) {
         this.#menuOptions = menuOptions;
         this.#setTemplate();
-        this.#setElement();
+        this.#render();
     }
 
     constructor() {
         super();
-        this.#menuType = this.dataset.type as MenuType;
+        this.#menuType = this.getAttribute('menu-type') as MenuType;
 
         // Tras  el constructor
         // LLamar a set Routes(menuOptions) para
         // inyectar las rutas y que se renderice el menu;
+    }
+
+    disconnectedCallback() {
+        // Limpieza de recursos, por ejemplo, eliminar event listeners
+        document.body.removeEventListener(
+            'click',
+            this.#handleDialogMenu.bind(this),
+        );
     }
 
     #setTemplate() {
@@ -69,7 +84,7 @@ export class Menu extends HTMLElement {
         `;
     }
 
-    #setElement() {
+    #render() {
         this.innerHTML = this.#template;
 
         const menuIconElement = this.querySelector('#menu-icon');

@@ -1672,11 +1672,12 @@ Challenge
 <!-- - Test unitario del frontend (2)
 
   - Tests de un componente (continuación)
+    - Revisar clase anterior
+    - Mejorar configuración: matchers de testing-library
     - Interacciones: Evento click
     - Mocking de timers
     - Nuevos componentes header / addForm
     - Test de formularios
-
 -->
 
 ### Día 2 (M 19/05/2026) - M3.00 09 - E2E

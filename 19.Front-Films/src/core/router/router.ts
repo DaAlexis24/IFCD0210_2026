@@ -12,12 +12,12 @@ export const routes: Route[] = [
     {
         path: '/',
         label: 'Inicio',
-        renderComponent: HomePage.render,
+        renderComponent: HomePage.register,
     },
     {
         path: '/films',
         label: 'Películas',
-        renderComponent: FilmsPage.render,
+        renderComponent: FilmsPage.register,
     },
     // {
     //     path: "/todo",
@@ -27,7 +27,7 @@ export const routes: Route[] = [
     {
         path: '/about',
         label: 'Acerca de',
-        renderComponent: AboutPage.render,
+        renderComponent: AboutPage.register,
     },
 ];
 

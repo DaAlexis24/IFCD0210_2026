@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <!-- Definimos estilos CSS globales -->
+    <style>
+      /* Se aplica al componente */
+      weather-time {
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .loading {
+        --size: 25px;
+
+        width: var(--size);
+        height: var(--size);
+        background: indigo;
+        border-radius: 50%;
+        animation: bounce 1s infinite alternate;
+      }
+
+      @keyframes bounce {
+        0% {
+          translate: 0 -10px;
+        }
+        100% {
+          translate: 0 0;
+        }
+      }
+    </style>
+    <script src="./component.js" defer></script>
+  </head>
+
+  <body>
+    <!-- Definimos nuestro web component -->
+    <div class="weather-time-container"></div>
+  </body>
+</html>
