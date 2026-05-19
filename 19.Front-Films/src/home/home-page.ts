@@ -13,6 +13,10 @@ export class HomePage extends HTMLElement {
         Counter.register();
     }
 
+    static get selector() {
+        return HomePage.#selector
+    }
+
     static #addPage(selector = 'main') {
         const el: HTMLElement | null = document.querySelector(selector);
         if (el === null) {
@@ -35,9 +39,9 @@ export class HomePage extends HTMLElement {
 
     #setTemplate() {
         this.#template = /*html*/ `
-            <section>
+            <section aria-label="home-page">
                 <h2>Uso de componentes y web components</h2>
-                <app-counter counterId="1" ></app-counter>
+                <app-counter counterId="1"></app-counter>
                 <app-counter counterId="2"></app-counter>
                 <app-counter counterId="3"></app-counter>
             </section>

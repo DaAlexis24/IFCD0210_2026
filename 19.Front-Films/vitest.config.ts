@@ -7,7 +7,7 @@ export default defineConfig({
         // ... Specify options here.
         globals: true,
         environment: 'jsdom',
-        // setupFiles: './src/config/setup-test.ts',
+        setupFiles: './src/setup-test.ts',
         // opcionalmente
         include: ['**/*.test.ts'],
         // opcionalmente, para configurar la cobertura

@@ -1669,28 +1669,37 @@ Challenge
 
 ### Día 1 (L 18/05/2026) - M3.00 08 - Tests Frontend: Componentes (2)
 
-<!-- - Test unitario del frontend (2)
-
+- Test unitario del frontend (2)
   - Tests de un componente (continuación)
     - Revisar clase anterior
+      - Ciclo de vida de los componentes
+      - Refactorización y renombrados
+      - Test de web components con Vitest
     - Mejorar configuración: matchers de testing-library
-    - Interacciones: Evento click
-    - Mocking de timers
-    - Nuevos componentes header / addForm
-    - Test de formularios
+
+[descanso]
+
+<!--
+
+- Tests de un componente (continuación)
+  - Interacciones: Evento click
+    - Componente counter
+  - Comunicación entre componentes
+  - Test de formularios
+
+    - ¿Mocking de timers?
 -->
 
 ### Día 2 (M 19/05/2026) - M3.00 09 - E2E
 
 <!--
 
-- Comentarios de documentación
 - Entornos: desarrollo y producción (y testing)
+  - Procesos de construcción y despliegue
 - Test e2e del frontend
   - Herramientas: Cypress, Playwright...
   - Playwright. Instalación y configuración
   - Ejemplos de uso
-
 -->
 
 ### Día 3 (X 20/05/2026) - M3.00 10 - Documentación: JsDoc / Swagger
@@ -1700,13 +1709,6 @@ Challenge
 - Tipos en los comentarios de documentación
 - Generación de documentación a partir de los comentarios: Swagger
 - Uso de la documentación generada
-
--->
-
-<!--
-
-- Entornos: desarrollo y producción (y testing)
-- Procesos de construcción y despliegue
 
 -->
 

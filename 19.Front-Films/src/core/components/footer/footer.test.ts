@@ -1,5 +1,4 @@
 import { screen, within } from '@testing-library/dom';
-import '@testing-library/jest-dom';
 import { Footer } from './footer';
 
 describe('Given Footer component', () => {
@@ -31,6 +30,7 @@ describe('Given Footer component', () => {
         // ya que simula mejor el entorno en el que se usaría el componente.
 
         Footer.register(); // customElements.define('app-footer', Footer);
+        // crear element...
         document.body.append(element);
         return element;
     };
@@ -97,7 +97,7 @@ describe('Given Footer component', () => {
 
         test('allows overriding the address when created programmatically', () => {
             render(new Footer('Test address'));
-
+            
             expect(screen.getByText('Test address')).toBeInTheDocument();
         });
     });

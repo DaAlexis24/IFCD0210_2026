@@ -8,6 +8,10 @@ export class Theme extends HTMLElement {
         }
     }
 
+    static get selector()  {
+        return Theme.#selector
+    }
+
     #template!: string;
 
     constructor() {

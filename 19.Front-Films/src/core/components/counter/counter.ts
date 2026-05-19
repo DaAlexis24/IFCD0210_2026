@@ -11,16 +11,16 @@ export class Counter extends HTMLElement {
 
     // Propiedades y métodos de instancia
     #template!: string;
-    counter = 0;
-    counterId: string;
+    #counter = 0;
+    #counterId: string;
 
     constructor() {
         super();
-        this.counterId = '';
+        this.#counterId = '';
     }
-    
+
     connectedCallback() {
-        this.counterId = this.getAttribute('counterId') || '';
+        this.#counterId = this.getAttribute('counterId') || '';
         this.#setTemplate();
         this.#render();
     }
@@ -29,8 +29,8 @@ export class Counter extends HTMLElement {
         // Devolver siempre un solo elemento
         this.#template = /*html*/ `
          <div class="counter">
-             <h3>Counter - id ${this.counterId}</h3>
-             <button>Click: <output>${this.counter}</output></button>
+             <h3>Counter - id ${this.#counterId}</h3>
+             <button>Click: <output>${this.#counter}</output></button>
          </div>
          `;
     }
@@ -38,14 +38,22 @@ export class Counter extends HTMLElement {
     #render(): void {
         // Convertimos el template en elemento
         this.innerHTML = this.#template;
-        const output = this.querySelector('output') as HTMLOutputElement;
-        this.querySelector('button')?.addEventListener('click', (ev: Event) => {
-            ev.stopPropagation();
-            this.counter++;
-            console.log(`Click button ${this.counterId}: ${this.counter}`);
-            // this.#setTemplate();
-            // this.#render();
-            output.textContent = this.counter.toString();
-        });
+        this.#registerEvents();
     }
+
+    #registerEvents() {
+        this.querySelector('button')?.addEventListener(
+            'click',
+            this.#handlerButtonClick,
+        );
+    }
+
+    #handlerButtonClick = (ev: Event) => {
+        const output = this.querySelector('output') as HTMLOutputElement;
+        ev.stopPropagation();
+        this.#counter++;
+        console.log(`Click button ${this.#counterId}: ${this.#counter}`);
+        output.value = this.#counter.toString();
+
+    };
 }
