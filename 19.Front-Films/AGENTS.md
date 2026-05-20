@@ -31,6 +31,7 @@
   - explicit imports with `.ts` omitted. 
 - Keep page files named `*-page.ts`, and use the current component split:
   - `*.ts` for custom elements and paired `.css` files for component styles.
+- In component CSS files, prefer nesting under the component root class (e.g. `.register { & h2 { ... } }`) instead of repeating the root selector on every rule.
 - Use native Custom Elements without Shadow DOM; render component HTML with template strings and `innerHTML`.
 - When registering custom elements, check `customElements.get(...)` before calling `customElements.define(...)`.
 

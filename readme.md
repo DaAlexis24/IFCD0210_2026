@@ -1679,18 +1679,22 @@ Challenge
 
 [descanso]
 
-<!--
-
 - Tests de un componente (continuación)
   - Interacciones: Evento click
     - Componente counter
+      - click()
+      - fireEvent
+      - userEvent
+  - Páginas
+
+### Día 2 (M 19/05/2026) - M3.00 09 - E2E
+
+<!-- 
   - Comunicación entre componentes
   - Test de formularios
 
     - ¿Mocking de timers?
 -->
-
-### Día 2 (M 19/05/2026) - M3.00 09 - E2E
 
 <!--
 

@@ -10,11 +10,12 @@ export const GenreModelSchema = z.object({
 export const GenreDetailModelSchema = z.object({
     id: z.number(),
     name: z.string(),
-    films: z.array(
+    get films() {
+        return z.array(
         FilmModelSchema.omit({
             reviews: true,
         }),
-    ),
+    )},
 });
 
 export type Genre = z.infer<typeof GenreModelSchema>;
