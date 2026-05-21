@@ -30,6 +30,48 @@ export class UsersRouter {
             validateBody(RegisterUserDTOSchema),
             this.#controller.register.bind(this.#controller),
         );
+
+        /**
+         * @openapi
+         *
+         * components:
+         *  schemas:
+         *    UserCredentials:
+         *      type: object
+         *      properties:
+         *        email:
+         *          type: string
+         *        password:
+         *          type: string
+         */
+
+        /**
+         * @openapi
+         *
+         * /api/users/login:
+         *   post:
+         *     summary: User login
+         *     tags: [Users]
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/UserCredentials'
+         *     responses:
+         *       200:
+         *         description: Successful login
+         *         content:
+         *           application/json:
+         *             schema:
+         *               type: object
+         *               properties:
+         *                 token:
+         *                   type: string
+         *                   description: JWT token for authentication
+         *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+         *
+         */
         this.#router.post(
             '/login',
             validateBody(UserCredentialsDTOSchema),

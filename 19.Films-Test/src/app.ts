@@ -5,9 +5,11 @@ import debug from 'debug';
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import swaggerUI from 'swagger-ui-express'; 
+
+import { swaggerSpec } from './config/swagger.ts';
 import { customHeaders } from './middleware/custom-headers.ts';
 import { errorHandler } from './middleware/error-handler.ts';
-
 
 import { HomeView } from './views/home.ts';
 import { AuthInterceptor } from './middleware/auth.interceptor.ts';
@@ -62,16 +64,24 @@ export const createApp = (prisma: AppPrismaClient) => {
         });
     });
 
+    
     app.get('/', async (_req, res) => {
         log('Received request to root endpoint');
         return res.send(await HomeView.render(true));
     });
-
+    
     app.get('/api', async (_req, res) => {
         log('Received request to API endpoint');
         return res.send(await HomeView.render(false));
     });
-
+    
+    app.use('/api/docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+    app.get('/api/docs.json', (_req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(swaggerSpec);
+    });
+    
+    
     const authInterceptor = new AuthInterceptor();
 
     const usersRepo = new UsersRepo(prisma);
