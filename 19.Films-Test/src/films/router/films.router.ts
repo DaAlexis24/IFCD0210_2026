@@ -24,24 +24,20 @@ export class FilmsRouter {
 
         /**
          * @openapi
-         *
-         * components:
-         *  schemas:
-         *    Film:
-         *      type: object
-         *      properties:
-         *       id:
-         *         type: integer
-         *       title:
-         *         type: string
-         *
+         * tags:
+         *  - name: Films
+         *    description: API endpoints for managing films
          */
 
         /**
          * @openapi
-         * tags:
-         *  - name: Films
-         *    description: API endpoints for managing films
+         * components:
+         *   securitySchemes:
+         *     bearerAuth:
+         *       type: http
+         *       scheme: bearer
+         *       bearerFormat: JWT
+         *       description: Send `Authorization: Bearer <token>`.
          */
 
         /**
@@ -68,6 +64,7 @@ export class FilmsRouter {
 
         /**
          * @openapi
+         *
          * /api/films/{id}:
          *   get:
          *     summary: Retrieve a single film by ID
@@ -76,17 +73,20 @@ export class FilmsRouter {
          *       - in: path
          *         name: id
          *         required: true
-         *     schema:
-         *       type: integer
+         *         schema:
+         *           type: integer
+         *           format: int32
          *     responses:
          *       200:
          *         description: A single film
-         *     content:
-         *      application/json:
-         *      schema:
-         *      $ref: '#/components/schemas/Film'
-         *     404:
-         *     description: Film not found
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/Film'
+         *       404:
+         *         description: Film not found
+         *       500:
+         *         description: Server error
          *
          */
         this.#router.get(
@@ -96,6 +96,7 @@ export class FilmsRouter {
         );
         /**
          * @openapi
+         *
          * /api/films:
          *   post:
          *     summary: Create a new film
@@ -105,24 +106,24 @@ export class FilmsRouter {
          *       content:
          *         application/json:
          *           schema:
-         *             type: object
-         *             properties:
-         *               title:
-         *                 type: string
+         *             $ref: '#/components/schemas/FilmCreateDTO'
          *     responses:
          *       201:
          *         description: Film created successfully
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/Film'
          *       400:
          *         description: Invalid input data
+         *       401:
+         *         description: Missing or invalid token
+         *       403:
+         *         description: Forbidden (requires EDITOR role)
+         *       500:
+         *         description: Server error
          *     security:
          *       - bearerAuth: []
-         * components:
-         *   securitySchemes:
-         *     bearerAuth: 
-         *       type: http
-         *       scheme: bearer
-         *       description: Use a valid JWT token to access this endpoint. The token must be included in the Authorization header as a Bearer token.
-         * 
          */
         this.#router.post(
             '/',
@@ -134,6 +135,46 @@ export class FilmsRouter {
             this.#controller.createFilm.bind(this.#controller),
         );
 
+        /**
+         * @openapi
+         *
+         * /api/films/{id}:
+         *   patch:
+         *     summary: Update a film (partial)
+         *     tags: [Films]
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         required: true
+         *         schema:
+         *           type: integer
+         *           format: int32
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/FilmUpdateDTO'
+         *     responses:
+         *       200:
+         *         description: Film updated successfully
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/Film'
+         *       400:
+         *         description: Invalid input data
+         *       401:
+         *         description: Missing or invalid token
+         *       403:
+         *         description: Forbidden (requires EDITOR role)
+         *       404:
+         *         description: Film not found
+         *       500:
+         *         description: Server error
+         *     security:
+         *       - bearerAuth: []
+         */
         this.#router.patch(
             '/:id',
             validateParams(),
@@ -145,6 +186,34 @@ export class FilmsRouter {
             this.#controller.updateFilm.bind(this.#controller),
         );
 
+        /**
+         * @openapi
+         *
+         * /api/films/{id}:
+         *   delete:
+         *     summary: Delete a film
+         *     tags: [Films]
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         required: true
+         *         schema:
+         *           type: integer
+         *           format: int32
+         *     responses:
+         *       204:
+         *         description: Film deleted successfully
+         *       401:
+         *         description: Missing or invalid token
+         *       403:
+         *         description: Forbidden (requires EDITOR role)
+         *       404:
+         *         description: Film not found
+         *       500:
+         *         description: Server error
+         *     security:
+         *       - bearerAuth: []
+         */
         this.#router.delete(
             '/:id',
             validateParams(),

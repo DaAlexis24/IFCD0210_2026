@@ -22,7 +22,7 @@ const swaggerOptions: Options = {
             ], 
         }, 
     },
-    apis: ['./src/**/router/*.ts'] // Path to the API docs
+    apis: ['./src/**/router/*.ts', './src/**/entities/*.ts'] // Path to the API docs
 };
 
 export const swaggerSpec = swaggerJSDoc(swaggerOptions);

@@ -3,6 +3,92 @@ import { z } from 'zod';
 const isSingleDecimal = (value: number): boolean =>
     Number.isInteger(value * 10);
 
+/**
+ * @openapi
+ *
+ * components:
+ *   schemas:
+ *     FilmCreateDTO:
+ *       type: object
+ *       required: [title, year, director, duration, rate, genres]
+ *       properties:
+ *         title:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 255
+ *           example: The Matrix
+ *         year:
+ *           type: integer
+ *           format: int32
+ *           example: 1999
+ *         director:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 255
+ *           example: Lana Wachowski
+ *         duration:
+ *           type: integer
+ *           format: int32
+ *           minimum: 1
+ *           description: Duration in minutes.
+ *           example: 136
+ *         poster:
+ *           type: string
+ *           nullable: true
+ *           description: Poster URL (optional).
+ *           example: https://example.com/posters/matrix.jpg
+ *         rate:
+ *           type: number
+ *           format: float
+ *           minimum: 0
+ *           maximum: 9.9
+ *           multipleOf: 0.1
+ *           example: 8.7
+ *         genres:
+ *           type: array
+ *           minItems: 1
+ *           uniqueItems: true
+ *           items:
+ *             type: string
+ *             example: Sci-Fi
+ *     FilmUpdateDTO:
+ *       type: object
+ *       additionalProperties: false
+ *       description: Partial update payload for a film.
+ *       properties:
+ *         title:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 255
+ *         year:
+ *           type: integer
+ *           format: int32
+ *         director:
+ *           type: string
+ *           minLength: 1
+ *           maxLength: 255
+ *         duration:
+ *           type: integer
+ *           format: int32
+ *           minimum: 1
+ *           description: Duration in minutes.
+ *         poster:
+ *           type: string
+ *           nullable: true
+ *           description: Poster URL (optional).
+ *         rate:
+ *           type: number
+ *           format: float
+ *           minimum: 0
+ *           maximum: 9.9
+ *           multipleOf: 0.1
+ *         genres:
+ *           type: array
+ *           minItems: 1
+ *           uniqueItems: true
+ *           items:
+ *             type: string
+ */
 export const FilmRateDTOSchema = z.coerce
     .number()
     .min(0)
@@ -27,7 +113,6 @@ export const FilmCreateDTOSchema = z.object({
 });
 
 export const FilmUpdateDTOSchema = FilmCreateDTOSchema.partial().strict();
-
 
 export const FilmParamsSchema = z.object({
     id: z.coerce.number().int().positive(),

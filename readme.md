@@ -1718,13 +1718,10 @@ Challenge
 - Entornos: desarrollo y producción (y testing)
   - Procesos de construcción y despliegue
 
-<!--
-
 - Tipos en los comentarios de documentación
-- Generación de documentación a partir de los comentarios: Swagger
+  - JSDoc (cualquier proyecto)
+  - Generación de documentación a partir de los comentarios: Swagger-UI
 - Uso de la documentación generada
-
--->
 
 ### Día 4 (J 21/05/2026) - M3.00 11 - Git y GitHub
 
