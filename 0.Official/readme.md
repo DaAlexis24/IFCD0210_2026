@@ -4,6 +4,8 @@ Módulo 1 - Programación web en el entorno cliente (front: 180 horas -> 155 hor
 Módulo 2 - Programación web en el entorno servidor (back: 240 horas -> 210 horas)
 Módulo 3 - Implantación de aplicaciones web en entornos Internet, Intranet y Extranet. (CI/CD: 90 horas -> 77 horas)
 
+Horas totales: 510 horas -> 442 horas
+
 ## MÓDULO FORMATIVO 1 - Front
 
 Denominación: PROGRAMACIÓN WEB EN EL ENTORNO CLIENTE

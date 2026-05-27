@@ -1725,40 +1725,70 @@ Challenge
 
 ### Día 4 (J 21/05/2026) - M3.00 11 - Git y GitHub
 
-<!-- - Git y GitHub
+- Review: Documentación con Swagger
 
+- Git y GitHub
   - Revisión de los conceptos conocidos
-    - Etiquetas: Git reset y git checkout
-    - Ramas: procesos de merge
+    - Git: SCV Distribuido
+    - Comandos básicos
     - Remotos: github
+
+[descanso]
+
+- Git y GitHub
   - Git internals
     - Objetos: blob, tree y commit
     - plumbing commands: creación de hashes
     - Relación entre elementos
-    - estructura interna de la carpeta .git -->
+    - estructura interna de la carpeta .git
 
 ### Día 5 (V 22/05/2026) - M3.00 12 - Git y GitHub
 
-<!-- - Git y GitHub
-  - Git internals
-  - Comandos Git
-    - git rebase
+- Git y GitHub
+  - Comandos Git - reescribir la historia
+    - Etiquetas: Git reset y git checkout
     - git commit --amend
-    - rebase interactivo
-    - git cherry-pick
     - git stash
-  - Flujos de trabajo
-    - Git Flow
-    - GitLab Flow
-    - GitHub Flow / Feature Branch / Trunk Based Development
-    - Ship-show-ask -->
+  - Ramas: procesos de merge
+    - git merge
+      - fast forward
+      - git merge --no-ff
+      - recursive tree way
+      - conflictos
+    - git rebase
+  - Remotes
+    - git remote
+    - git push
+    - git pull
+    - git fetch
+  - Pull request
+    - Pull request en GitHub
+    - Revisión de código (code review)
+    - Merge de pull request
 
 ## Semana 19 (Mayo)
 
 ### Día 1 (L 25/05/2026) - M3.00 13 - CI/CD Husky - GitHub Actions
 
-<!-- Husky -->
-<!-- CD/CD: Github Actions -->
+- Git y GitHub (continuación)
+  - Ramas y remotes
+    - git rebase
+    - git pull = git fetch + git merge
+- Rutinas de trabajo con ramas y remotos
+  - git push -u origin \<branch>
+  - git pull + git push
+  - [desde la rama] git merge main + git push
+
+[descanso]
+
+- Comandos Git - reescribir la historia
+  - rebase interactivo
+  - git cherry-pick
+- Flujos de trabajo
+  - Git Flow
+  - GitLab Flow
+  - GitHub Flow / Feature Branch / Trunk Based Development
+  - Ship-show-ask
 
 ### Día 2 (M 26/05/2026) - M3.00 14
 
@@ -1767,6 +1797,9 @@ Challenge
 ### Día 3 (X 27/05/2026) - M3.00 15
 
 <!-- Examen Módulo 3 (Segunda convocatoria) -->
+
+<!-- Husky -->
+<!-- CD/CD: Github Actions -->
 
 ### Día 4 (J 28/05/2026) - M3.00 16 - (2 horas)
 

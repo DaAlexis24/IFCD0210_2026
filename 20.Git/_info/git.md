@@ -2495,7 +2495,7 @@ En caso de que aparezca la necesidad de corregir un error en producción,
 2. se corrige el error
 3. se fusiona la rama hotfix en master y develop.
 
-![Git flow](assets/git_flow.png)
+![Git flow](../assets/git_flow.png)
 
 Entre las ventajas del GitFlow se encuentran:
 
@@ -2538,7 +2538,7 @@ El flujo de trabajo es el siguiente:
 7. Se fusiona la rama environment en producción
 8. Se despliega la rama environment en producción
 
-![GitLab flow](assets/gitlab_flow.png)
+![GitLab flow](../assets/gitlab_flow.png)
 
 Entre las ventajas del GitLab Flow se encuentran:
 
@@ -2573,7 +2573,7 @@ El flujo de trabajo es el siguiente:
 5. En algunas variantes del modelo, se aplican tags a determinados commits de master para marcar las versiones
 6. Se repite el proceso con cada nueva rama feature
 
-![GitHub flow](assets/github_flow.png)
+![GitHub flow](../assets/github_flow.png)
 
 Entre las ventajas del GitHub Flow se encuentran:
 
