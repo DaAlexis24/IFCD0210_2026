@@ -1,0 +1,43 @@
+name: CI-CD Workflow
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v6
+
+        - name: Set up Node.js
+          uses: actions/setup-node@v6
+          with:
+            node-version: '24.x'
+        
+        - name: Install dependencies
+          run: |
+            cd 21.CI.CD # Replace with your actual project directory
+            npm install
+
+        - name: Run linting
+          run: |
+            cd 21.CI.CD # Replace with your actual project directory
+            npm run lint
+
+        - name: Run tests
+          run: |
+            cd 21.CI.CD # Replace with your actual project directory
+            npm run test:c
+
+        - name: Build project
+          run: |
+            cd 21.CI.CD # Replace with your actual project directory
+            npm run build
+
+        # - name: Deploy to production
+        #   if: github.ref == 'refs/heads/main'
+        #   run: echo "Deploying to production..." # Replace with actual deployment command

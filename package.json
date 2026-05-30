@@ -1,0 +1,26 @@
+{
+  "name": "IFCD0210_2026",
+  "version": "1.0.0",
+  "description": "Repositorio completo del Certificado de Profesionalidad IFCD0210_2026 - Desarrollo de Aplicaciones con Tecnologías Web",
+  "main": "index.ts",
+  "type": "module",
+  "author": "Alejandro Cerezo",
+  "scripts": {
+    "test": "echo \"Simulating valid test\" && exit 0",
+    "test:fail": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alce65/IFCD0210_2026.git"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alce65/IFCD0210_2026/issues"
+  },
+  "homepage": "https://github.com/alce65/IFCD0210_2026#readme",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

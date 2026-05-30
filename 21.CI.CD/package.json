@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest",
+    "test:fail": "echo \"Error: no test specified\" && exit 1",
+    "test:success": "echo \"Mock Test success\" && exit 0",
     "test:c": "vitest run --coverage",
-    "e2e":  "playwright test --project=chromium"
+    "e2e": "playwright test --project=chromium"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

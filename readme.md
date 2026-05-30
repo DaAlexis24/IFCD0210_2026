@@ -1798,9 +1798,32 @@ Challenge
 
 <!-- Examen Módulo 3 (Segunda convocatoria) -->
 
-<!-- Husky -->
-<!-- CD/CD: Github Actions -->
+- Reevisión examen teórico
+
+- CI/CD
+  - Conceptos: Integración Continua, Entrega Continua, Despliegue Continuo
+  - Herramientas:
+    - Locales: Linter, Prettier, Husky (pre-commit, pre-push) 
+    - Remotas: Jenkins, Travis CI, CircleCI, GitHub Actions...
+
+- Git Hooks
+- Husky (Hooks en ES)
+  - Instalación (Error si no esta en la raiz del repo, junto a la carpeta .git)
+  - Ejemplos de scripts
+
+[descanso]
+
+- CI/CD: Github Actions
+  - Conceptos: Workflow, Job, Step, Action
+  - Ejemplo de Workflow: echo "Hello, world!" 
+  - Ejemplo de Workflow: Node.js CI
 
 ### Día 4 (J 28/05/2026) - M3.00 16 - (2 horas)
 
 <!-- 2 horas -->
+
+- Revisión del examen práctico (Testing)
+- Revisión de Husky (solución de problemas)
+- Revisión de GitHub Actions (solución de problemas)
+
+- Comentarios finales del curso
